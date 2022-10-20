@@ -1,5 +1,6 @@
 package com.app.trackingqrcode.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -10,25 +11,12 @@ import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.response.DetailSummaryResponse
-import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.activity_detail_summary.*
-import kotlinx.android.synthetic.main.activity_detail_summary.Vefficiency
-import kotlinx.android.synthetic.main.activity_detail_summary.Voee
-import kotlinx.android.synthetic.main.activity_detail_summary.tv1
-import kotlinx.android.synthetic.main.activity_detail_summary.tv2
-import kotlinx.android.synthetic.main.activity_detail_summary.tv3
-import kotlinx.android.synthetic.main.activity_detail_summary.tv4
-import kotlinx.android.synthetic.main.activity_detail_summary.tv5
-import kotlinx.android.synthetic.main.activity_detail_summary.tv6
-import kotlinx.android.synthetic.main.activity_detail_summary.tv7
-import kotlinx.android.synthetic.main.activity_scan.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,10 +24,10 @@ import kotlin.math.roundToInt
 
 
 class DetailSummaryActivity : AppCompatActivity() {
-    private lateinit var id_station : String
-    private lateinit var id_product : String
-    var rotate: Animation? = null
-    var rotateup: Animation? = null
+    private lateinit var idstation : String
+    private lateinit var idproduct : String
+    private var rotate: Animation? = null
+    private var rotateup: Animation? = null
 
     companion object {
         private const val KEY_STATION = "id_station"
@@ -54,11 +42,11 @@ class DetailSummaryActivity : AppCompatActivity() {
 
         rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
         rotateup = AnimationUtils.loadAnimation(this, R.anim.rotateup)
-        id_station = intent.getStringExtra(KEY_STATION).toString()
-        id_product = intent.getStringExtra(KEY_PRODUK).toString()
-        showdetailsummary(id_station,id_product)
+        idstation = intent.getStringExtra(KEY_STATION).toString()
+        idproduct = intent.getStringExtra(KEY_PRODUK).toString()
+        showdetailsummary(idstation,idproduct)
         hide()
-        Animation()
+        animation()
 
         backSum.setOnClickListener {
             startActivity(Intent(this, SummaryActivity::class.java))
@@ -68,6 +56,7 @@ class DetailSummaryActivity : AppCompatActivity() {
     private fun showdetailsummary(id_station:String,id_product:String) {
         val retro = ApiUtils().getUserService()
         retro.getDetailSummary(id_station,id_product).enqueue(object : Callback<DetailSummaryResponse>{
+            @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<DetailSummaryResponse>, response: Response<DetailSummaryResponse>) {
                 val detailsummary = response.body()
                 if (detailsummary!=null && detailsummary.success == true && detailsummary.data != null) {
@@ -159,7 +148,7 @@ class DetailSummaryActivity : AppCompatActivity() {
         })
     }
 
-    fun Animation(){
+    private fun animation(){
         btnexpandoee.setOnClickListener {
             if (LayoutOee.visibility == View.GONE) {
                 TransitionManager.beginDelayedTransition(CardOee, AutoTransition())

@@ -32,10 +32,6 @@ data class DataStation(
 	@SerializedName("name")
 	val name: String? = null,
 
-//	@SerializedName("status")
-//	@Expose
-//	var status: String? = null,
-
 	@SerializedName("created_at")
 	val createdAt: String? = null,
 

@@ -61,15 +61,15 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/dibaca"
+                android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="20dp"
                 android:fontFamily="@font/popmedium"
-                android:text="tandai dibaca"
-                android:textColor="@color/blue"
-                android:textSize="16sp"
-                android:textStyle=""
+                android:text=""
+                android:textColor="@color/green"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 tools:ignore="NotSibling" />
 
             <Button
@@ -93,7 +93,7 @@
             app:delimiterColor="#ffffff"
             app:delimiterSize="5dp"
             app:inactiveColor="#eaeaea"
-            app:maxValue="5" />
+            app:maxValue="4" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -115,7 +115,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/popmedium"
                     android:gravity="center_vertical"
-                    android:text="Foreman"
+                    android:text="Leader \nForeman"
                     android:textSize="9sp" />
 
             </LinearLayout>
@@ -126,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/frm"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="40dp"
                 android:layout_gravity="center_vertical">
 
                 <TextView
@@ -141,38 +141,26 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/depthead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_centerHorizontal="true">
-
-                <TextView
-                    android:id="@+id/headd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/popmedium"
-                    android:text="Head"
-                    android:textSize="9sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/mng"
+                android:layout_toEndOf="@+id/sch"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="50dp"
                 android:layout_gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/leader"
+                    android:id="@+id/heade"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/popmedium"
-                    android:text="Leader"
+                    android:text="Dept \nHead"
                     android:textSize="9sp" />
+
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:id="@+id/mng"
@@ -188,9 +176,9 @@
                     android:id="@+id/manager"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:fontFamily="@font/popmedium"
-                    android:text="Manager"
+                    android:text="Top \n Management"
                     android:textSize="9sp" />
             </LinearLayout>
         </RelativeLayout>

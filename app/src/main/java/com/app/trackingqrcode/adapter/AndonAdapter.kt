@@ -20,11 +20,10 @@ class AndonAdapter(private var Andon: List<AndonData>) : RecyclerView.Adapter<An
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtstation = itemView.head
         val txtreason = itemView.reason
-        val txtTandai = itemView.dibaca
         val txtTime = itemView.time
         val eskalasi = itemView.progressBar
         val btnAssign = itemView.assign
-
+        val txtdone = itemView.status
 
     }
 
@@ -37,6 +36,7 @@ class AndonAdapter(private var Andon: List<AndonData>) : RecyclerView.Adapter<An
         holder.txtstation.text = Andon?.get(position)?.head
         holder.txtreason.text = Andon?.get(position)?.reason
         holder.txtTime.text = Andon?.get(position)?.time
+        holder.txtdone.text = ""
 
         holder.btnAssign.setOnClickListener {
             val dialog =  Dialog(it.context)
@@ -46,6 +46,7 @@ class AndonAdapter(private var Andon: List<AndonData>) : RecyclerView.Adapter<An
             dialog.btnOK.setOnClickListener {
                 holder.eskalasi.curValue = tambaheskalasi++
                 dialog.dismiss()
+                holder.txtdone.text = "DONE"
                 Toast.makeText(it.context, "Berhasil", Toast.LENGTH_SHORT
                 ).show()            }
             dialog.btnBatal.setOnClickListener {
@@ -54,10 +55,10 @@ class AndonAdapter(private var Andon: List<AndonData>) : RecyclerView.Adapter<An
             dialog.show()
 
         }
-        holder.txtTandai.setOnClickListener {
-            holder.txtTandai.text = "Telah Dibaca"
-            holder.txtTandai.setTextColor(Color.BLACK)
-        }
+//        holder.txtTandai.setOnClickListener {
+//            holder.txtTandai.text = "Telah Dibaca"
+//            holder.txtTandai.setTextColor(Color.BLACK)
+//        }
     }
 
     override fun getItemCount(): Int {

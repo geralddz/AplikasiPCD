@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.RejectionAdapter
@@ -88,7 +87,7 @@ class ScanActivity : AppCompatActivity() {
         request.qr = tvHasil.text.toString().trim()
         val retro = ApiUtils().getUserService()
         retro.scan(request).enqueue(object : Callback<QRResponse> {
-            @SuppressLint("SetTextI18n")
+            @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
             override fun onResponse(call: Call<QRResponse>, response: Response<QRResponse>) {
                 val qr = response.body()
                 val success = qr?.success
@@ -133,7 +132,6 @@ class ScanActivity : AppCompatActivity() {
                     val persen2 = qr.recap?.Performance.toString().toInt()
                     val persen3 = qr.recap?.Target.toString().toInt()
                     val persen4 = qr.recap?.Actual.toString().toInt()
-                    val persen6 = hasilcoba
 
                     if (persen<=50){
                         pbavail.progressTintList = ColorStateList.valueOf(Color.RED)
@@ -190,15 +188,15 @@ class ScanActivity : AppCompatActivity() {
                         pbActual.progress = persen4
                     }
 
-                    if (persen6<=50) {
+                    if (hasilcoba <= 50) {
                         pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbOk.progress = persen6
-                    }else if(persen6 in 51..57){
+                        pbOk.progress = hasilcoba
+                    } else if (hasilcoba in 51..57) {
                         pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbOk.progress = persen6
-                    }else{
+                        pbOk.progress = hasilcoba
+                    } else {
                         pbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbOk.progress = persen6
+                        pbOk.progress = hasilcoba
                     }
 
                     rvrejection.apply {

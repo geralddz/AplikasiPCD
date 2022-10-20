@@ -39,9 +39,20 @@ interface ApiInterface {
         @Query("station_id") station_id: Int?
     ): Call<OnPlanningResponse>
 
+    @GET("planning/on-coming")
+    fun getDetailStation(
+        @Query("station_id") station_id: String,
+    ): Call<DetailStationResponse>
+
     @GET("downtime/not-null")
     fun getDowntime(
         @Query("station_id") Idstation: Int?,
         @Query("planning_id") Idplanning: Int?
     ): Call<DowntimeResponse>
+
+    @GET("dashboard/data")
+    fun getDetailPlan(
+        @Query("planning_id") Idplanning: String?
+    ): Call<DetailPlanResponse>
+
 }

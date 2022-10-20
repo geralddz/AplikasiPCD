@@ -62,7 +62,7 @@
         app:endIconDrawable="@drawable/search">
 
         <AutoCompleteTextView
-            android:id="@+id/keyword"
+            android:id="@+id/filterstation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/popmedium" />
@@ -74,11 +74,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
-        android:gravity="center"
         android:layout_marginTop="10dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/hintStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -100,8 +101,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/popmedium"
-                    android:gravity="center"
-                    android:text="Berjalan" />
+                    android:textStyle="bold"
+                    android:text="Start" />
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -120,7 +121,6 @@
                             android:layout_width="60dp"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
-
                             <include layout="@layout/counter_plasceholder" />
 
                         </LinearLayout>
@@ -142,9 +142,6 @@
             android:id="@+id/hintProblem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="false"
-            android:layout_alignParentEnd="false"
-            android:layout_centerInParent="true"
             android:layout_marginStart="5dp">
 
             <ImageView
@@ -163,8 +160,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:fontFamily="@font/popmedium"
-                    android:gravity="center"
                     android:text="Problem" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -175,6 +172,7 @@
                         android:id="@+id/shimmerlayout2"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
+                        android:layout_marginEnd="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
@@ -187,7 +185,6 @@
                             <include layout="@layout/counter_plasceholder" />
 
                         </LinearLayout>
-
                     </com.facebook.shimmer.ShimmerFrameLayout>
 
                     <TextView
@@ -223,7 +220,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/popmedium"
-                    android:gravity="center"
+                    android:textStyle="bold"
                     android:text="Stop" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -244,7 +241,6 @@
                             android:orientation="vertical">
 
                             <include layout="@layout/counter_plasceholder" />
-
                         </LinearLayout>
 
                     </com.facebook.shimmer.ShimmerFrameLayout>
@@ -293,11 +289,10 @@
                 <include layout="@layout/data_placeholder" />
 
             </LinearLayout>
-
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swiper"
+            android:id="@+id/swiperlive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
@@ -306,8 +301,6 @@
                 android:id="@+id/rvLive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="it"
-                tools:itemCount="10"
                 android:layout_marginTop="20dp" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>

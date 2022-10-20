@@ -10,7 +10,7 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="8dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/cardstation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,15 +23,17 @@
 
         <ImageView
             android:id="@+id/imgStation"
+            android:padding="5dp"
+            android:layout_centerVertical="true"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:src="@drawable/station"/>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical"
+            android:layout_toEndOf="@+id/imgStation"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp">
 
@@ -54,7 +56,6 @@
                 android:text="part name " />
 
         </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

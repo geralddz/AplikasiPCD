@@ -3,16 +3,20 @@ package com.app.trackingqrcode.socket
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import com.app.trackingqrcode.response.DetailPlanResponse
+import com.app.trackingqrcode.response.StationIdResponse
+import com.app.trackingqrcode.response.StationResponse
 import net.mrbin99.laravelechoandroid.Echo
 import net.mrbin99.laravelechoandroid.EchoOptions
 
-const val SERVER_URL = "http://10.0.2.2:6001"
-const val CHANNEL_MESSAGES = "messages"
-const val EVENT_MESSAGE_CREATED = "MessageCreated"
+val station = String
+const val SERVER_URL = "http://10.14.130.94:6001"
+const val CHANNEL_MESSAGES = "dashboard"
+const val EVENT_MESSAGE_CREATED = "Achievement_$"
 const val TAG = "msg"
 
 open class BaseSocket : AppCompatActivity() {
-    private var _receivedEvent = MutableLiveData<Any>()
+    private var _receivedEvent = MutableLiveData<DetailPlanResponse>()
     var receivedEvent = _receivedEvent
 
     private var echo: Echo? = null
@@ -35,6 +39,8 @@ open class BaseSocket : AppCompatActivity() {
                 .listen(EVENT_MESSAGE_CREATED) {
                     val newEvent = ListenDataSocket.parseFrom(it)
                     displayNewEvent(newEvent)
+                    Log.e("socket", "event: $newEvent")
+
                 }
         }
     }
@@ -49,6 +55,6 @@ open class BaseSocket : AppCompatActivity() {
 
     private fun displayNewEvent(event: ListenDataSocket?) {
         log("new event " + event?.message)
-        _receivedEvent.postValue(event)
+        _receivedEvent.postValue(DetailPlanResponse())
     }
 }

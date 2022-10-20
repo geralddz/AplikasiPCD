@@ -1,23 +1,36 @@
 package com.app.trackingqrcode.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.trackingqrcode.activity.DetailStationActivity
 import com.app.trackingqrcode.R
+import com.app.trackingqrcode.api.SharedPref
 import com.app.trackingqrcode.model.LiveMonitorData
 import kotlinx.android.synthetic.main.item_station.view.*
 
-class LiveMonitorAdapter(var context: Context, val datamonitoring: List<LiveMonitorData>): RecyclerView.Adapter<LiveMonitorAdapter.MyViewHolder>(){
+class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMonitorData>): RecyclerView.Adapter<LiveMonitorAdapter.MyViewHolder>(){
+
+    companion object {
+        const val KEY_STATION = "id_station"
+        const val PRODUK = "partname"
+        const val STATION = "station"
+        const val KEY_PLAN = "id_plan"
+        const val STATUS = "status"
+    }
+    private lateinit var sharedPref: SharedPref
 
     class MyViewHolder (view: View):RecyclerView.ViewHolder(view){
         val station_num = view.station
         val part_name = view.part
         val cs = view.cardstation
         val card = view.card
+
     }
 
 
@@ -28,12 +41,58 @@ class LiveMonitorAdapter(var context: Context, val datamonitoring: List<LiveMoni
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.station_num.text = datamonitoring[position].nama_station
-        holder.part_name.text = datamonitoring[position].nama_part
+        sharedPref = SharedPref(context)
+        val id_plan = datamonitoring[position].id_plan.toString()
+        val id_station = datamonitoring[position].id_station.toString()
+        val station_nama = datamonitoring[position].nama_station.toString()
+        val status = datamonitoring[position].status.toString()
+        val partname = datamonitoring[position].partname.toString()
+
+        holder.station_num.text = station_nama
+        holder.part_name.text = partname
+
         if (datamonitoring[position].status == "stop"){
-            holder.cs.background = this.context.getDrawable(R.drawable.bgred)
+            holder.cs.setBackgroundResource(R.drawable.bgred)
+            holder.station_num.setTextColor(Color.WHITE)
+            holder.part_name.text = "STOPPED"
+            holder.part_name.setTypeface(null,Typeface.BOLD)
+            holder.part_name.setTextColor(Color.WHITE)
+
+            holder.card.setOnClickListener {
+                val intent = Intent(it.context, DetailStationActivity::class.java)
+                sharedPref.setStation(station_nama)
+                sharedPref.setIdPlan(id_plan)
+                sharedPref.setIdStation(id_station)
+                sharedPref.setStatus(status)
+                sharedPref.setPartname(partname)
+                it.context.startActivity(intent)
+            }
+
+        }else if (datamonitoring[position].status == "problem"){
+            holder.cs.setBackgroundResource(R.drawable.bgyellow)
+            holder.part_name.text = "HAS BEEN PROBLEM"
+            holder.part_name.setTypeface(null,Typeface.BOLD)
+
+            holder.card.setOnClickListener {
+                val intent = Intent(it.context, DetailStationActivity::class.java)
+                sharedPref.setStation(station_nama)
+                sharedPref.setIdPlan(id_plan)
+                sharedPref.setIdStation(id_station)
+                sharedPref.setStatus(status)
+                sharedPref.setPartname(partname)
+                it.context.startActivity(intent)
+            }
         }else{
 
+            holder.card.setOnClickListener {
+                val intent = Intent(it.context, DetailStationActivity::class.java)
+                sharedPref.setStation(station_nama)
+                sharedPref.setIdPlan(id_plan)
+                sharedPref.setIdStation(id_station)
+                sharedPref.setStatus(status)
+                sharedPref.setPartname(partname)
+                it.context.startActivity(intent)
+            }
         }
 
     }

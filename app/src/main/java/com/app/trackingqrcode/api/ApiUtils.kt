@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiUtils {
-//    val API_URL = "http://192.168.92.204/api/public/api/"
+//    val API_URL = "http://10.14.132.173/api/public/api/"
     val API_URL = "http://10.14.130.94/pcd/api/"
 
     fun getApiClientInstance() : Retrofit{

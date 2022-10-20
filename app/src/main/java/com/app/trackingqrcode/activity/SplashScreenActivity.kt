@@ -1,19 +1,21 @@
 package com.app.trackingqrcode.activity
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.app.trackingqrcode.R
-import com.app.trackingqrcode.api.Session
+import com.app.trackingqrcode.api.SharedPref
 
 
+@SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
-    private lateinit var session: Session
+    private lateinit var sharedPref: SharedPref
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-        session = Session(this)
+        sharedPref = SharedPref(this)
         Handler().postDelayed({
             checkAuth()
             finish()
@@ -21,7 +23,7 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun checkAuth() {
-       if (session.isSignIn() == false){
+       if (sharedPref.isSignIn() == false){
            startActivity(Intent(this, SignInActivity::class.java))
            finish()
         }else{

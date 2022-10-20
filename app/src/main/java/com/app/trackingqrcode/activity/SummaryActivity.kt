@@ -67,7 +67,7 @@ class SummaryActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 selectedStation = s.toString()
-                Filter(selectedStation, selectedCustomer, selectedType, selectedPart)
+                filter(selectedStation, selectedCustomer, selectedType, selectedPart)
 
             }
 
@@ -76,7 +76,7 @@ class SummaryActivity : AppCompatActivity() {
         })
         filterStation.setOnItemClickListener { parent, view, position, id ->
             selectedStation = parent.getItemAtPosition(position).toString()
-            Filter(selectedStation, selectedCustomer, selectedType, selectedPart)
+            filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             filterCostumer.visibility = View.VISIBLE
             dropdown2.visibility = View.VISIBLE
             filterCostumer.requestFocus()
@@ -91,7 +91,7 @@ class SummaryActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 selectedCustomer = s.toString()
-                Filter(selectedStation, selectedCustomer, selectedType, selectedPart)
+                filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -99,7 +99,7 @@ class SummaryActivity : AppCompatActivity() {
         })
         filterCostumer.setOnItemClickListener { parent, view, position, id ->
             selectedCustomer = parent.getItemAtPosition(position).toString()
-            Filter(selectedStation, selectedCustomer, selectedType, selectedPart)
+            filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             filterType.visibility = View.VISIBLE
             dropdown3.visibility = View.VISIBLE
             filterType.requestFocus()
@@ -113,7 +113,7 @@ class SummaryActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 selectedType = s.toString()
-                Filter(selectedStation, selectedCustomer, selectedType, selectedPart)
+                filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -123,7 +123,7 @@ class SummaryActivity : AppCompatActivity() {
         })
         filterType.setOnItemClickListener { parent, view, position, id ->
             selectedType = parent.getItemAtPosition(position).toString()
-            Filter(selectedStation, selectedCustomer, selectedType, selectedPart)
+            filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             filterPart.visibility = View.VISIBLE
             dropdown4.visibility = View.VISIBLE
             filterPart.requestFocus()
@@ -145,66 +145,67 @@ class SummaryActivity : AppCompatActivity() {
         })
         filterPart.setOnItemClickListener { parent, view, position, id ->
             selectedPart = parent.getItemAtPosition(position).toString()
-            Filter(selectedStation, selectedCustomer, selectedType, selectedPart)
+            filter(selectedStation, selectedCustomer, selectedType, selectedPart)
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setAdapter(list: List<SummaryList>){
-        val AdapterSummary = SummaryAdapter(this, list)
-        rvHistory!!.adapter = AdapterSummary
-        AdapterSummary.notifyDataSetChanged()
+        val adapterSummary = SummaryAdapter(this, list)
+        rvHistory!!.adapter = adapterSummary
+        adapterSummary.notifyDataSetChanged()
     }
 
-    private fun Filter(selectedStation: String, selectedCustomer: String, selectedType: String, selectedPart: String) {
+    private fun filter(selectedStation: String, selectedCustomer: String, selectedType: String, selectedPart: String) {
         if (selectedCustomer.isEmpty()&&selectedPart.isEmpty()&&selectedType.isEmpty()){
-            val station  = QueryStation(selectedStation)
+            val station  = queryStation(selectedStation)
             setAdapter(station)
         } else if (selectedStation.isEmpty()&&selectedPart.isEmpty()&&selectedType.isEmpty()) {
-            val customer = QueryCustomer(selectedCustomer)
+            val customer = queryCustomer(selectedCustomer)
             setAdapter(customer)
         } else if (selectedStation.isEmpty()&&selectedPart.isEmpty()&&selectedCustomer.isEmpty()){
-            val type = QueryType(selectedType)
+            val type = queryType(selectedType)
             setAdapter(type)
         } else if (selectedStation.isEmpty()&&selectedType.isEmpty()&&selectedCustomer.isEmpty()){
-            val part = QueryProduct(selectedPart)
+            val part = queryProduct(selectedPart)
             setAdapter(part)
         }else if (selectedPart.isEmpty()&&selectedType.isEmpty()){
-            val stationcust = QueryStationCustomer(selectedStation,selectedCustomer)
+            val stationcust = queryStationCustomer(selectedStation,selectedCustomer)
             setAdapter(stationcust)
         }else if (selectedStation.isEmpty()&&selectedCustomer.isEmpty()){
-            val typepart = QueryTypePart(selectedPart,selectedType)
+            val typepart = queryTypePart(selectedPart,selectedType)
             setAdapter(typepart)
         }else if (selectedStation.isEmpty()&&selectedType.isEmpty()){
-            val custpart = QueryCustomerPart(selectedCustomer, selectedPart)
+            val custpart = queryCustomerPart(selectedCustomer, selectedPart)
             setAdapter(custpart)
         }else if (selectedCustomer.isEmpty()&&selectedPart.isEmpty()){
-            val stationtype = QueryStationType(selectedStation, selectedType)
+            val stationtype = queryStationType(selectedStation, selectedType)
             setAdapter(stationtype)
         }else if (selectedCustomer.isEmpty()&&selectedType.isEmpty()){
-            val stationpart = QueryStationPart(selectedStation, selectedPart)
+            val stationpart = queryStationPart(selectedStation, selectedPart)
             setAdapter(stationpart)
         }else if (selectedStation.isEmpty()&&selectedPart.isEmpty()){
-            val custype = QueryCustomerType(selectedCustomer, selectedType)
+            val custype = queryCustomerType(selectedCustomer, selectedType)
             setAdapter(custype)
         }else if (selectedStation.isEmpty()){
-            val custypepart = QueryCustomerTypePart(selectedCustomer, selectedType, selectedPart)
+            val custypepart = queryCustomerTypePart(selectedCustomer, selectedType, selectedPart)
             setAdapter(custypepart)
         }else if (selectedCustomer.isEmpty()){
-            val stationtypepart = QueryStationTypePart(selectedStation, selectedType, selectedPart)
+            val stationtypepart = queryStationTypePart(selectedStation, selectedType, selectedPart)
             setAdapter(stationtypepart)
         }else if (selectedType.isEmpty()){
-            val statcustpart = QueryStationCustomerPart(selectedStation, selectedCustomer, selectedPart)
+            val statcustpart = queryStationCustomerPart(selectedStation, selectedCustomer, selectedPart)
             setAdapter(statcustpart)
         }else if (selectedPart.isEmpty()){
-            val statcustype = QueryStationCustomerType(selectedStation, selectedCustomer, selectedType)
+            val statcustype = queryStationCustomerType(selectedStation, selectedCustomer, selectedType)
             setAdapter(statcustype)
         }else{
-            val listall = QueryAll(selectedStation,selectedCustomer,selectedType,selectedPart)
+            val listall = queryAll(selectedStation,selectedCustomer,selectedType,selectedPart)
             setAdapter(listall)
         }
     }
 
-    private fun QueryAll(selectedStation: String, selectedCustomer: String, selectedType: String, selectedPart: String): List<SummaryList> {
+    private fun queryAll(selectedStation: String, selectedCustomer: String, selectedType: String, selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase()) &&
@@ -218,7 +219,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryStationCustomerType(selectedStation: String, selectedCustomer: String, selectedType: String): List<SummaryList> {
+    private fun queryStationCustomerType(selectedStation: String, selectedCustomer: String, selectedType: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase()) &&
@@ -231,7 +232,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryStationCustomerPart(selectedStation: String, selectedCustomer: String, selectedPart: String): List<SummaryList> {
+    private fun queryStationCustomerPart(selectedStation: String, selectedCustomer: String, selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase()) &&
@@ -244,7 +245,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryCustomerTypePart(selectedCustomer: String, selectedType: String, selectedPart: String): List<SummaryList> {
+    private fun queryCustomerTypePart(selectedCustomer: String, selectedType: String, selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.type.lowercase(Locale.ROOT).contains(selectedType.lowercase()) &&
@@ -257,7 +258,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryStationTypePart(selectedStation: String, selectedType: String, selectedPart: String): List<SummaryList> {
+    private fun queryStationTypePart(selectedStation: String, selectedType: String, selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase()) &&
@@ -270,7 +271,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryStationCustomer(selectedStation: String, selectedCustomer: String): List<SummaryList> {
+    private fun queryStationCustomer(selectedStation: String, selectedCustomer: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase()) &&
@@ -282,7 +283,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryStationType(selectedStation: String, selectedType: String): List<SummaryList> {
+    private fun queryStationType(selectedStation: String, selectedType: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase()) &&
@@ -294,7 +295,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryStationPart(selectedStation: String, selectedPart: String): List<SummaryList> {
+    private fun queryStationPart(selectedStation: String, selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase()) &&
@@ -306,7 +307,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryCustomerType(selectedCustomer: String, selectedType: String): List<SummaryList> {
+    private fun queryCustomerType(selectedCustomer: String, selectedType: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.customer.lowercase(Locale.ROOT).contains(selectedCustomer.lowercase()) &&
@@ -318,7 +319,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryCustomerPart(selectedCustomer: String, selectedPart: String): List<SummaryList> {
+    private fun queryCustomerPart(selectedCustomer: String, selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.customer.lowercase(Locale.ROOT).contains(selectedCustomer.lowercase()) &&
@@ -330,7 +331,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryTypePart(selectedType: String, selectedPart: String): List<SummaryList> {
+    private fun queryTypePart(selectedType: String, selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.type.lowercase(Locale.ROOT).contains(selectedType.lowercase()) &&
@@ -343,7 +344,7 @@ class SummaryActivity : AppCompatActivity() {
     }
 
 
-    private fun QueryStation(selectedStation: String): List<SummaryList> {
+    private fun queryStation(selectedStation: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist ) {
             if (item.stationNum.lowercase(Locale.ROOT).contains(selectedStation.lowercase())){
@@ -353,7 +354,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryCustomer(selectedCustomer: String): List<SummaryList> {
+    private fun queryCustomer(selectedCustomer: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist) {
             if (item.customer.lowercase(Locale.ROOT).contains(selectedCustomer.lowercase())) {
@@ -363,7 +364,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryType(selectedType: String): List<SummaryList> {
+    private fun queryType(selectedType: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist ) {
             if (item.type.lowercase(Locale.ROOT).contains(selectedType.lowercase())){
@@ -373,7 +374,7 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
-    private fun QueryProduct(selectedPart: String): List<SummaryList> {
+    private fun queryProduct(selectedPart: String): List<SummaryList> {
         val filteredList: MutableList<SummaryList> = ArrayList()
         for (item in summarylist ) {
             if (item.partName.lowercase(Locale.ROOT).contains(selectedPart.lowercase())){
@@ -394,21 +395,17 @@ class SummaryActivity : AppCompatActivity() {
                     val parttype = summary[i].type
                     val partlist = summary[i].partName
                     val stationlist = summary[i].stationNum
-                    val single_stationlist = stationlist?.split(", ")?.toTypedArray()
-
-                    for(single in single_stationlist!!){
-                        val StationResponse = retro.getStationId(single)
-                        StationResponse!!.enqueue(object : Callback<StationIdResponse?> {
+                    val singleStationlist = stationlist?.split(", ")?.toTypedArray()
+                    for(single in singleStationlist!!){
+                        val stationResponse = retro.getStationId(single)
+                        stationResponse!!.enqueue(object : Callback<StationIdResponse?> {
                             @SuppressLint("NotifyDataSetChanged")
                             override fun onResponse(call: Call<StationIdResponse?>, response: Response<StationIdResponse?>) {
                                 val station = response.body()!!.data
                                 val stationid = station?.id
                                 Log.e("Station ID", "onResponse: $stationid")
 
-                                summarylist.addAll(
-                                    listOf(SummaryList(single, partlist!!, stationid!!, partid!!, partcus!!, parttype!!))
-                                )
-
+                                summarylist.addAll(listOf(SummaryList(single, partlist!!, stationid!!, partid!!, partcus!!, parttype!!)))
 
                                 val summaryadapter = SummaryAdapter(
                                     this@SummaryActivity,
@@ -421,25 +418,25 @@ class SummaryActivity : AppCompatActivity() {
                                     summaryadapter.notifyDataSetChanged()
                                 }
                                 stopShimmer()
-
+                                if (!Lstation_num.contains(single)) {
+                                    Lstation_num.add(single)
+                                }
+                                if (!Lcustomer.contains(partcus)) {
+                                    Lcustomer.add(partcus)
+                                }
+                                if (!Ltype.contains(parttype)) {
+                                    Ltype.add(parttype)
+                                }
+                                if (!Lpart.contains(partlist)) {
+                                    Lpart.add(partlist)
+                                }
                             }
                             override fun onFailure(call: Call<StationIdResponse?>, t: Throwable) {
                                 Log.e("Error", t.message!!)
                             }
                         })
-                        if (!Lstation_num.contains(single)) {
-                            Lstation_num.add(single)
-                        }
-                        if (!Lcustomer.contains(partcus)) {
-                            Lcustomer.add(partcus!!)
-                        }
-                        if (!Ltype.contains(parttype)) {
-                            Ltype.add(parttype!!)
-                        }
-                        if (!Lpart.contains(partlist)) {
-                            Lpart.add(partlist!!)
-                        }
                     }
+
                 }
 
             }
@@ -451,14 +448,14 @@ class SummaryActivity : AppCompatActivity() {
     }
 
 
-    fun setShimmer() {
+    private fun setShimmer() {
         shimmer.showShimmer(true)
-        shimmer.setVisibility(View.VISIBLE)
-        rvHistory.setVisibility(View.GONE)
+        shimmer.visibility = View.VISIBLE
+        rvHistory.visibility = View.GONE
 
     }
 
-    fun hidefilter() {
+    private fun hidefilter() {
         filterCostumer.visibility = View.GONE
         dropdown2.visibility = View.GONE
         filterType.visibility = View.GONE
@@ -467,10 +464,10 @@ class SummaryActivity : AppCompatActivity() {
         dropdown4.visibility = View.GONE
     }
 
-    fun stopShimmer() {
+    private fun stopShimmer() {
         shimmer.stopShimmer()
-        shimmer.setVisibility(View.GONE)
-        rvHistory.setVisibility(View.VISIBLE)
+        shimmer.visibility = View.GONE
+        rvHistory.visibility = View.VISIBLE
 
     }
 }

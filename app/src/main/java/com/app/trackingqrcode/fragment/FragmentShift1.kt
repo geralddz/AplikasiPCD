@@ -19,6 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.ArrayList
+import kotlin.math.log
 
 class FragmentShift1 : Fragment() {
 
@@ -46,13 +47,19 @@ class FragmentShift1 : Fragment() {
                 val detailstation = response.body()
                 val detailstationdata = detailstation?.data
                 for (d in detailstationdata!!.indices){
-                    val shift3 = detailstationdata[d].breakS3
-                    if (shift3==null){
+                    //slice time
+                    val startpro = detailstationdata[d].startTime
+                    val finishpro = detailstationdata[d].finishTime
+                    val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
+                    val dtfinishpro = finishpro?.split(" ".toRegex())?.toTypedArray()
+                    val timeStartpro = dtstartpro?.get(1).toString()
+                    val timeFinishpro = dtfinishpro?.get(1).toString()
+                    val startShift1 = "07:00:00"
+                    val finishShift1 = "17:59:59"
+                    if ((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
                         val sku = detailstationdata[d].sku
                         val partname = detailstationdata[d].partName
                         val operator = detailstationdata[d].statusFlag
-                        val startpro = detailstationdata[d].startTime
-                        val finishpro = detailstationdata[d].finishTime
                         val sph = detailstationdata[d].cycleTime
                         val totaltime = detailstationdata[d].totalTime
                         val planid = detailstationdata[d].planId
@@ -68,10 +75,9 @@ class FragmentShift1 : Fragment() {
                             }
                         } catch (e: Exception) {
                             Log.e("shift1", "error",e)
-                        }
+                    }
                     }
                 }
-
             }
 
             override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {

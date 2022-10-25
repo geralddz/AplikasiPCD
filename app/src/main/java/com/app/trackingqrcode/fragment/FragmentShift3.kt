@@ -45,37 +45,42 @@ class FragmentShift3 : Fragment() {
             override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
                 val detailstation = response.body()
                 val detailstationdata = detailstation?.data
-                for (d in detailstationdata!!.indices){
-                    val shift1 = detailstationdata[d].breakS1
-                    if (shift1==null){
-                        val sku = detailstationdata[d].sku
-                        val partname = detailstationdata[d].partName
-                        val operator = detailstationdata[d].statusFlag
+                    for (d in detailstationdata!!.indices){
+                        //slice time
                         val startpro = detailstationdata[d].startTime
                         val finishpro = detailstationdata[d].finishTime
-                        val sph = detailstationdata[d].cycleTime
-                        val totaltime = detailstationdata[d].totalTime
-                        val planid = detailstationdata[d].planId
-
-                        try {
-                            shift3data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 3")))
-                            val detailstationadapter = DetailStationAdapter(context!!,shift3data)
-                            rvshift3.apply {
-                                layoutManager = LinearLayoutManager(context)
-                                setHasFixedSize(true)
-                                adapter = detailstationadapter
-                                detailstationadapter.notifyDataSetChanged()
+                        val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
+                        val dtfinishpro = finishpro?.split(" ".toRegex())?.toTypedArray()
+                        val timeStartpro = dtstartpro?.get(1).toString()
+                        val timeFinishpro = dtfinishpro?.get(1).toString()
+                        val startShift3 = "18:00:00"
+                        val startShift3final = "23:59:59"
+                        val finishShift3 = "00:00:00"
+                        val finishShift3Final = "06:59:59"
+                        if ((timeStartpro in startShift3..startShift3final)||(timeFinishpro in finishShift3..finishShift3Final)){
+                            val sku = detailstationdata[d].sku
+                            val partname = detailstationdata[d].partName
+                            val operator = detailstationdata[d].statusFlag
+                            val sph = detailstationdata[d].cycleTime
+                            val totaltime = detailstationdata[d].totalTime
+                            val planid = detailstationdata[d].planId
+                            try {
+                                shift3data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 3")))
+                                val detailstationadapter = DetailStationAdapter(context!!, shift3data)
+                                rvshift3.apply {
+                                    layoutManager = LinearLayoutManager(context)
+                                    setHasFixedSize(true)
+                                    adapter = detailstationadapter
+                                    detailstationadapter.notifyDataSetChanged()
+                                }
+                            } catch (e: Exception) {
+                                Log.e("shift3", "error",e)
                             }
-                        } catch (e: Exception) {
-                            Log.e("shift3", "error",e)
                         }
                     }
                 }
 
-
-            }
-
-            override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
+                override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }
         })

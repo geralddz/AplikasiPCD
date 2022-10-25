@@ -24,7 +24,6 @@ class DetailStationActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //kowe elek
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_station)
         sharedPref = SharedPref(this)

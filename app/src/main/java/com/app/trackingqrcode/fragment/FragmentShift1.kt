@@ -47,7 +47,6 @@ class FragmentShift1 : Fragment() {
                 val detailstation = response.body()
                 val detailstationdata = detailstation?.data
                 for (d in detailstationdata!!.indices){
-                    //slice time
                     val startpro = detailstationdata[d].startTime
                     val finishpro = detailstationdata[d].finishTime
                     val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()

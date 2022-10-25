@@ -2,8 +2,16 @@ package com.app.trackingqrcode.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.util.Log
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.Toast
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
@@ -11,9 +19,21 @@ import com.app.trackingqrcode.response.DetailPlanResponse
 import com.app.trackingqrcode.socket.BaseSocket
 import com.app.trackingqrcode.socket.ListenDataSocket
 import kotlinx.android.synthetic.main.activity_detail_part.*
+import kotlinx.android.synthetic.main.activity_detail_part.Pavail
+import kotlinx.android.synthetic.main.activity_detail_part.Pokratio
+import kotlinx.android.synthetic.main.activity_detail_part.Pperform
+import kotlinx.android.synthetic.main.activity_detail_part.Vachievement
+import kotlinx.android.synthetic.main.activity_detail_part.Vefficiency
+import kotlinx.android.synthetic.main.activity_detail_part.Voee
+import kotlinx.android.synthetic.main.activity_detail_part.Vrejection
+import kotlinx.android.synthetic.main.activity_detail_part.backSum
+import kotlinx.android.synthetic.main.activity_detail_part.labeltv
+import kotlinx.android.synthetic.main.activity_detail_summary.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 class DetailPlanActivity : BaseSocket() {
     private lateinit var id_plan: String
@@ -21,6 +41,8 @@ class DetailPlanActivity : BaseSocket() {
     private lateinit var status: String
     private lateinit var stationname: String
     private lateinit var partname: String
+    private var rotate: Animation? = null
+    private var rotateup: Animation? = null
 
 
     companion object {
@@ -44,12 +66,14 @@ class DetailPlanActivity : BaseSocket() {
         }
 
         connectToSocket()
+        initLiveDataListener()
 
         status = sharedPref.getStatus().toString()
         stationname = sharedPref.getStation().toString()
         partname = sharedPref.getPartname().toString()
         id_plan = intent.getStringExtra(KEY_PLAN).toString()
-        Log.e("plan", "onResponse: $id_plan")
+        rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
+        rotateup = AnimationUtils.loadAnimation(this, R.anim.rotateup)
 
         shiftStation.text = intent.getStringExtra(SHIFT).toString()
         namaStation.text = stationname
@@ -61,6 +85,7 @@ class DetailPlanActivity : BaseSocket() {
         tvsph.text = intent.getStringExtra(SPH).toString()
         tvtarget.text = intent.getStringExtra(TARGET).toString()
         showDetailPlan()
+        animation()
     }
 
     private fun showDetailPlan(){
@@ -69,12 +94,94 @@ class DetailPlanActivity : BaseSocket() {
             @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<DetailPlanResponse>, response: Response<DetailPlanResponse>) {
                 val detailplan = response.body()
-                Vefficiency.text = detailplan?.efficiency.toString()+"%"
-                Voee.text = detailplan?.oee.toString()+"%"
-                availibility.text = detailplan?.avaibility.toString()+"%"
-                performance.text = detailplan?.performance.toString()+"%"
-            }
+                if (detailplan!=null){
+                    val target = detailplan.cumTarget
+                    val actual = detailplan.actual
+                    val reject = detailplan.rejection
+                    val avail = detailplan.avaibility
+                    val perform = detailplan.performance
+                    val downtime = detailplan.downtime
 
+                    if(target!=0 || actual!=0 || reject!=0 || downtime!=0){
+                        if(target!=null || actual!=null || reject!=null || downtime!=null){
+                            val targetFloat = target?.toFloat()
+                            val actualFloat = actual?.toFloat()
+                            val rejectFloat = reject?.toFloat()
+                            val downtimeps = detailplan.downtime?.toFloat()
+                            val downtimepm = ceil(downtimeps?.div(60)!!)
+                            val targetpersen = 100.div(targetFloat!!).times(targetFloat)
+                            val actualpersen = 100.div(targetFloat).times(actualFloat!!)
+                            val achievement = ((actualFloat /(targetFloat))*100).roundToInt()
+                            val okratio = ((actualFloat / (actualFloat + rejectFloat!!))*100).roundToInt()
+                            val rejection = ((rejectFloat / (actualFloat + rejectFloat))*100).roundToInt()
+
+                            Pokratio.text = "$okratio%"
+                            Vachievement.text = "$achievement%"
+                            Vrejection.text = "$rejection"
+                            Vdowntim.text = downtimepm.toInt().toString()+" Menit"
+
+                            if (okratio <70){
+                                POk.progressTintList = ColorStateList.valueOf(Color.RED)
+                                POk.progress = okratio
+                            }else if(okratio in 70..80){
+                                POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                POk.progress = okratio
+                            }else{
+                                POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                POk.progress = okratio
+                            }
+
+                            PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PTarget.progress = targetpersen.toInt()
+
+                            if (actualpersen.toInt()<70){
+                                PAct.progressTintList = ColorStateList.valueOf(Color.RED)
+                                PAct.progress = actualpersen.toInt()
+                            }else if(actualpersen.toInt() in 70..80){
+                                PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                PAct.progress = actualpersen.toInt()
+                            }else{
+                                PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                PAct.progress = actualpersen.toInt()
+                            }
+                        }
+
+                        Vefficiency.text = detailplan.efficiency.toString()+"%"
+                        Voee.text = detailplan.oee.toString()+"%"
+                        Pavail.text = detailplan.avaibility.toString()+"%"
+                        Pperform.text = detailplan.performance.toString()+"%"
+                        ptarget.text = detailplan.cumTarget.toString()
+                        pactual.text = detailplan.actual.toString()
+
+                        if (avail != null) {
+                            if (avail < 70){
+                                PAvail.progressTintList = ColorStateList.valueOf(Color.RED)
+                                PAvail.progress = avail
+                            }else if(avail in 70..80){
+                                PAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                PAvail.progress = avail
+                            }else{
+                                PAvail.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                PAvail.progress = avail
+                            }
+                        }
+
+                        if (perform != null) {
+                            if (perform <70){
+                                PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
+                                PPerform.progress = perform
+                            }else if(perform in 70..80){
+                                PPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                PPerform.progress = perform
+                            }else{
+                                PPerform.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                PPerform.progress = perform
+                            }
+                        }
+                        Toast.makeText(applicationContext, "Load Berhasil", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
             override fun onFailure(call: Call<DetailPlanResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }
@@ -82,9 +189,51 @@ class DetailPlanActivity : BaseSocket() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        initLiveDataListener()
+    private fun animation(){
+        btexpandoee.setOnClickListener {
+            if (Layoutoee.visibility == View.GONE) {
+                TransitionManager.beginDelayedTransition(cardOee, AutoTransition())
+                Layoutoee.visibility = View.VISIBLE
+                btexpandoee.startAnimation(rotateup)
+            } else {
+                TransitionManager.beginDelayedTransition(cardOee, AutoTransition())
+                Layoutoee.visibility = View.GONE
+                btexpandoee.startAnimation(rotate)
+            }
+        }
+        btexpandach.setOnClickListener {
+            if (Layoutach.visibility == View.GONE) {
+                TransitionManager.beginDelayedTransition(cardAch, AutoTransition())
+                Layoutach.visibility = View.VISIBLE
+                btexpandach.startAnimation(rotateup)
+            } else {
+                TransitionManager.beginDelayedTransition(cardAch, AutoTransition())
+                Layoutach.visibility = View.GONE
+                btexpandach.startAnimation(rotate)
+            }
+        }
+        btexpanddown.setOnClickListener {
+            if (Layoutdown.visibility == View.GONE) {
+                TransitionManager.beginDelayedTransition(cardDown, AutoTransition())
+                Layoutdown.visibility = View.VISIBLE
+                btexpanddown.startAnimation(rotateup)
+            } else {
+                TransitionManager.beginDelayedTransition(cardDown, AutoTransition())
+                Layoutdown.visibility = View.GONE
+                btexpanddown.startAnimation(rotate)
+            }
+        }
+        btexpandreject.setOnClickListener {
+            if (Layoutreject.visibility == View.GONE) {
+                TransitionManager.beginDelayedTransition(cardReject, AutoTransition())
+                Layoutreject.visibility = View.VISIBLE
+                btexpandreject.startAnimation(rotateup)
+            } else {
+                TransitionManager.beginDelayedTransition(cardReject, AutoTransition())
+                Layoutreject.visibility = View.GONE
+                btexpandreject.startAnimation(rotate)
+            }
+        }
     }
     private fun initLiveDataListener() {
         receivedEvent.observe(this) {

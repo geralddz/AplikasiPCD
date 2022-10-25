@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_detail_summary.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 
@@ -42,9 +43,8 @@ class DetailSummaryActivity : AppCompatActivity() {
 
         rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
         rotateup = AnimationUtils.loadAnimation(this, R.anim.rotateup)
-        idstation = intent.getStringExtra(KEY_STATION).toString()
-        idproduct = intent.getStringExtra(KEY_PRODUK).toString()
-        showdetailsummary(idstation,idproduct)
+
+        showdetailsummary()
         hide()
         animation()
 
@@ -53,9 +53,11 @@ class DetailSummaryActivity : AppCompatActivity() {
         }
     }
 
-    private fun showdetailsummary(id_station:String,id_product:String) {
+    private fun showdetailsummary() {
+        idstation = intent.getStringExtra(KEY_STATION).toString()
+        idproduct = intent.getStringExtra(KEY_PRODUK).toString()
         val retro = ApiUtils().getUserService()
-        retro.getDetailSummary(id_station,id_product).enqueue(object : Callback<DetailSummaryResponse>{
+        retro.getDetailSummary(idstation,idproduct).enqueue(object : Callback<DetailSummaryResponse>{
             @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<DetailSummaryResponse>, response: Response<DetailSummaryResponse>) {
                 val detailsummary = response.body()
@@ -63,14 +65,20 @@ class DetailSummaryActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Load Berhasil", Toast.LENGTH_LONG).show()
                     tvstation.text = intent.getStringExtra(STATION).toString()
                     tvcust.text = intent.getStringExtra(CUSTOMER).toString()
+
                     val actual = detailsummary.data.actual?.toFloat()
                     val target = detailsummary.data.target?.toFloat()
                     val reject = detailsummary.data.rejection?.toFloat()
                     val avail = detailsummary.data.avaibility
                     val perform = detailsummary.data.performance
-                    val achievement = ((actual!!/(target!!))*100).roundToInt()
+                    val downtimeps = detailsummary.data.downtime?.toFloat()
+                    val targetpersen = 100.div(target!!).times(target)
+                    val actualpersen = 100.div(target).times(actual!!)
+                    val downtimepm = ceil(downtimeps?.div(60)!!)
+                    val achievement = ((actual /(target))*100).roundToInt()
                     val okratio = ((actual / (actual + reject!!))*100).roundToInt()
                     val rejection = ((reject / (actual + reject))*100).roundToInt()
+
                     tv1.text = detailsummary.data.sku
                     tv2.text = detailsummary.data.partName
                     tv3.text = detailsummary.data.operatorName
@@ -78,18 +86,19 @@ class DetailSummaryActivity : AppCompatActivity() {
                     tv5.text = detailsummary.data.finishTime
                     tv6.text = detailsummary.data.cycleTime.toString()
                     tv7.text = detailsummary.data.target.toString()
+
                     Vefficiency.text = "${detailsummary.data.efficiency.toString()}%"
                     Voee.text = "${detailsummary.data.oee.toString()}%"
                     Vachievement.text = "$achievement%"
-                    Vrejection.text = "$rejection%"
-                    Vdowntime.text = "${detailsummary.data.downtime.toString()}%"
+                    Vrejection.text = "$rejection"
+                    Vdowntime.text = downtimepm.toInt().toString()+" Menit"
                     Pactual.text = detailsummary.data.actual.toString()
                     Ptarget.text = detailsummary.data.target.toString()
                     Pavail.text = "${detailsummary.data.avaibility.toString()}%"
                     Pperform.text = "${detailsummary.data.performance.toString()}%"
                     Pokratio.text = "$okratio%"
 
-                    if (avail!! < 70){
+                    if (avail!! <70){
                         PbAvail.progressTintList = ColorStateList.valueOf(Color.RED)
                         PbAvail.progress = avail
                     }else if(avail in 70..80){
@@ -123,19 +132,18 @@ class DetailSummaryActivity : AppCompatActivity() {
                     }
 
                     PbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                    PbTarget.progress = target.toInt()
+                    PbTarget.progress = targetpersen.toInt()
 
-                    if (actual <70){
+                    if (actualpersen <70){
                         PbAct.progressTintList = ColorStateList.valueOf(Color.RED)
-                        PbAct.progress = achievement
-                    }else if(actual.toInt() in 70..80){
+                        PbAct.progress = actualpersen.toInt()
+                    }else if(actualpersen.toInt() in 70..80){
                         PbAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        PbAct.progress = achievement
+                        PbAct.progress = actualpersen.toInt()
                     }else{
                         PbAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        PbAct.progress = achievement
+                        PbAct.progress = actualpersen.toInt()
                     }
-
 
                 }else{
                     Toast.makeText(applicationContext, "Data Detail Summary Tidak Ada", Toast.LENGTH_LONG).show()

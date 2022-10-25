@@ -39,11 +39,12 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
+
                         android:fontFamily="@font/popmedium"
-                        android:gravity="center_horizontal"
-                        android:text="Summary Planning"
+                        android:gravity="center"
+                        android:text="Detail Planning"
                         android:textColor="@color/black"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -388,7 +389,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/CardOee"
+                android:id="@+id/cardOee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -428,14 +429,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
-                                android:layout_toStartOf="@+id/btnexpandoee"
+                                android:layout_toStartOf="@+id/btexpandoee"
                                 android:fontFamily="@font/popmedium"
                                 android:text="0%"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 
                             <ImageButton
-                                android:id="@+id/btnexpandoee"
+                                android:id="@+id/btexpandoee"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
@@ -449,7 +450,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/LayoutOee"
+                        android:id="@+id/Layoutoee"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -475,7 +476,7 @@
                                     android:text="Availibility" />
 
                                 <ProgressBar
-                                    android:id="@+id/PbAvail"
+                                    android:id="@+id/PAvail"
                                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -490,7 +491,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/popmedium"
-                                    android:text="100%" />
+                                    android:text="%" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -507,7 +508,7 @@
                                     android:text="Performance" />
 
                                 <ProgressBar
-                                    android:id="@+id/PbPerform"
+                                    android:id="@+id/PPerform"
                                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -522,7 +523,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="25%" />
+                                    android:text="%" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -539,7 +540,7 @@
                                     android:text="OK Ratio" />
 
                                 <ProgressBar
-                                    android:id="@+id/PbOk"
+                                    android:id="@+id/POk"
                                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -554,7 +555,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/popmedium"
-                                    android:text="25%" />
+                                    android:text="%" />
                             </RelativeLayout>
                         </LinearLayout>
 
@@ -565,7 +566,7 @@
 
             <!--card Achievement-->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/CardAch"
+                android:id="@+id/cardAch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -606,14 +607,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
-                                android:layout_toStartOf="@+id/btnexpandach"
+                                android:layout_toStartOf="@+id/btexpandach"
                                 android:fontFamily="@font/popmedium"
                                 android:text="0%"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 
                             <ImageButton
-                                android:id="@+id/btnexpandach"
+                                android:id="@+id/btexpandach"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
@@ -625,7 +626,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/LayoutAch"
+                        android:id="@+id/Layoutach"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -651,7 +652,7 @@
                                     android:text="Target" />
 
                                 <ProgressBar
-                                    android:id="@+id/PbTarget"
+                                    android:id="@+id/PTarget"
                                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -661,7 +662,7 @@
                                     android:layout_toEndOf="@+id/targeta" />
 
                                 <TextView
-                                    android:id="@+id/Ptarget"
+                                    android:id="@+id/ptarget"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
@@ -682,7 +683,7 @@
                                     android:text="Actual" />
 
                                 <ProgressBar
-                                    android:id="@+id/PbAct"
+                                    android:id="@+id/PAct"
                                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -692,7 +693,7 @@
                                     android:layout_toEndOf="@+id/actual" />
 
                                 <TextView
-                                    android:id="@+id/Pactual"
+                                    android:id="@+id/pactual"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
@@ -707,7 +708,7 @@
 
             <!--card Downtime-->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/CardDown"
+                android:id="@+id/cardDown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -744,18 +745,18 @@
                             android:paddingHorizontal="10dp">
 
                             <TextView
-                                android:id="@+id/Vdowntime"
+                                android:id="@+id/Vdowntim"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
-                                android:layout_toStartOf="@+id/btnexpanddown"
+                                android:layout_toStartOf="@+id/btexpanddown"
                                 android:fontFamily="@font/popmedium"
-                                android:text="0%"
+                                android:text="0"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 
                             <ImageButton
-                                android:id="@+id/btnexpanddown"
+                                android:id="@+id/btexpanddown"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
@@ -769,7 +770,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/LayoutDown"
+                        android:id="@+id/Layoutdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -819,7 +820,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5 Menit" />
+                                    android:text="menit" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -840,7 +841,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5 Menit" />
+                                    android:text="menit" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -861,7 +862,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5 Menit" />
+                                    android:text="menit" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -882,7 +883,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5 Menit" />
+                                    android:text="menit" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -903,7 +904,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5 Menit" />
+                                    android:text="menit" />
                             </RelativeLayout>
 
                         </LinearLayout>
@@ -915,7 +916,7 @@
 
             <!--card Rejection-->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/CardReject"
+                android:id="@+id/cardReject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -955,14 +956,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
-                                android:layout_toStartOf="@+id/btnexpandreject"
+                                android:layout_toStartOf="@+id/btexpandreject"
                                 android:fontFamily="@font/popmedium"
-                                android:text="0%"
+                                android:text="0"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 
                             <ImageButton
-                                android:id="@+id/btnexpandreject"
+                                android:id="@+id/btexpandreject"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
@@ -977,7 +978,7 @@
 
                     <!--TODO : efficiency yang disembunyikan yakni progress bar-->
                     <LinearLayout
-                        android:id="@+id/LayoutReject"
+                        android:id="@+id/Layoutreject"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -1019,7 +1020,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentStart="true"
                                     android:fontFamily="@font/popmedium"
-                                    android:text="Bending" />
+                                    android:text="Blending" />
 
                                 <TextView
                                     android:id="@+id/qty"
@@ -1027,7 +1028,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5" />
+                                    android:text="pack" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -1048,7 +1049,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5" />
+                                    android:text="pack" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -1069,7 +1070,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5" />
+                                    android:text="pack" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -1090,7 +1091,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5" />
+                                    android:text="pack" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -1111,7 +1112,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="5" />
+                                    android:text="pack" />
                             </RelativeLayout>
 
                         </LinearLayout>

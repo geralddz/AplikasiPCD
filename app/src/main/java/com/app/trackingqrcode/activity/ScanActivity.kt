@@ -116,82 +116,64 @@ class ScanActivity : AppCompatActivity() {
                     Vefficiency.text = qr.recap?.Efficiency.toString()+"%"
                     Voee.text = qr.recap?.OEE.toString()+"%"
                     val actuall = qr.recap?.Actual.toString().toFloat()
+                    val targett = qr.recap?.Target.toString().toFloat()
                     val rejecttt = qr.recap?.Rejection.toString().toInt()
                     val hasilok = (actuall+rejecttt)
                     val hasilcoba = ((actuall / hasilok) *100).roundToInt()
                     val hasilreject = ((rejecttt / hasilok) *100).roundToInt()
+                    val targetpersen = 100.div(targett).times(targett)
+                    val actualpersen = 100.div(targett).times(actuall)
 
                     Percentagereject.text = "$hasilreject%"
                     percentage.text = qr.recap?.Avaibility.toString()+"%"
                     percentage1.text = qr.recap?.Performance.toString()+"%"
-                    percentagetrgt.text = qr.recap?.Target.toString()+"%"
-                    percentageact.text = qr.recap?.Actual.toString()+"%"
+                    percentagetrgt.text = qr.recap?.Target.toString()
+                    percentageact.text = qr.recap?.Actual.toString()
                     percentage7.text = "$hasilcoba%"
 
-                    val persen = qr.recap?.Avaibility.toString().toInt()
-                    val persen2 = qr.recap?.Performance.toString().toInt()
-                    val persen3 = qr.recap?.Target.toString().toInt()
-                    val persen4 = qr.recap?.Actual.toString().toInt()
+                    val avail = qr.recap?.Avaibility.toString().toInt()
+                    val perform = qr.recap?.Performance.toString().toInt()
 
-                    if (persen<=50){
+                    if (avail < 70){
                         pbavail.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbavail.progress = persen
-                    }else if(persen in 51..57){
+                        pbavail.progress = avail
+                    }else if(avail in 70..80){
                         pbavail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbavail.progress = persen
+                        pbavail.progress = avail
                     }else{
                         pbavail.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbavail.progress = persen
+                        pbavail.progress = avail
                     }
 
-                    if (persen2<=50) {
+                    if (perform < 70) {
                         pbperformance.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbperformance.progress = persen2
-                    }else if(persen2 in 51..57){
+                        pbperformance.progress = perform
+                    }else if(perform in 70..80){
                         pbperformance.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbperformance.progress = persen2
+                        pbperformance.progress = perform
                     }else{
                         pbperformance.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbperformance.progress = persen2
+                        pbperformance.progress = perform
                     }
 
-                    if (persen3<=50) {
-                        pbTarget.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbTarget.progress = persen3
-                    }else if(persen3 in 51..57){
-                        pbTarget.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbTarget.progress = persen3
-                    }else{
-                        pbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbTarget.progress = persen3
-                    }
+                    pbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                    pbTarget.progress = targetpersen.toInt()
 
-                    if (persen4<=50) {
+                    if (actualpersen < 70) {
                         pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbActual.progress = persen4
-                    }else if(persen4 in 51..57){
+                        pbActual.progress = actualpersen.toInt()
+                    }else if(actualpersen.toInt() in 70..80){
                         pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbActual.progress = persen4
+                        pbActual.progress = actualpersen.toInt()
                     }else{
                         pbActual.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbActual.progress = persen4
+                        pbActual.progress = actualpersen.toInt()
                     }
 
-                    if (persen4 <=50) {
-                        pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbActual.progress = persen4
-                    }else if(persen4 in 51..57){
-                        pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbActual.progress = persen4
-                    }else{
-                        pbActual.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbActual.progress = persen4
-                    }
-
-                    if (hasilcoba <= 50) {
+                    if (hasilcoba < 70) {
                         pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
                         pbOk.progress = hasilcoba
-                    } else if (hasilcoba in 51..57) {
+                    } else if (hasilcoba in 70..80) {
                         pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                         pbOk.progress = hasilcoba
                     } else {

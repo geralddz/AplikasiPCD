@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.LiveMonitorAdapter
 import com.app.trackingqrcode.api.ApiUtils
@@ -20,14 +21,17 @@ import com.app.trackingqrcode.socket.BaseSocket
 import kotlinx.android.synthetic.main.activity_live_monitoring.*
 import kotlinx.android.synthetic.main.activity_live_monitoring.view.*
 import kotlinx.android.synthetic.main.item_station.*
+import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 
 class LiveMonitoringActivity : BaseSocket(){
 
     var stationstatus: String? = null
+    private var adapter: LiveMonitorAdapter? = null
     private val Lstation = ArrayList<String>()
     private var selectedStation = ""
     private var selectedStop = "stop"
@@ -59,6 +63,10 @@ class LiveMonitoringActivity : BaseSocket(){
         showStation()
 
         swiperlive.setOnRefreshListener {
+            setShimmer()
+            livemonitordata = ArrayList()
+            adapter?.notifyDataSetChanged()
+            showStation()
             swiperlive.isRefreshing = false
             val liveadapter = LiveMonitorAdapter(
                 this@LiveMonitoringActivity, livemonitordata
@@ -181,14 +189,13 @@ class LiveMonitoringActivity : BaseSocket(){
                     val sumCY = arrayOf(countYellow[0])
                     val sumCR = arrayOf(countRed[0])
                     retro.getOnPlanning(stationid).enqueue(object : Callback<OnPlanningResponse> {
-                        @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
+                        @SuppressLint("NotifyDataSetChanged")
                         override fun onResponse(call: Call<OnPlanningResponse>, response: Response<OnPlanningResponse>) {
                             val planning = response.body()
                             val planningdata = planning?.data
                             val planid = planningdata?.get(0)?.planningId
                             val partname = planningdata?.get(0)?.partName
                             if (planning?.success == true) {
-                                Log.e("plan", "onResponse: $planid")
                                 retro.getDowntime(stationid, planid).enqueue(object : Callback<DowntimeResponse> {
                                     override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
                                         val downtime = response.body()
@@ -219,9 +226,6 @@ class LiveMonitoringActivity : BaseSocket(){
                                             liveadapter.notifyDataSetChanged()
                                         }
                                         countStation(livemonitordata)
-//                                        if (!Lstation.contains(partname)) {
-//                                            Lstation.add(partname!!)
-//                                        }
                                     }
                                     override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {
                                         Log.e("Error", t.message!!)

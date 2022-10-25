@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class DetailPlanResponse(
 
 	@field:SerializedName("actual")
-	val actual: Any? = null,
+	val actual: Int? = null,
 
 	@field:SerializedName("efficiency")
-	val efficiency: Any? = null,
+	val efficiency: Int? = null,
 
 	@field:SerializedName("cum_target")
 	val cumTarget: Int? = null,
@@ -20,22 +20,22 @@ data class DetailPlanResponse(
 	val planningId: Int? = null,
 
 	@field:SerializedName("rejection")
-	val rejection: Any? = null,
+	val rejection: Int? = null,
 
 	@field:SerializedName("oee")
-	val oee: Any? = null,
+	val oee: Int? = null,
 
 	@field:SerializedName("downtime")
-	val downtime: Any? = null,
+	val downtime: Int? = null,
 
 	@field:SerializedName("dandory")
-	val dandory: Any? = null,
+	val dandory: Int? = null,
 
 	@field:SerializedName("avaibility")
-	val avaibility: Any? = null,
+	val avaibility: Int? = null,
 
 	@field:SerializedName("performance")
-	val performance: Any? = null,
+	val performance: Int? = null,
 
 	@field:SerializedName("updated_at")
 	val updatedAt: String? = null,
@@ -50,5 +50,5 @@ data class DetailPlanResponse(
 	val id: Int? = null,
 
 	@field:SerializedName("total_time")
-	val totalTime: Any? = null
+	val totalTime: Int? = null
 )

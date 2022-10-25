@@ -36,7 +36,6 @@ class DetailStationAdapter(var context: Context , val dataDetailStation : List<D
     class MyViewHolder (view: View):RecyclerView.ViewHolder(view){
         val sku = view.tvsku
         val pn = view.tvpn
-        val op = view.tvop
         val startprod = view.tvstart
         val lastfinish = view.tvfinish
         val sph = view.tvsph
@@ -55,7 +54,6 @@ class DetailStationAdapter(var context: Context , val dataDetailStation : List<D
         holder.startprod.text = dataDetailStation[position].startTime
         holder.lastfinish.text= dataDetailStation[position].finishTime
         holder.sku.text = dataDetailStation[position].sku
-        holder.op.text= dataDetailStation[position].statusFlag
         val totaltime = dataDetailStation[position].totalTime
         val ct = dataDetailStation[position].cycleTime
         val sph = 3600.div(ct!!)

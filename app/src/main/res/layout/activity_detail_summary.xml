@@ -503,7 +503,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/popmedium"
-                                    android:text="100%" />
+                                    android:text="%" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -535,7 +535,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="25%" />
+                                    android:text="%" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -567,7 +567,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/popmedium"
-                                    android:text="25%" />
+                                    android:text="%" />
                             </RelativeLayout>
                         </LinearLayout>
 

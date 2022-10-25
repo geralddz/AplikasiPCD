@@ -16,13 +16,6 @@ import kotlinx.android.synthetic.main.item_station.view.*
 
 class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMonitorData>): RecyclerView.Adapter<LiveMonitorAdapter.MyViewHolder>(){
 
-    companion object {
-        const val KEY_STATION = "id_station"
-        const val PRODUK = "partname"
-        const val STATION = "station"
-        const val KEY_PLAN = "id_plan"
-        const val STATUS = "status"
-    }
     private lateinit var sharedPref: SharedPref
 
     class MyViewHolder (view: View):RecyclerView.ViewHolder(view){
@@ -51,50 +44,50 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
         holder.station_num.text = station_nama
         holder.part_name.text = partname
 
-        if (datamonitoring[position].status == "stop"){
-            holder.cs.setBackgroundResource(R.drawable.bgred)
-            holder.station_num.setTextColor(Color.WHITE)
-            holder.part_name.text = "STOPPED"
-            holder.part_name.setTypeface(null,Typeface.BOLD)
-            holder.part_name.setTextColor(Color.WHITE)
-
-            holder.card.setOnClickListener {
-                val intent = Intent(it.context, DetailStationActivity::class.java)
-                sharedPref.setStation(station_nama)
-                sharedPref.setIdPlan(id_plan)
-                sharedPref.setIdStation(id_station)
-                sharedPref.setStatus(status)
-                sharedPref.setPartname(partname)
-                it.context.startActivity(intent)
+        when (datamonitoring[position].status) {
+            "stop" -> {
+                holder.cs.setBackgroundResource(R.drawable.bgred)
+                holder.station_num.setTextColor(Color.WHITE)
+                holder.part_name.text = "STOPPED"
+                holder.part_name.setTypeface(null,Typeface.BOLD)
+                holder.part_name.setTextColor(Color.WHITE)
+                holder.card.setOnClickListener {
+                    val intent = Intent(it.context, DetailStationActivity::class.java)
+                    sharedPref.setStation(station_nama)
+                    sharedPref.setIdPlan(id_plan)
+                    sharedPref.setIdStation(id_station)
+                    sharedPref.setStatus(status)
+                    sharedPref.setPartname(partname)
+                    it.context.startActivity(intent)
+                }
             }
+            "problem" -> {
+                holder.cs.setBackgroundResource(R.drawable.bgyellow)
+                holder.part_name.text = "HAS BEEN PROBLEM"
+                holder.part_name.setTypeface(null,Typeface.BOLD)
 
-        }else if (datamonitoring[position].status == "problem"){
-            holder.cs.setBackgroundResource(R.drawable.bgyellow)
-            holder.part_name.text = "HAS BEEN PROBLEM"
-            holder.part_name.setTypeface(null,Typeface.BOLD)
-
-            holder.card.setOnClickListener {
-                val intent = Intent(it.context, DetailStationActivity::class.java)
-                sharedPref.setStation(station_nama)
-                sharedPref.setIdPlan(id_plan)
-                sharedPref.setIdStation(id_station)
-                sharedPref.setStatus(status)
-                sharedPref.setPartname(partname)
-                it.context.startActivity(intent)
+                holder.card.setOnClickListener {
+                    val intent = Intent(it.context, DetailStationActivity::class.java)
+                    sharedPref.setStation(station_nama)
+                    sharedPref.setIdPlan(id_plan)
+                    sharedPref.setIdStation(id_station)
+                    sharedPref.setStatus(status)
+                    sharedPref.setPartname(partname)
+                    it.context.startActivity(intent)
+                }
             }
-        }else{
-
-            holder.card.setOnClickListener {
-                val intent = Intent(it.context, DetailStationActivity::class.java)
-                sharedPref.setStation(station_nama)
-                sharedPref.setIdPlan(id_plan)
-                sharedPref.setIdStation(id_station)
-                sharedPref.setStatus(status)
-                sharedPref.setPartname(partname)
-                it.context.startActivity(intent)
+            else -> {
+                holder.card.setOnClickListener {
+                    val intent = Intent(it.context, DetailStationActivity::class.java)
+                    sharedPref.setStation(station_nama)
+                    sharedPref.setIdPlan(id_plan)
+                    sharedPref.setIdStation(id_station)
+                    sharedPref.setStatus(status)
+                    sharedPref.setPartname(partname)
+                    it.context.startActivity(intent)
+                }
             }
         }
-
     }
 
     override fun getItemCount(): Int {

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.util.Log
@@ -12,24 +14,14 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.core.os.postDelayed
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
-import com.app.trackingqrcode.fragment.FragmentShift3
 import com.app.trackingqrcode.response.DetailPlanResponse
 import com.app.trackingqrcode.socket.BaseSocket
 import com.app.trackingqrcode.socket.ListenDataSocket
 import kotlinx.android.synthetic.main.activity_detail_part.*
-import kotlinx.android.synthetic.main.activity_detail_part.Pavail
-import kotlinx.android.synthetic.main.activity_detail_part.Pokratio
-import kotlinx.android.synthetic.main.activity_detail_part.Pperform
-import kotlinx.android.synthetic.main.activity_detail_part.Vachievement
-import kotlinx.android.synthetic.main.activity_detail_part.Vefficiency
-import kotlinx.android.synthetic.main.activity_detail_part.Voee
-import kotlinx.android.synthetic.main.activity_detail_part.Vrejection
-import kotlinx.android.synthetic.main.activity_detail_part.backSum
-import kotlinx.android.synthetic.main.activity_detail_part.labeltv
-import kotlinx.android.synthetic.main.activity_detail_summary.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,7 +52,6 @@ class DetailPlanActivity : BaseSocket() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_part)
-
         sharedPref = SharedPref(this)
         backSum.setOnClickListener {
             startActivity(Intent(this,DetailStationActivity::class.java))
@@ -68,6 +59,8 @@ class DetailPlanActivity : BaseSocket() {
 
         connectToSocket()
         initLiveDataListener()
+
+
 
         status = sharedPref.getStatus().toString()
         stationname = sharedPref.getStation().toString()
@@ -85,9 +78,23 @@ class DetailPlanActivity : BaseSocket() {
         tvfinish.text = intent.getStringExtra(LastFinish).toString()
         tvsph.text = intent.getStringExtra(SPH).toString()
         tvtarget.text = intent.getStringExtra(TARGET).toString()
-        showDetailPlan()
         animation()
+        showDetailPlan()
+
     }
+
+    override fun onResume() {
+        super.onResume()
+            val handler = Handler()
+            val refresh: Runnable = object : Runnable {
+                override fun run() {
+                    showDetailPlan()
+                    handler.postDelayed(this, 1000)
+                }
+            }
+            handler.postDelayed(refresh, 1000)
+        }
+
 
     private fun showDetailPlan(){
         val retro = ApiUtils().getUserService()
@@ -225,7 +232,6 @@ class DetailPlanActivity : BaseSocket() {
                             PPerform.progress = perform
                         }
                     }
-                    Toast.makeText(applicationContext, "Load Berhasil", Toast.LENGTH_LONG).show()
                 }
             }
             override fun onFailure(call: Call<DetailPlanResponse>, t: Throwable) {

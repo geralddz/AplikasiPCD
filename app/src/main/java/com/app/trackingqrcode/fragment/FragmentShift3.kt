@@ -56,7 +56,7 @@ class FragmentShift3 : Fragment() {
                         val startShift3final = "23:59:59"
                         val finishShift3 = "00:00:00"
                         val finishShift3Final = "06:59:59"
-                        if ((timeStartpro in startShift3..startShift3final)||(timeFinishpro in finishShift3..finishShift3Final)){
+                        if ((timeStartpro in startShift3..startShift3final)||(timeFinishpro in finishShift3..finishShift3Final)||(timeStartpro in finishShift3..finishShift3Final)||(timeFinishpro in startShift3..startShift3final)){
                             val sku = detailstationdata[d].sku
                             val partname = detailstationdata[d].partName
                             val operator = detailstationdata[d].statusFlag
@@ -78,7 +78,6 @@ class FragmentShift3 : Fragment() {
                         }
                     }
                 }
-
                 override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }

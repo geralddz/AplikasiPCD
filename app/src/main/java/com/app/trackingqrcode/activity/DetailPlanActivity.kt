@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
+import com.app.trackingqrcode.fragment.FragmentShift3
 import com.app.trackingqrcode.response.DetailPlanResponse
 import com.app.trackingqrcode.socket.BaseSocket
 import com.app.trackingqrcode.socket.ListenDataSocket
@@ -94,6 +95,7 @@ class DetailPlanActivity : BaseSocket() {
             @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<DetailPlanResponse>, response: Response<DetailPlanResponse>) {
                 val detailplan = response.body()
+                Log.e("plan", "onResponse: $id_plan")
                 if (detailplan!=null){
                     val target = detailplan.cumTarget
                     val actual = detailplan.actual
@@ -101,85 +103,129 @@ class DetailPlanActivity : BaseSocket() {
                     val avail = detailplan.avaibility
                     val perform = detailplan.performance
                     val downtime = detailplan.downtime
+                    val efficiency = detailplan.efficiency
+                    val oee = detailplan.oee
 
-                    if(target!=0 || actual!=0 || reject!=0 || downtime!=0){
-                        if(target!=null || actual!=null || reject!=null || downtime!=null){
-                            val targetFloat = target?.toFloat()
-                            val actualFloat = actual?.toFloat()
-                            val rejectFloat = reject?.toFloat()
-                            val downtimeps = detailplan.downtime?.toFloat()
-                            val downtimepm = ceil(downtimeps?.div(60)!!)
-                            val targetpersen = 100.div(targetFloat!!).times(targetFloat)
-                            val actualpersen = 100.div(targetFloat).times(actualFloat!!)
-                            val achievement = ((actualFloat /(targetFloat))*100).roundToInt()
-                            val okratio = ((actualFloat / (actualFloat + rejectFloat!!))*100).roundToInt()
-                            val rejection = ((rejectFloat / (actualFloat + rejectFloat))*100).roundToInt()
-
-                            Pokratio.text = "$okratio%"
-                            Vachievement.text = "$achievement%"
-                            Vrejection.text = "$rejection"
-                            Vdowntim.text = downtimepm.toInt().toString()+" Menit"
-
-                            if (okratio <70){
-                                POk.progressTintList = ColorStateList.valueOf(Color.RED)
-                                POk.progress = okratio
-                            }else if(okratio in 70..80){
-                                POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                                POk.progress = okratio
-                            }else{
-                                POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                POk.progress = okratio
-                            }
-
-                            PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                            PTarget.progress = targetpersen.toInt()
-
-                            if (actualpersen.toInt()<70){
-                                PAct.progressTintList = ColorStateList.valueOf(Color.RED)
-                                PAct.progress = actualpersen.toInt()
-                            }else if(actualpersen.toInt() in 70..80){
-                                PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                                PAct.progress = actualpersen.toInt()
-                            }else{
-                                PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                PAct.progress = actualpersen.toInt()
-                            }
-                        }
-
-                        Vefficiency.text = detailplan.efficiency.toString()+"%"
-                        Voee.text = detailplan.oee.toString()+"%"
-                        Pavail.text = detailplan.avaibility.toString()+"%"
-                        Pperform.text = detailplan.performance.toString()+"%"
-                        ptarget.text = detailplan.cumTarget.toString()
-                        pactual.text = detailplan.actual.toString()
-
-                        if (avail != null) {
-                            if (avail < 70){
-                                PAvail.progressTintList = ColorStateList.valueOf(Color.RED)
-                                PAvail.progress = avail
-                            }else if(avail in 70..80){
-                                PAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                                PAvail.progress = avail
-                            }else{
-                                PAvail.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                PAvail.progress = avail
-                            }
-                        }
-
-                        if (perform != null) {
-                            if (perform <70){
-                                PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
-                                PPerform.progress = perform
-                            }else if(perform in 70..80){
-                                PPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                                PPerform.progress = perform
-                            }else{
-                                PPerform.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                PPerform.progress = perform
-                            }
-                        }
-                        Toast.makeText(applicationContext, "Load Berhasil", Toast.LENGTH_LONG).show()
+                    if (downtime!=null || downtime!=0){
+                        val downtimeps = downtime?.toFloat()
+                        val downtimepm = ceil(downtimeps?.div(60)!!)
+                        Vdowntim.text = downtimepm.toInt().toString()+" Menit"
+                    }else{
+                        Vdowntim.text = "0 Menit"
                     }
+
+                    if (target!=null && actual!=null && reject!=null){
+                        val targetFloat = target.toFloat()
+                        val actualFloat = actual.toFloat()
+                        val rejectFloat = reject.toFloat()
+                        val targetpersen = 100.div(targetFloat).times(targetFloat).toInt()
+                        val actualpersen = 100.div(targetFloat).times(actualFloat).toInt()
+                        val achievement = ((actualFloat /(targetFloat))*100).toInt()
+                        val okratio = ((actualFloat/(actualFloat + rejectFloat))*100).toInt()
+                        val rejection = ((rejectFloat/(actualFloat + rejectFloat))*100).toInt()
+                        Pokratio.text = "$okratio%"
+                        Vachievement.text = "$achievement%"
+                        Vrejection.text = "$rejection"
+
+                        if (okratio <70){
+                            POk.progressTintList = ColorStateList.valueOf(Color.RED)
+                            POk.progress = okratio
+                        }else if(okratio in 70..80){
+                            POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            POk.progress = okratio
+                        }else{
+                            POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            POk.progress = okratio
+                        }
+
+                        PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                        PTarget.progress = targetpersen
+
+                        if (actualpersen <70){
+                            PAct.progressTintList = ColorStateList.valueOf(Color.RED)
+                            PAct.progress = actualpersen
+                        }else if(actualpersen in 70..80){
+                            PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            PAct.progress = actualpersen
+                        }else{
+                            PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PAct.progress = actualpersen
+                        }
+                    }
+
+                    if (target!=0 && actual!=0 && reject!=0){
+                        val targetFloat = target?.toFloat()
+                        val actualFloat = actual?.toFloat()
+                        val rejectFloat = reject?.toFloat()
+                        val targetpersen = 100.div(targetFloat!!).times(targetFloat).toInt()
+                        val actualpersen = 100.div(targetFloat).times(actualFloat!!).toInt()
+                        val achievement = ((actualFloat /(targetFloat))*100).roundToInt()
+                        val okratio = ((actualFloat/(actualFloat + rejectFloat!!))*100).roundToInt()
+                        val rejection = ((rejectFloat/(actualFloat + rejectFloat))*100).roundToInt()
+
+                        Pokratio.text = "$okratio%"
+                        Vachievement.text = "$achievement%"
+                        Vrejection.text = "$rejection"
+
+                        if (okratio <70){
+                            POk.progressTintList = ColorStateList.valueOf(Color.RED)
+                            POk.progress = okratio
+                        }else if(okratio in 70..80){
+                            POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            POk.progress = okratio
+                        }else{
+                            POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            POk.progress = okratio
+                        }
+
+                        PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                        PTarget.progress = targetpersen
+
+                        if (actualpersen <70){
+                            PAct.progressTintList = ColorStateList.valueOf(Color.RED)
+                            PAct.progress = actualpersen
+                        }else if(actualpersen in 70..80){
+                            PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            PAct.progress = actualpersen
+                        }else{
+                            PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PAct.progress = actualpersen
+                        }
+                    }
+
+                    Vefficiency.text = efficiency.toString()+"%"
+                    Voee.text = oee.toString()+"%"
+                    Pavail.text = avail.toString()+"%"
+                    Pperform.text = perform.toString()+"%"
+                    ptarget.text = target.toString()
+                    pactual.text = actual.toString()
+
+                    if (avail != null) {
+                        if (avail < 70){
+                            PAvail.progressTintList = ColorStateList.valueOf(Color.RED)
+                            PAvail.progress = avail
+                        }else if(avail in 70..80){
+                            PAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            PAvail.progress = avail
+                        }else{
+                            PAvail.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PAvail.progress = avail
+                        }
+                    }
+
+                    if (perform != null) {
+                        if (perform <70){
+                            PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
+                            PPerform.progress = perform
+                        }else if(perform in 70..80){
+                            PPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            PPerform.progress = perform
+                        }else{
+                            PPerform.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PPerform.progress = perform
+                        }
+                    }
+                    Toast.makeText(applicationContext, "Load Berhasil", Toast.LENGTH_LONG).show()
                 }
             }
             override fun onFailure(call: Call<DetailPlanResponse>, t: Throwable) {

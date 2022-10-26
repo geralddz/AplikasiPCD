@@ -53,7 +53,7 @@ class FragmentShift1 : Fragment() {
                     val dtfinishpro = finishpro?.split(" ".toRegex())?.toTypedArray()
                     val timeStartpro = dtstartpro?.get(1).toString()
                     val timeFinishpro = dtfinishpro?.get(1).toString()
-                    val startShift1 = "07:00:00"
+                    val startShift1 = "06:00:00"
                     val finishShift1 = "17:59:59"
                     if ((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
                         val sku = detailstationdata[d].sku

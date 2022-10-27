@@ -63,6 +63,7 @@ class FragmentShift1 : Fragment() {
                         val sph = detailstationdata[d].cycleTime
                         val totaltime = detailstationdata[d].totalTime
                         val planid = detailstationdata[d].planId
+
                             try {
                                 shift1data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 1")))
                                 val detailstationadapter = DetailStationAdapter(context!!, shift1data)

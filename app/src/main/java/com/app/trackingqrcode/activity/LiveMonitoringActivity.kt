@@ -8,8 +8,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.LiveMonitorAdapter
 import com.app.trackingqrcode.api.ApiUtils
@@ -17,18 +17,15 @@ import com.app.trackingqrcode.model.LiveMonitorData
 import com.app.trackingqrcode.response.DowntimeResponse
 import com.app.trackingqrcode.response.OnPlanningResponse
 import com.app.trackingqrcode.response.StationResponse
-import com.app.trackingqrcode.socket.BaseSocket
 import kotlinx.android.synthetic.main.activity_live_monitoring.*
 import kotlinx.android.synthetic.main.activity_live_monitoring.view.*
 import kotlinx.android.synthetic.main.item_station.*
-import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
-import kotlin.collections.ArrayList
 
-class LiveMonitoringActivity : BaseSocket(){
+class LiveMonitoringActivity : AppCompatActivity(){
 
     var stationstatus: String? = null
     private var adapter: LiveMonitorAdapter? = null

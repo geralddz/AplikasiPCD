@@ -66,7 +66,5 @@ class DetailStationActivity : AppCompatActivity() {
 
         }.attach()
 
-
     }
-
 }

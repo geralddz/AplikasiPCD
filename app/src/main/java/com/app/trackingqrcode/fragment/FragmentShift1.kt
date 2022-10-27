@@ -55,30 +55,30 @@ class FragmentShift1 : Fragment() {
                     val timeFinishpro = dtfinishpro?.get(1).toString()
                     val startShift1 = "06:00:00"
                     val finishShift1 = "17:59:59"
-                    if ((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
+                    if (timeStartpro<finishShift1){
+                        if((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
                         val sku = detailstationdata[d].sku
                         val partname = detailstationdata[d].partName
                         val operator = detailstationdata[d].statusFlag
                         val sph = detailstationdata[d].cycleTime
                         val totaltime = detailstationdata[d].totalTime
                         val planid = detailstationdata[d].planId
-
-                        try {
-                            shift1data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 1")))
-                            val detailstationadapter = DetailStationAdapter(context!!, shift1data)
-                            rvshift1.apply {
-                                layoutManager = LinearLayoutManager(context)
-                                setHasFixedSize(true)
-                                adapter = detailstationadapter
-                                detailstationadapter.notifyDataSetChanged()
+                            try {
+                                shift1data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 1")))
+                                val detailstationadapter = DetailStationAdapter(context!!, shift1data)
+                                rvshift1.apply {
+                                    layoutManager = LinearLayoutManager(context)
+                                    setHasFixedSize(true)
+                                    adapter = detailstationadapter
+                                    detailstationadapter.notifyDataSetChanged()
+                                }
+                            } catch (e: Exception) {
+                                Log.e("shift1", "error",e)
                             }
-                        } catch (e: Exception) {
-                            Log.e("shift1", "error",e)
-                    }
-                    }
-                }
+                        }
+                  }
             }
-
+        }
             override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }

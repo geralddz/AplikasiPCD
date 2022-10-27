@@ -5,38 +5,39 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
-import androidx.core.os.postDelayed
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
 import com.app.trackingqrcode.response.DetailPlanResponse
-import com.app.trackingqrcode.socket.BaseSocket
 import com.app.trackingqrcode.socket.ListenDataSocket
 import kotlinx.android.synthetic.main.activity_detail_part.*
+import net.mrbin99.laravelechoandroid.Echo
+import net.mrbin99.laravelechoandroid.EchoOptions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-class DetailPlanActivity : BaseSocket() {
+class DetailPlanActivity : AppCompatActivity() {
     private lateinit var id_plan: String
+    private lateinit var id_station: String
     private lateinit var sharedPref: SharedPref
     private lateinit var status: String
     private lateinit var stationname: String
     private lateinit var partname: String
     private var rotate: Animation? = null
     private var rotateup: Animation? = null
-
+    private var receivedEvent = MutableLiveData<DetailPlanResponse>()
+    private var echo: Echo? = null
 
     companion object {
         const val PartName = "partname"
@@ -47,7 +48,9 @@ class DetailPlanActivity : BaseSocket() {
         const val TARGET = "TARGET"
         const val KEY_PLAN = "id_plan"
         const val SHIFT = "shift"
-
+        const val SERVER_URL = "http://10.14.130.94:6001"
+        const val CHANNEL_MESSAGES = "dashboard"
+        const val TAG = "msg"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +61,7 @@ class DetailPlanActivity : BaseSocket() {
         }
 
         connectToSocket()
-        initLiveDataListener()
-
-
-
+        id_station = sharedPref.getIdStation().toString()
         status = sharedPref.getStatus().toString()
         stationname = sharedPref.getStation().toString()
         partname = sharedPref.getPartname().toString()
@@ -83,20 +83,36 @@ class DetailPlanActivity : BaseSocket() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-            val handler = Handler()
-            val refresh: Runnable = object : Runnable {
-                override fun run() {
-                    showDetailPlan()
-                    handler.postDelayed(this, 1000)
-                }
-            }
-            handler.postDelayed(refresh, 1000)
+    private fun connectToSocket() {
+        val options = EchoOptions()
+        options.host = SERVER_URL
+        options.eventNamespace = ""
+        echo = Echo(options)
+        echo?.connect({
+            Log.d("socket","successful connect")
+            listenForEvents()
         }
+        ) { args -> Log.e("socket","error while connecting: $args") }
+    }
 
+    private fun listenForEvents() {
+        echo?.let {
+            it.channel(CHANNEL_MESSAGES)
+                .listen("Achievement_$id_station") {
+                    val newEvent = ListenDataSocket.parseFrom(it)
+                    displayNewEvent(newEvent)
+                    Log.e("socket", "event: $newEvent")
 
-    private fun showDetailPlan(){
+                }
+        }
+    }
+
+    private fun displayNewEvent(event: ListenDataSocket?) {
+        Log.d("value","new event " + event?.message)
+        receivedEvent.postValue(DetailPlanResponse())
+    }
+
+    private fun showDetailPlan() {
         val retro = ApiUtils().getUserService()
         retro.getDetailPlan(id_plan).enqueue(object : Callback<DetailPlanResponse>{
             @SuppressLint("SetTextI18n")
@@ -287,17 +303,17 @@ class DetailPlanActivity : BaseSocket() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        echo?.disconnect()
+    }
+
     private fun initLiveDataListener() {
         receivedEvent.observe(this) {
             displayEventData(it)
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        disconnectFromSocket()
-    }
-
     private fun displayEventData(event: Any) {
         if (event is ListenDataSocket) {
             labeltv.apply {

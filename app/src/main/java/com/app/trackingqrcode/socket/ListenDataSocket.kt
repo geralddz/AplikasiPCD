@@ -9,7 +9,7 @@ class ListenDataSocket(
 ) {
     companion object {
         fun parseFrom(value: Array<Any>): ListenDataSocket? {
-            val messageData = value as org.json.JSONObject
+            val messageData = value[1] as org.json.JSONObject
             Log.e("socket", "data: $messageData")
             try {
                 return Gson().fromJson(messageData.toString(), ListenDataSocket::class.java)

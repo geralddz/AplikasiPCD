@@ -197,23 +197,27 @@ class LiveMonitoringActivity : AppCompatActivity(){
                                     override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
                                         val downtime = response.body()
                                         val downtimedata = downtime?.data
-                                        val onplan = true
+                                        var onplan = true
                                         for(d in downtimedata!!.indices){
-                                            if (!onplan){
-                                                stationstatus = "problem"
-                                                livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))
-                                                sumCY[0] += 1
-                                                yellow.text = "${sumCY[0]} Station"
+                                            val statusdown = downtimedata[d]?.status
+                                            val planiddown = downtimedata[d]?.planningId
+                                            if (planid==planiddown&&statusdown==0){
+                                                onplan = false
                                             }
                                         }
-
                                         if (onplan){
                                             stationstatus = "start"
                                             livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))
+                                            Log.e("idstation","$stationid")
                                             sumCG[0] += 1
                                             green.text = "${sumCG[0]} Station"
+                                        }else{
+                                            stationstatus = "problem"
+                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))
+                                            Log.e("idstation","$stationid")
+                                            sumCY[0] += 1
+                                            yellow.text = "${sumCY[0]} Station"
                                         }
-
                                         val liveadapter = LiveMonitorAdapter(this@LiveMonitoringActivity, livemonitordata)
                                         rvLive.apply {
                                             layoutManager =
@@ -231,6 +235,7 @@ class LiveMonitoringActivity : AppCompatActivity(){
                             }else {
                                 stationstatus = "stop"
                                 livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))
+                                Log.e("idstation","$stationid")
                                 sumCR[0] += 1
                                 red.text = "${sumCR[0]} Station"
                             }

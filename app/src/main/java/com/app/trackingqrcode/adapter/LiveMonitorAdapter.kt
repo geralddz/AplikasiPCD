@@ -1,5 +1,6 @@
 package com.app.trackingqrcode.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -33,6 +34,7 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
         return MyViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         sharedPref = SharedPref(context)
         val id_plan = datamonitoring[position].id_plan.toString()
@@ -44,13 +46,14 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
         holder.station_num.text = station_nama
         holder.part_name.text = partname
 
-        when (datamonitoring[position].status) {
+        when (status) {
             "stop" -> {
                 holder.cs.setBackgroundResource(R.drawable.bgred)
                 holder.station_num.setTextColor(Color.WHITE)
                 holder.part_name.text = "STOPPED"
-                holder.part_name.setTypeface(null,Typeface.BOLD)
+                holder.part_name.setTypeface(null, Typeface.BOLD)
                 holder.part_name.setTextColor(Color.WHITE)
+
                 holder.card.setOnClickListener {
                     val intent = Intent(it.context, DetailStationActivity::class.java)
                     sharedPref.setStation(station_nama)
@@ -89,7 +92,6 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
             }
         }
     }
-
     override fun getItemCount(): Int {
         return datamonitoring.size
     }

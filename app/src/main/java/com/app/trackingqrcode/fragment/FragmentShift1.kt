@@ -42,7 +42,7 @@ class FragmentShift1 : Fragment() {
     private fun showDataShift1(){
         val retro = ApiUtils().getUserService()
         retro.getDetailStation(idStation!!).enqueue(object : Callback<DetailStationResponse> {
-            @SuppressLint("NotifyDataSetChanged")
+            @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
             override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
                 val detailstation = response.body()
                 val detailstationdata = detailstation?.data

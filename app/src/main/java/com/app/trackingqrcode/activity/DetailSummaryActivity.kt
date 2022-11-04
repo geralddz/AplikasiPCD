@@ -209,4 +209,8 @@ class DetailSummaryActivity : AppCompatActivity() {
         LayoutDown.visibility = View.GONE
         LayoutReject.visibility = View.GONE
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, SummaryActivity::class.java))
+    }
 }

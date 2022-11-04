@@ -54,7 +54,17 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:text="Nama Station" />
-
+        <Button
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start"/>
+        <Button
+            android:id="@+id/reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+        android:text="reset"/>
         <TextView
             android:id="@+id/statusStation"
             android:layout_width="wrap_content"
@@ -105,12 +115,13 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/timer"
-            android:layout_width="wrap_content"
+            android:id="@+id/timerr"
+            android:layout_width="match_parent"
+            android:layout_marginStart="250dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="00:15:43" />
+            android:text="00:00:00" />
     </RelativeLayout>
 
     <RelativeLayout

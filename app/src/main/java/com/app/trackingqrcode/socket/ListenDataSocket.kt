@@ -1,11 +1,12 @@
 package com.app.trackingqrcode.socket
 
 import android.util.Log
+import com.app.trackingqrcode.response.DetailPlanResponse
 
 import com.google.gson.Gson
 
 class ListenDataSocket(
-    val message: String
+    val temp_achievement: Array<Any>
 ) {
     companion object {
         fun parseFrom(value: Array<Any>): ListenDataSocket? {

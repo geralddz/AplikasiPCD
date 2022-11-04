@@ -470,4 +470,8 @@ class SummaryActivity : AppCompatActivity() {
         rvHistory.visibility = View.VISIBLE
 
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, HomeActivity::class.java))
+    }
 }

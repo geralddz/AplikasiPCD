@@ -38,4 +38,8 @@ class AndonActivity : AppCompatActivity() {
         val andonAdapter = AndonAdapter(andon)
         rvandon.adapter=andonAdapter
     }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, HomeActivity::class.java))
+    }
 }

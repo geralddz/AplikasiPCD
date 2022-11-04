@@ -9,8 +9,9 @@ class SharedPref (context : Context){
     private val PREF_NAME = "SharedPreferences"
     private val IS_LOGIN = "is_login"
 
-    var pref: SharedPreferences? = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+    var pref: SharedPreferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
     var editor: SharedPreferences.Editor? = pref?.edit()
+
 
     fun setName(name: String) {
         editor?.putString("name", name)

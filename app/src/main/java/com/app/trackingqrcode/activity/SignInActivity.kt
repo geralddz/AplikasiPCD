@@ -60,6 +60,9 @@ class SignInActivity : AppCompatActivity() {
                     val name = user.data?.name.toString()
                     sharedPref.setName(name)
                     sharedPref.setSignIn(true)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                     finish()
                 } else {

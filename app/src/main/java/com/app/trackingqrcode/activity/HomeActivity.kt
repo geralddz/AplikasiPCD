@@ -9,10 +9,11 @@ import android.widget.Toast
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.SharedPref
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlin.system.exitProcess
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPref
-    private lateinit var name : String
+    private lateinit var name: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -51,5 +52,13 @@ class HomeActivity : AppCompatActivity() {
                 }.show()
 
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val exitIntent = Intent(Intent.ACTION_MAIN)
+        exitIntent.addCategory(Intent.CATEGORY_HOME)
+        exitIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(exitIntent)
     }
 }

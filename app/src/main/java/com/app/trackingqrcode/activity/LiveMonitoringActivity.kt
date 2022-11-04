@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.LiveMonitorAdapter
 import com.app.trackingqrcode.api.ApiUtils
+import com.app.trackingqrcode.api.SharedPrefTimer
 import com.app.trackingqrcode.model.LiveMonitorData
 import com.app.trackingqrcode.response.DowntimeResponse
 import com.app.trackingqrcode.response.OnPlanningResponse
 import com.app.trackingqrcode.response.StationResponse
+import kotlinx.android.synthetic.main.activity_detail_station.*
 import kotlinx.android.synthetic.main.activity_live_monitoring.*
-import kotlinx.android.synthetic.main.activity_live_monitoring.view.*
-import kotlinx.android.synthetic.main.item_station.*
+import kotlinx.android.synthetic.main.activity_live_monitoring.back
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,11 +36,14 @@ class LiveMonitoringActivity : AppCompatActivity(){
     private var selectedStart = "start"
     private var selectedProblem = "problem"
     private var livemonitordata: MutableList<LiveMonitorData> = ArrayList()
+    private lateinit var sharedPrefTimer: SharedPrefTimer
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_monitoring)
+
+        sharedPrefTimer = SharedPrefTimer(this)
         back.setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
         }
@@ -106,7 +110,6 @@ class LiveMonitoringActivity : AppCompatActivity(){
         }
         return filteredList
     }
-
     private fun queryStop(): List<LiveMonitorData>{
         val filteredList: MutableList<LiveMonitorData> = ArrayList()
         for (item in livemonitordata) {
@@ -158,7 +161,7 @@ class LiveMonitoringActivity : AppCompatActivity(){
                     cyellow += 1
                 }
                 else -> {
-                    cred += 1
+                    cred +=1
                 }
             }
         }
@@ -297,6 +300,28 @@ class LiveMonitoringActivity : AppCompatActivity(){
         yellow.visibility = View.VISIBLE
         red.visibility = View.VISIBLE
         rvLive.visibility = View.VISIBLE
+    }
+    private fun stopActionTimer(){
+        if (sharedPrefTimer.TimeCounting()) {
+            sharedPrefTimer.setStopTime(Date())
+            stopTimer()
+        }
+    }
+
+    private fun resetActionTimer() {
+        sharedPrefTimer.setStopTime(null)
+        sharedPrefTimer.setStartTime(null)
+        stopTimer()
+    }
+
+    private fun stopTimer() {
+        sharedPrefTimer.setTimerCounting(false)
+
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent (applicationContext,HomeActivity::class.java)
+        startActivity(intent)
     }
 }
 

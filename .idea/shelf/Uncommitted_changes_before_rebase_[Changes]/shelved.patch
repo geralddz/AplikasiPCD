@@ -1,0 +1,203 @@
+Index: app/src/main/java/com/app/trackingqrcode/activity/LiveMonitoringActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.trackingqrcode.activity\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.content.Intent\r\nimport android.os.Bundle\r\nimport android.text.Editable\r\nimport android.text.TextWatcher\r\nimport android.util.Log\r\nimport android.view.View\r\nimport android.widget.ArrayAdapter\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.recyclerview.widget.LinearLayoutManager\r\nimport com.app.trackingqrcode.R\r\nimport com.app.trackingqrcode.adapter.LiveMonitorAdapter\r\nimport com.app.trackingqrcode.api.ApiUtils\r\nimport com.app.trackingqrcode.model.LiveMonitorData\r\nimport com.app.trackingqrcode.response.DowntimeResponse\r\nimport com.app.trackingqrcode.response.OnPlanningResponse\r\nimport com.app.trackingqrcode.response.StationResponse\r\nimport kotlinx.android.synthetic.main.activity_live_monitoring.*\r\nimport kotlinx.android.synthetic.main.activity_live_monitoring.view.*\r\nimport kotlinx.android.synthetic.main.item_station.*\r\nimport retrofit2.Call\r\nimport retrofit2.Callback\r\nimport retrofit2.Response\r\nimport java.util.*\r\n\r\nclass LiveMonitoringActivity : AppCompatActivity(){\r\n\r\n    var stationstatus: String? = null\r\n    private var adapter: LiveMonitorAdapter? = null\r\n    private val Lstation = ArrayList<String>()\r\n    private var selectedStation = \"\"\r\n    private var selectedStop = \"stop\"\r\n    private var selectedStart = \"start\"\r\n    private var selectedProblem = \"problem\"\r\n    private var livemonitordata: MutableList<LiveMonitorData> = ArrayList()\r\n\r\n    @SuppressLint(\"NotifyDataSetChanged\")\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_live_monitoring)\r\n        back.setOnClickListener {\r\n            startActivity(Intent(this, HomeActivity::class.java))\r\n        }\r\n\r\n        hintStart.setOnClickListener {\r\n            setAdapter(queryStart())\r\n        }\r\n\r\n        hintProblem.setOnClickListener {\r\n            setAdapter(queryProblem())\r\n        }\r\n\r\n        hintStop.setOnClickListener {\r\n            setAdapter(queryStop())\r\n        }\r\n\r\n        setShimmer()\r\n        showStation()\r\n\r\n        swiperlive.setOnRefreshListener {\r\n            setShimmer()\r\n            livemonitordata = ArrayList()\r\n            adapter?.notifyDataSetChanged()\r\n            showStation()\r\n            swiperlive.isRefreshing = false\r\n            val liveadapter = LiveMonitorAdapter(\r\n                this@LiveMonitoringActivity, livemonitordata\r\n            )\r\n            rvLive.apply {\r\n                layoutManager = LinearLayoutManager(this@LiveMonitoringActivity)\r\n                setHasFixedSize(true)\r\n                adapter = liveadapter\r\n                liveadapter.notifyDataSetChanged()\r\n            }\r\n        }\r\n\r\n        val dataStation = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, Lstation)\r\n        filterstation.setAdapter(dataStation)\r\n        filterstation.addTextChangedListener(object : TextWatcher{\r\n            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {\r\n            }\r\n            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {\r\n                selectedStation = s.toString()\r\n                filter(selectedStation)\r\n            }\r\n            override fun afterTextChanged(s: Editable?) {\r\n            }\r\n        })\r\n    }\r\n\r\n    @SuppressLint(\"NotifyDataSetChanged\")\r\n    private fun setAdapter(list: List<LiveMonitorData>){\r\n        val AdapterLiveMonitor = LiveMonitorAdapter(this, list)\r\n        rvLive.adapter = AdapterLiveMonitor\r\n        AdapterLiveMonitor.notifyDataSetChanged()\r\n    }\r\n\r\n    private fun queryStation(selectedStation: String): List<LiveMonitorData>{\r\n        val filteredList: MutableList<LiveMonitorData> = ArrayList()\r\n        for (item in livemonitordata) {\r\n            if (item.nama_station!!.lowercase(Locale.ROOT).contains(selectedStation.lowercase())) {\r\n                filteredList.add(item)\r\n            }\r\n        }\r\n        return filteredList\r\n    }\r\n\r\n    private fun queryStop(): List<LiveMonitorData>{\r\n        val filteredList: MutableList<LiveMonitorData> = ArrayList()\r\n        for (item in livemonitordata) {\r\n            if (item.status!!.contains(selectedStop)) {\r\n                filteredList.add(item)\r\n            }\r\n        }\r\n        return filteredList\r\n    }\r\n\r\n    private fun queryStart(): List<LiveMonitorData>{\r\n        val filteredList: MutableList<LiveMonitorData> = ArrayList()\r\n        for (item in livemonitordata) {\r\n            if (item.status!!.contains(selectedStart)) {\r\n                filteredList.add(item)\r\n            }\r\n        }\r\n        return filteredList\r\n    }\r\n\r\n    private fun queryProblem(): List<LiveMonitorData>{\r\n        val filteredList: MutableList<LiveMonitorData> = ArrayList()\r\n        for (item in livemonitordata) {\r\n            if (item.status!!.contains(selectedProblem)) {\r\n                filteredList.add(item)\r\n            }\r\n        }\r\n        return filteredList\r\n    }\r\n\r\n    private fun filter(selectedStation: String){\r\n        val station  = queryStation(selectedStation)\r\n        setAdapter(station)\r\n    }\r\n\r\n\r\n\r\n    @SuppressLint(\"SetTextI18n\")\r\n    private fun countStation(list: List<LiveMonitorData>) {\r\n        var cgreen = 0\r\n        var cyellow = 0\r\n        var cred = 0\r\n        for (item in list) {\r\n            when (item.status) {\r\n                \"start\" -> {\r\n                    cgreen += 1\r\n                }\r\n                \"problem\" -> {\r\n                    cyellow += 1\r\n                }\r\n                else -> {\r\n                    cred += 1\r\n                }\r\n            }\r\n        }\r\n        green.text = \"$cgreen Station\"\r\n        yellow.text = \"$cyellow Station\"\r\n        red.text = \"$cred Station\"\r\n    }\r\n\r\n    @SuppressLint(\"SetTextI18n\")\r\n    fun showStation(){\r\n        val retro = ApiUtils().getUserService()\r\n        green.text = \"0 Station\"\r\n        yellow.text = \"0 Station\"\r\n        red.text = \"0 Station\"\r\n        val countRed = intArrayOf(0)\r\n        val countGreen = intArrayOf(0)\r\n        val countYellow = intArrayOf(0)\r\n        retro.getStation()!!.enqueue(object : Callback<StationResponse>{\r\n            override fun onResponse(call: Call<StationResponse>, response: Response<StationResponse>) {\r\n                val station = response.body()?.data\r\n                for (s in station!!.indices){\r\n                    val stationid = station[s].id\r\n                    val stationname = station[s].name\r\n                    val sumCG = arrayOf(countGreen[0])\r\n                    val sumCY = arrayOf(countYellow[0])\r\n                    val sumCR = arrayOf(countRed[0])\r\n                    retro.getOnPlanning(stationid).enqueue(object : Callback<OnPlanningResponse> {\r\n                        @SuppressLint(\"NotifyDataSetChanged\")\r\n                        override fun onResponse(call: Call<OnPlanningResponse>, response: Response<OnPlanningResponse>) {\r\n                            val planning = response.body()\r\n                            val planningdata = planning?.data\r\n                            val planid = planningdata?.get(0)?.planningId\r\n                            val partname = planningdata?.get(0)?.partName\r\n                            if (planning?.success == true) {\r\n                                retro.getDowntime(stationid, planid).enqueue(object : Callback<DowntimeResponse> {\r\n                                    override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {\r\n                                        val downtime = response.body()\r\n                                        val downtimedata = downtime?.data\r\n                                        var onplan = true\r\n                                        for(d in downtimedata!!.indices){\r\n                                            val statusdown = downtimedata[d]?.status\r\n                                            val planiddown = downtimedata[d]?.planningId\r\n                                            if (planid==planiddown&&statusdown==0){\r\n                                                onplan = false\r\n                                            }\r\n                                        }\r\n                                        if (onplan){\r\n                                            stationstatus = \"start\"\r\n                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))\r\n                                            Log.e(\"idstation\",\"$stationid\")\r\n                                            sumCG[0] += 1\r\n                                            green.text = \"${sumCG[0]} Station\"\r\n                                        }else{\r\n                                            stationstatus = \"problem\"\r\n                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))\r\n                                            Log.e(\"idstation\",\"$stationid\")\r\n                                            sumCY[0] += 1\r\n                                            yellow.text = \"${sumCY[0]} Station\"\r\n                                        }\r\n                                        val liveadapter = LiveMonitorAdapter(this@LiveMonitoringActivity, livemonitordata)\r\n                                        rvLive.apply {\r\n                                            layoutManager =\r\n                                                LinearLayoutManager(this@LiveMonitoringActivity)\r\n                                            setHasFixedSize(true)\r\n                                            adapter = liveadapter\r\n                                            liveadapter.notifyDataSetChanged()\r\n                                        }\r\n                                        countStation(livemonitordata)\r\n                                    }\r\n                                    override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {\r\n                                        Log.e(\"Error\", t.message!!)\r\n                                    }\r\n                                })\r\n                            }else {\r\n                                stationstatus = \"stop\"\r\n                                livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))\r\n                                Log.e(\"idstation\",\"$stationid\")\r\n                                sumCR[0] += 1\r\n                                red.text = \"${sumCR[0]} Station\"\r\n                            }\r\n                            val liveadapter = LiveMonitorAdapter(\r\n                                this@LiveMonitoringActivity,\r\n                                livemonitordata\r\n                            )\r\n                            rvLive.apply {\r\n                                layoutManager =\r\n                                    LinearLayoutManager(this@LiveMonitoringActivity)\r\n                                setHasFixedSize(true)\r\n                                adapter = liveadapter\r\n                                liveadapter.notifyDataSetChanged()\r\n                            }\r\n                            countStation(livemonitordata)\r\n                            stopShimmer()\r\n                            if (!Lstation.contains(stationname)) {\r\n                                Lstation.add(stationname!!)\r\n                            }\r\n                        }\r\n                        override fun onFailure(call: Call<OnPlanningResponse>, t: Throwable) {\r\n                            Log.e(\"Error\", t.message!!)\r\n                        }\r\n                    })\r\n                }\r\n\r\n            }\r\n            override fun onFailure(call: Call<StationResponse>, t: Throwable) {\r\n                Log.e(\"Error\", t.message!!)\r\n            }\r\n        })\r\n    }\r\n\r\n    private fun setShimmer() {\r\n        shimmerlayout.startShimmer()\r\n        shimmerlayout1.startShimmer()\r\n        shimmerlayout2.startShimmer()\r\n        shimmerlayout3.startShimmer()\r\n        shimmerlayout.visibility = View.VISIBLE\r\n        shimmerlayout1.visibility = View.VISIBLE\r\n        shimmerlayout2.visibility = View.VISIBLE\r\n        shimmerlayout3.visibility = View.VISIBLE\r\n        green.visibility = View.GONE\r\n        yellow.visibility = View.GONE\r\n        red.visibility = View.GONE\r\n        rvLive.visibility = View.GONE\r\n    }\r\n\r\n    private fun stopShimmer() {\r\n        shimmerlayout.stopShimmer()\r\n        shimmerlayout1.stopShimmer()\r\n        shimmerlayout2.stopShimmer()\r\n        shimmerlayout3.stopShimmer()\r\n        shimmerlayout.visibility = View.GONE\r\n        shimmerlayout1.visibility = View.GONE\r\n        shimmerlayout2.visibility = View.GONE\r\n        shimmerlayout3.visibility = View.GONE\r\n        green.visibility = View.VISIBLE\r\n        yellow.visibility = View.VISIBLE\r\n        red.visibility = View.VISIBLE\r\n        rvLive.visibility = View.VISIBLE\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/trackingqrcode/activity/LiveMonitoringActivity.kt b/app/src/main/java/com/app/trackingqrcode/activity/LiveMonitoringActivity.kt
+--- a/app/src/main/java/com/app/trackingqrcode/activity/LiveMonitoringActivity.kt	(revision c2438607b9e5a9eabfe3a78dab0e54e958d7907f)
++++ b/app/src/main/java/com/app/trackingqrcode/activity/LiveMonitoringActivity.kt	(date 1667183853725)
+@@ -106,7 +106,6 @@
+         }
+         return filteredList
+     }
+-
+     private fun queryStop(): List<LiveMonitorData>{
+         val filteredList: MutableList<LiveMonitorData> = ArrayList()
+         for (item in livemonitordata) {
+Index: app/src/main/java/com/app/trackingqrcode/activity/DetailPlanActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.trackingqrcode.activity\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.content.Intent\r\nimport android.content.res.ColorStateList\r\nimport android.graphics.Color\r\nimport android.os.Bundle\r\nimport android.transition.AutoTransition\r\nimport android.transition.TransitionManager\r\nimport android.util.Log\r\nimport android.view.View\r\nimport android.view.animation.Animation\r\nimport android.view.animation.AnimationUtils\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.lifecycle.MutableLiveData\r\nimport com.app.trackingqrcode.R\r\nimport com.app.trackingqrcode.api.ApiUtils\r\nimport com.app.trackingqrcode.api.SharedPref\r\nimport com.app.trackingqrcode.response.DetailPlanResponse\r\nimport com.app.trackingqrcode.socket.ListenDataSocket\r\nimport kotlinx.android.synthetic.main.activity_detail_part.*\r\nimport net.mrbin99.laravelechoandroid.Echo\r\nimport net.mrbin99.laravelechoandroid.EchoOptions\r\nimport retrofit2.Call\r\nimport retrofit2.Callback\r\nimport retrofit2.Response\r\nimport kotlin.math.ceil\r\nimport kotlin.math.roundToInt\r\n\r\nclass DetailPlanActivity : AppCompatActivity() {\r\n    private lateinit var id_plan: String\r\n    private lateinit var id_station: String\r\n    private lateinit var sharedPref: SharedPref\r\n    private lateinit var status: String\r\n    private lateinit var stationname: String\r\n    private lateinit var partname: String\r\n    private var rotate: Animation? = null\r\n    private var rotateup: Animation? = null\r\n    private var receivedEvent = MutableLiveData<DetailPlanResponse>()\r\n    private var echo: Echo? = null\r\n\r\n    companion object {\r\n        const val PartName = \"partname\"\r\n        const val SKU = \"sku\"\r\n        const val Startprod = \"start\"\r\n        const val LastFinish = \"finish\"\r\n        const val SPH = \"SPH\"\r\n        const val TARGET = \"TARGET\"\r\n        const val KEY_PLAN = \"id_plan\"\r\n        const val SHIFT = \"shift\"\r\n        const val SERVER_URL = \"http://10.14.130.94:6001\"\r\n        const val CHANNEL_MESSAGES = \"dashboard\"\r\n        const val TAG = \"msg\"\r\n    }\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_detail_part)\r\n        sharedPref = SharedPref(this)\r\n        backSum.setOnClickListener {\r\n            startActivity(Intent(this,DetailStationActivity::class.java))\r\n        }\r\n\r\n        connectToSocket()\r\n        id_station = sharedPref.getIdStation().toString()\r\n        status = sharedPref.getStatus().toString()\r\n        stationname = sharedPref.getStation().toString()\r\n        partname = sharedPref.getPartname().toString()\r\n        id_plan = intent.getStringExtra(KEY_PLAN).toString()\r\n        rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)\r\n        rotateup = AnimationUtils.loadAnimation(this, R.anim.rotateup)\r\n\r\n        shiftStation.text = intent.getStringExtra(SHIFT).toString()\r\n        namaStation.text = stationname\r\n        statusStation.text = status\r\n        tvsku.text = intent.getStringExtra(SKU).toString()\r\n        tvpn.text = intent.getStringExtra(PartName).toString()\r\n        tvstart.text = intent.getStringExtra(Startprod).toString()\r\n        tvfinish.text = intent.getStringExtra(LastFinish).toString()\r\n        tvsph.text = intent.getStringExtra(SPH).toString()\r\n        tvtarget.text = intent.getStringExtra(TARGET).toString()\r\n        animation()\r\n        showDetailPlan()\r\n\r\n    }\r\n\r\n    private fun connectToSocket() {\r\n        val options = EchoOptions()\r\n        options.host = SERVER_URL\r\n        options.eventNamespace = \"\"\r\n        echo = Echo(options)\r\n        echo?.connect({\r\n            Log.d(\"socket\",\"successful connect\")\r\n            listenForEvents()\r\n        }\r\n        ) { args -> Log.e(\"socket\",\"error while connecting: $args\") }\r\n    }\r\n\r\n    private fun listenForEvents() {\r\n        echo?.let {\r\n            it.channel(CHANNEL_MESSAGES)\r\n                .listen(\"Achievement_$id_station\") {\r\n                    val newEvent = ListenDataSocket.parseFrom(it)\r\n                    displayNewEvent(newEvent)\r\n                    Log.e(\"socket\", \"event: $newEvent\")\r\n\r\n                }\r\n        }\r\n    }\r\n\r\n    private fun displayNewEvent(event: ListenDataSocket?) {\r\n        Log.d(\"value\",\"new event \" + event?.message)\r\n        receivedEvent.postValue(DetailPlanResponse())\r\n    }\r\n\r\n    private fun showDetailPlan() {\r\n        val retro = ApiUtils().getUserService()\r\n        retro.getDetailPlan(id_plan).enqueue(object : Callback<DetailPlanResponse>{\r\n            @SuppressLint(\"SetTextI18n\")\r\n            override fun onResponse(call: Call<DetailPlanResponse>, response: Response<DetailPlanResponse>) {\r\n                val detailplan = response.body()\r\n                Log.e(\"plan\", \"onResponse: $id_plan\")\r\n                if (detailplan!=null){\r\n                    val target = detailplan.cumTarget\r\n                    val actual = detailplan.actual\r\n                    val reject = detailplan.rejection\r\n                    val avail = detailplan.avaibility\r\n                    val perform = detailplan.performance\r\n                    val downtime = detailplan.downtime\r\n                    val efficiency = detailplan.efficiency\r\n                    val oee = detailplan.oee\r\n\r\n                    if (downtime!=null || downtime!=0){\r\n                        val downtimeps = downtime?.toFloat()\r\n                        val downtimepm = ceil(downtimeps?.div(60)!!)\r\n                        Vdowntim.text = downtimepm.toInt().toString()+\" Menit\"\r\n                    }else{\r\n                        Vdowntim.text = \"0 Menit\"\r\n                    }\r\n\r\n                    if (target!=null && actual!=null && reject!=null){\r\n                        val targetFloat = target.toFloat()\r\n                        val actualFloat = actual.toFloat()\r\n                        val rejectFloat = reject.toFloat()\r\n                        val targetpersen = 100.div(targetFloat).times(targetFloat).toInt()\r\n                        val actualpersen = 100.div(targetFloat).times(actualFloat).toInt()\r\n                        val achievement = ((actualFloat /(targetFloat))*100).toInt()\r\n                        val okratio = ((actualFloat/(actualFloat + rejectFloat))*100).toInt()\r\n                        val rejection = ((rejectFloat/(actualFloat + rejectFloat))*100).toInt()\r\n                        Pokratio.text = \"$okratio%\"\r\n                        Vachievement.text = \"$achievement%\"\r\n                        Vrejection.text = \"$rejection\"\r\n\r\n                        if (okratio <70){\r\n                            POk.progressTintList = ColorStateList.valueOf(Color.RED)\r\n                            POk.progress = okratio\r\n                        }else if(okratio in 70..80){\r\n                            POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)\r\n                            POk.progress = okratio\r\n                        }else{\r\n                            POk.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                            POk.progress = okratio\r\n                        }\r\n\r\n                        PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                        PTarget.progress = targetpersen\r\n\r\n                        if (actualpersen <70){\r\n                            PAct.progressTintList = ColorStateList.valueOf(Color.RED)\r\n                            PAct.progress = actualpersen\r\n                        }else if(actualpersen in 70..80){\r\n                            PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)\r\n                            PAct.progress = actualpersen\r\n                        }else{\r\n                            PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                            PAct.progress = actualpersen\r\n                        }\r\n                    }\r\n\r\n                    if (target!=0 && actual!=0 && reject!=0){\r\n                        val targetFloat = target?.toFloat()\r\n                        val actualFloat = actual?.toFloat()\r\n                        val rejectFloat = reject?.toFloat()\r\n                        val targetpersen = 100.div(targetFloat!!).times(targetFloat).toInt()\r\n                        val actualpersen = 100.div(targetFloat).times(actualFloat!!).toInt()\r\n                        val achievement = ((actualFloat /(targetFloat))*100).roundToInt()\r\n                        val okratio = ((actualFloat/(actualFloat + rejectFloat!!))*100).roundToInt()\r\n                        val rejection = ((rejectFloat/(actualFloat + rejectFloat))*100).roundToInt()\r\n\r\n                        Pokratio.text = \"$okratio%\"\r\n                        Vachievement.text = \"$achievement%\"\r\n                        Vrejection.text = \"$rejection\"\r\n\r\n                        if (okratio <70){\r\n                            POk.progressTintList = ColorStateList.valueOf(Color.RED)\r\n                            POk.progress = okratio\r\n                        }else if(okratio in 70..80){\r\n                            POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)\r\n                            POk.progress = okratio\r\n                        }else{\r\n                            POk.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                            POk.progress = okratio\r\n                        }\r\n\r\n                        PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                        PTarget.progress = targetpersen\r\n\r\n                        if (actualpersen <70){\r\n                            PAct.progressTintList = ColorStateList.valueOf(Color.RED)\r\n                            PAct.progress = actualpersen\r\n                        }else if(actualpersen in 70..80){\r\n                            PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)\r\n                            PAct.progress = actualpersen\r\n                        }else{\r\n                            PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                            PAct.progress = actualpersen\r\n                        }\r\n                    }\r\n\r\n                    Vefficiency.text = efficiency.toString()+\"%\"\r\n                    Voee.text = oee.toString()+\"%\"\r\n                    Pavail.text = avail.toString()+\"%\"\r\n                    Pperform.text = perform.toString()+\"%\"\r\n                    ptarget.text = target.toString()\r\n                    pactual.text = actual.toString()\r\n\r\n                    if (avail != null) {\r\n                        if (avail < 70){\r\n                            PAvail.progressTintList = ColorStateList.valueOf(Color.RED)\r\n                            PAvail.progress = avail\r\n                        }else if(avail in 70..80){\r\n                            PAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)\r\n                            PAvail.progress = avail\r\n                        }else{\r\n                            PAvail.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                            PAvail.progress = avail\r\n                        }\r\n                    }\r\n\r\n                    if (perform != null) {\r\n                        if (perform <70){\r\n                            PPerform.progressTintList = ColorStateList.valueOf(Color.RED)\r\n                            PPerform.progress = perform\r\n                        }else if(perform in 70..80){\r\n                            PPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)\r\n                            PPerform.progress = perform\r\n                        }else{\r\n                            PPerform.progressTintList = ColorStateList.valueOf(Color.GREEN)\r\n                            PPerform.progress = perform\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n            override fun onFailure(call: Call<DetailPlanResponse>, t: Throwable) {\r\n                Log.e(\"Error\", t.message!!)\r\n            }\r\n\r\n        })\r\n    }\r\n\r\n    private fun animation(){\r\n        btexpandoee.setOnClickListener {\r\n            if (Layoutoee.visibility == View.GONE) {\r\n                TransitionManager.beginDelayedTransition(cardOee, AutoTransition())\r\n                Layoutoee.visibility = View.VISIBLE\r\n                btexpandoee.startAnimation(rotateup)\r\n            } else {\r\n                TransitionManager.beginDelayedTransition(cardOee, AutoTransition())\r\n                Layoutoee.visibility = View.GONE\r\n                btexpandoee.startAnimation(rotate)\r\n            }\r\n        }\r\n        btexpandach.setOnClickListener {\r\n            if (Layoutach.visibility == View.GONE) {\r\n                TransitionManager.beginDelayedTransition(cardAch, AutoTransition())\r\n                Layoutach.visibility = View.VISIBLE\r\n                btexpandach.startAnimation(rotateup)\r\n            } else {\r\n                TransitionManager.beginDelayedTransition(cardAch, AutoTransition())\r\n                Layoutach.visibility = View.GONE\r\n                btexpandach.startAnimation(rotate)\r\n            }\r\n        }\r\n        btexpanddown.setOnClickListener {\r\n            if (Layoutdown.visibility == View.GONE) {\r\n                TransitionManager.beginDelayedTransition(cardDown, AutoTransition())\r\n                Layoutdown.visibility = View.VISIBLE\r\n                btexpanddown.startAnimation(rotateup)\r\n            } else {\r\n                TransitionManager.beginDelayedTransition(cardDown, AutoTransition())\r\n                Layoutdown.visibility = View.GONE\r\n                btexpanddown.startAnimation(rotate)\r\n            }\r\n        }\r\n        btexpandreject.setOnClickListener {\r\n            if (Layoutreject.visibility == View.GONE) {\r\n                TransitionManager.beginDelayedTransition(cardReject, AutoTransition())\r\n                Layoutreject.visibility = View.VISIBLE\r\n                btexpandreject.startAnimation(rotateup)\r\n            } else {\r\n                TransitionManager.beginDelayedTransition(cardReject, AutoTransition())\r\n                Layoutreject.visibility = View.GONE\r\n                btexpandreject.startAnimation(rotate)\r\n            }\r\n        }\r\n    }\r\n\r\n    override fun onDestroy() {\r\n        super.onDestroy()\r\n        echo?.disconnect()\r\n    }\r\n\r\n    private fun initLiveDataListener() {\r\n        receivedEvent.observe(this) {\r\n            displayEventData(it)\r\n        }\r\n    }\r\n    private fun displayEventData(event: Any) {\r\n        if (event is ListenDataSocket) {\r\n            labeltv.apply {\r\n                val newText = event.message + \"\\n\" + this.text.toString()\r\n                text = newText\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/trackingqrcode/activity/DetailPlanActivity.kt b/app/src/main/java/com/app/trackingqrcode/activity/DetailPlanActivity.kt
+--- a/app/src/main/java/com/app/trackingqrcode/activity/DetailPlanActivity.kt	(revision c2438607b9e5a9eabfe3a78dab0e54e958d7907f)
++++ b/app/src/main/java/com/app/trackingqrcode/activity/DetailPlanActivity.kt	(date 1667184241468)
+@@ -5,22 +5,23 @@
+ import android.content.res.ColorStateList
+ import android.graphics.Color
+ import android.os.Bundle
++import android.os.Handler
++import android.os.Looper
+ import android.transition.AutoTransition
+ import android.transition.TransitionManager
+ import android.util.Log
+ import android.view.View
+ import android.view.animation.Animation
+ import android.view.animation.AnimationUtils
++import android.widget.Toast
+ import androidx.appcompat.app.AppCompatActivity
+-import androidx.lifecycle.MutableLiveData
++import androidx.core.os.postDelayed
+ import com.app.trackingqrcode.R
+ import com.app.trackingqrcode.api.ApiUtils
+ import com.app.trackingqrcode.api.SharedPref
+ import com.app.trackingqrcode.response.DetailPlanResponse
+ import com.app.trackingqrcode.socket.ListenDataSocket
+ import kotlinx.android.synthetic.main.activity_detail_part.*
+-import net.mrbin99.laravelechoandroid.Echo
+-import net.mrbin99.laravelechoandroid.EchoOptions
+ import retrofit2.Call
+ import retrofit2.Callback
+ import retrofit2.Response
+@@ -29,15 +30,13 @@
+ 
+ class DetailPlanActivity : AppCompatActivity() {
+     private lateinit var id_plan: String
+-    private lateinit var id_station: String
+     private lateinit var sharedPref: SharedPref
+     private lateinit var status: String
+     private lateinit var stationname: String
+     private lateinit var partname: String
+     private var rotate: Animation? = null
+     private var rotateup: Animation? = null
+-    private var receivedEvent = MutableLiveData<DetailPlanResponse>()
+-    private var echo: Echo? = null
++
+ 
+     companion object {
+         const val PartName = "partname"
+@@ -48,9 +47,7 @@
+         const val TARGET = "TARGET"
+         const val KEY_PLAN = "id_plan"
+         const val SHIFT = "shift"
+-        const val SERVER_URL = "http://10.14.130.94:6001"
+-        const val CHANNEL_MESSAGES = "dashboard"
+-        const val TAG = "msg"
++
+     }
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+@@ -61,7 +58,10 @@
+         }
+ 
+         connectToSocket()
+-        id_station = sharedPref.getIdStation().toString()
++        initLiveDataListener()
++
++
++
+         status = sharedPref.getStatus().toString()
+         stationname = sharedPref.getStation().toString()
+         partname = sharedPref.getPartname().toString()
+@@ -83,36 +83,20 @@
+ 
+     }
+ 
+-    private fun connectToSocket() {
+-        val options = EchoOptions()
+-        options.host = SERVER_URL
+-        options.eventNamespace = ""
+-        echo = Echo(options)
+-        echo?.connect({
+-            Log.d("socket","successful connect")
+-            listenForEvents()
+-        }
+-        ) { args -> Log.e("socket","error while connecting: $args") }
+-    }
+-
+-    private fun listenForEvents() {
+-        echo?.let {
+-            it.channel(CHANNEL_MESSAGES)
+-                .listen("Achievement_$id_station") {
+-                    val newEvent = ListenDataSocket.parseFrom(it)
+-                    displayNewEvent(newEvent)
+-                    Log.e("socket", "event: $newEvent")
+-
++    override fun onResume() {
++        super.onResume()
++            val handler = Handler()
++            val refresh: Runnable = object : Runnable {
++                override fun run() {
++                    showDetailPlan()
++                    handler.postDelayed(this, 1000)
+                 }
+-        }
+-    }
++            }
++            handler.postDelayed(refresh, 1000)
++        }
+ 
+-    private fun displayNewEvent(event: ListenDataSocket?) {
+-        Log.d("value","new event " + event?.message)
+-        receivedEvent.postValue(DetailPlanResponse())
+-    }
+ 
+-    private fun showDetailPlan() {
++    private fun showDetailPlan(){
+         val retro = ApiUtils().getUserService()
+         retro.getDetailPlan(id_plan).enqueue(object : Callback<DetailPlanResponse>{
+             @SuppressLint("SetTextI18n")
+@@ -303,17 +287,17 @@
+             }
+         }
+     }
+-
+-    override fun onDestroy() {
+-        super.onDestroy()
+-        echo?.disconnect()
+-    }
+-
+     private fun initLiveDataListener() {
+         receivedEvent.observe(this) {
+             displayEventData(it)
+         }
+     }
++
++    override fun onDestroy() {
++        super.onDestroy()
++        disconnectFromSocket()
++    }
++
+     private fun displayEventData(event: Any) {
+         if (event is ListenDataSocket) {
+             labeltv.apply {
+Index: app/src/main/java/com/app/trackingqrcode/socket/ListenDataSocket.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.trackingqrcode.socket\r\n\r\nimport android.util.Log\r\n\r\nimport com.google.gson.Gson\r\n\r\nclass ListenDataSocket(\r\n    val message: String\r\n) {\r\n    companion object {\r\n        fun parseFrom(value: Array<Any>): ListenDataSocket? {\r\n            val messageData = value[1] as org.json.JSONObject\r\n            Log.e(\"socket\", \"data: $messageData\")\r\n            try {\r\n                return Gson().fromJson(messageData.toString(), ListenDataSocket::class.java)\r\n            } catch (e: Exception) {\r\n                e.printStackTrace()\r\n            }\r\n            return null\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/trackingqrcode/socket/ListenDataSocket.kt b/app/src/main/java/com/app/trackingqrcode/socket/ListenDataSocket.kt
+--- a/app/src/main/java/com/app/trackingqrcode/socket/ListenDataSocket.kt	(revision c2438607b9e5a9eabfe3a78dab0e54e958d7907f)
++++ b/app/src/main/java/com/app/trackingqrcode/socket/ListenDataSocket.kt	(date 1667183853733)
+@@ -5,7 +5,7 @@
+ import com.google.gson.Gson
+ 
+ class ListenDataSocket(
+-    val message: String
++    val temp_update: String
+ ) {
+     companion object {
+         fun parseFrom(value: Array<Any>): ListenDataSocket? {
+Index: .idea/other.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/other.xml b/.idea/other.xml
+new file mode 100644
+--- /dev/null	(date 1667183959398)
++++ b/.idea/other.xml	(date 1667183959398)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ScreenshotViewer">
++    <option name="frameScreenshot" value="true" />
++  </component>
++</project>
+\ No newline at end of file

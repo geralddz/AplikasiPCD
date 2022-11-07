@@ -95,6 +95,10 @@ class ScanActivity : AppCompatActivity() {
                 val rejectionadapter = RejectionAdapter(reject)
                 if (success==true) {
                     Toast.makeText(applicationContext, "Load Berhasil", Toast.LENGTH_LONG).show()
+                    val target = qr.recap?.Target
+                    val actual = qr.recap?.Actual
+                    val rejectqr = qr.recap?.Rejection
+
                     tv1.text = qr.data?.operatorName.toString()
                     tv2.text = qr.data?.operatorNpk.toString()
                     tv3.text = qr.data?.partName.toString()
@@ -115,70 +119,120 @@ class ScanActivity : AppCompatActivity() {
 
                     Vefficiency.text = qr.recap?.Efficiency.toString()+"%"
                     Voee.text = qr.recap?.OEE.toString()+"%"
-                    val actuall = qr.recap?.Actual.toString().toFloat()
-                    val targett = qr.recap?.Target.toString().toFloat()
-                    val rejecttt = qr.recap?.Rejection.toString().toInt()
-                    val hasilok = (actuall+rejecttt)
-                    val hasilcoba = ((actuall / hasilok) *100).roundToInt()
-                    val hasilreject = ((rejecttt / hasilok) *100).roundToInt()
-                    val targetpersen = 100.div(targett).times(targett)
-                    val actualpersen = 100.div(targett).times(actuall)
 
-                    Percentagereject.text = "$hasilreject%"
-                    percentage.text = qr.recap?.Avaibility.toString()+"%"
-                    percentage1.text = qr.recap?.Performance.toString()+"%"
-                    percentagetrgt.text = qr.recap?.Target.toString()
-                    percentageact.text = qr.recap?.Actual.toString()
-                    percentage7.text = "$hasilcoba%"
+                    if (target!=null && actual!=null && rejectqr!=null) {
+                        val actuall = actual.toFloat()
+                        val targett = target.toFloat()
+                        val rejecttt = rejectqr.toFloat()
+                        val hasilok = (actuall + rejecttt)
+                        val hasilcoba = ((actuall / hasilok) * 100).roundToInt()
+                        val hasilreject = ((rejecttt / hasilok) * 100).roundToInt()
+                        val targetpersen = 100.div(targett).times(targett).toInt()
+                        val actualpersen = 100.div(targett).times(actuall).toInt()
 
-                    val avail = qr.recap?.Avaibility.toString().toInt()
-                    val perform = qr.recap?.Performance.toString().toInt()
+                        Percentagereject.text = "$hasilreject%"
+                        percentage7.text = "$hasilcoba%"
+                        pbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                        pbTarget.progress = targetpersen
 
-                    if (avail < 70){
-                        pbavail.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbavail.progress = avail
-                    }else if(avail in 70..80){
-                        pbavail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbavail.progress = avail
-                    }else{
-                        pbavail.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbavail.progress = avail
+                        if (actualpersen < 70) {
+                            pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
+                            pbActual.progress = actualpersen
+                        }else if(actualpersen in 70..80){
+                            pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            pbActual.progress = actualpersen
+                        }else{
+                            pbActual.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            pbActual.progress = actualpersen
+                        }
+
+                        if (hasilcoba < 70) {
+                            pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
+                            pbOk.progress = hasilcoba
+                        } else if (hasilcoba in 70..80) {
+                            pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            pbOk.progress = hasilcoba
+                        } else {
+                            pbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            pbOk.progress = hasilcoba
+                        }
+
                     }
 
-                    if (perform < 70) {
-                        pbperformance.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbperformance.progress = perform
-                    }else if(perform in 70..80){
-                        pbperformance.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbperformance.progress = perform
-                    }else{
-                        pbperformance.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbperformance.progress = perform
+                    if(target!=0 && actual!=0 && rejectqr!=0){
+                        val actuall = actual?.toFloat()
+                        val targett = target?.toFloat()
+                        val rejecttt = rejectqr?.toFloat()
+                        val hasilok = (actuall?.plus(rejecttt!!))
+                        val hasilcoba = ((actuall?.div(hasilok!!))?.times(100))?.roundToInt()
+                        val hasilreject = ((rejecttt?.div(hasilok!!))?.times(100))?.roundToInt()
+                        val targetpersen = 100.div(targett!!).times(targett).toInt()
+                        val actualpersen = actuall?.let { 100.div(targett).times(it).toInt() }
+
+                        Percentagereject.text = "$hasilreject%"
+                        percentage7.text = "$hasilcoba%"
+
+                        pbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                        pbTarget.progress = targetpersen
+
+                        if (actualpersen != null) {
+                            if (actualpersen < 70) {
+                                pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
+                                pbActual.progress = actualpersen
+                            }else if(actualpersen in 70..80){
+                                pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                pbActual.progress = actualpersen
+                            }else{
+                                pbActual.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                pbActual.progress = actualpersen
+                            }
+                        }
+
+                        if (hasilcoba != null) {
+                            if (hasilcoba < 70) {
+                                pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
+                                pbOk.progress = hasilcoba
+                            } else if (hasilcoba in 70..80) {
+                                pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                pbOk.progress = hasilcoba
+                            } else {
+                                pbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                pbOk.progress = hasilcoba
+                            }
+                        }
                     }
 
-                    pbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                    pbTarget.progress = targetpersen.toInt()
+                    percentage.text = qr.recap.Avaibility.toString() + "%"
+                    percentage1.text = qr.recap.Performance.toString() + "%"
+                    percentagetrgt.text = target.toString()
+                    percentageact.text = actual.toString()
+                    val avail = qr.recap.Avaibility?.toInt()
+                    val perform = qr.recap.Performance?.toInt()
 
-                    if (actualpersen < 70) {
-                        pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbActual.progress = actualpersen.toInt()
-                    }else if(actualpersen.toInt() in 70..80){
-                        pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbActual.progress = actualpersen.toInt()
-                    }else{
-                        pbActual.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbActual.progress = actualpersen.toInt()
+                    if (avail != null) {
+                        if (avail < 70){
+                            pbavail.progressTintList = ColorStateList.valueOf(Color.RED)
+                            pbavail.progress = avail
+                        }else if(avail in 70..80){
+                            pbavail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            pbavail.progress = avail
+                        }else{
+                            pbavail.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            pbavail.progress = avail
+                        }
                     }
 
-                    if (hasilcoba < 70) {
-                        pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
-                        pbOk.progress = hasilcoba
-                    } else if (hasilcoba in 70..80) {
-                        pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        pbOk.progress = hasilcoba
-                    } else {
-                        pbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbOk.progress = hasilcoba
+                    if (perform != null) {
+                        if (perform < 70) {
+                            pbperformance.progressTintList = ColorStateList.valueOf(Color.RED)
+                            pbperformance.progress = perform
+                        }else if(perform in 70..80){
+                            pbperformance.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            pbperformance.progress = perform
+                        }else{
+                            pbperformance.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            pbperformance.progress = perform
+                        }
                     }
 
                     rvrejection.apply {
@@ -190,8 +244,7 @@ class ScanActivity : AppCompatActivity() {
                     showhasil()
                 }else{
                     hiddenhasil()
-                    Toast.makeText(
-                        applicationContext, "QR Code Tidak Terdaftar", Toast.LENGTH_LONG
+                    Toast.makeText(applicationContext, "QR Code Tidak Terdaftar", Toast.LENGTH_LONG
                     ).show()
                 }
 

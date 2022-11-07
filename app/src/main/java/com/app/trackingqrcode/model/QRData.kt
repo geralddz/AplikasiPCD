@@ -52,11 +52,11 @@ data class RejectionItem(
 data class RecapItem(
     @SerializedName("actual")
     @Expose
-    val Actual: String? = null,
+    val Actual: Int? = null,
 
     @SerializedName("cum_target")
     @Expose
-    val Target: String? = null,
+    val Target: Int? = null,
 
     @SerializedName("avaibility")
     @Expose
@@ -80,7 +80,7 @@ data class RecapItem(
 
     @SerializedName("rejection")
     @Expose
-    val Rejection: String? = null,
+    val Rejection: Int? = null,
 
     @SerializedName("oee")
     @Expose

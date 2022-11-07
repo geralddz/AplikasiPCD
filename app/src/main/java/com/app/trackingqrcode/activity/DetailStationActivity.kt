@@ -36,8 +36,6 @@ class DetailStationActivity : AppCompatActivity() {
         sharedPref = SharedPref(this)
         sharedPrefTimer = SharedPrefTimer(this)
 
-
-
         if (sharedPrefTimer.TimeCounting()) {
             startTimer()
         } else {

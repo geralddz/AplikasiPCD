@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class SharedPrefTimer (context : Context) {
-
     companion object
     {
         const val PREFERENCES = "prefs"

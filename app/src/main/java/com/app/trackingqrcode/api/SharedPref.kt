@@ -18,6 +18,11 @@ class SharedPref (context : Context){
         editor?.commit()
     }
 
+    fun setIdUser(iduser: String) {
+        editor?.putString("iduser", iduser)
+        editor?.commit()
+    }
+
     fun setStation(station: String) {
         editor?.putString("station", station)
         editor?.commit()
@@ -50,6 +55,10 @@ class SharedPref (context : Context){
 
     fun getName(): String? {
         return pref?.getString("name", "")
+    }
+
+    fun getIdUser(): String? {
+        return pref?.getString("iduser", "")
     }
 
     fun getStation(): String? {

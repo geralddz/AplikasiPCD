@@ -46,18 +46,20 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val request = UserRequest()
-        request.username = etUserSignIn.text.toString().trim()
-        request.password = etPassSignIn.text.toString().trim()
+        val user = etUserSignIn.text.toString().trim()
+        val passw = etPassSignIn.text.toString().trim()
+        val stid = "Administrator"
         val retro = ApiUtils().getUserService()
-        retro.login(request).enqueue(object : Callback<UserResponse>{
+        retro.login(stid,user,passw).enqueue(object : Callback<UserResponse>{
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 val user = response.body()
                 if (user != null) {
                     Toast.makeText(applicationContext, "Login Berhasil , Selamat Datang ", Toast.LENGTH_SHORT
                     ).show()
                     val intent = Intent (applicationContext,HomeActivity::class.java)
+                    val iduser = user.data?.id.toString()
                     val name = user.data?.name.toString()
+                    sharedPref.setIdUser(iduser)
                     sharedPref.setName(name)
                     sharedPref.setSignIn(true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

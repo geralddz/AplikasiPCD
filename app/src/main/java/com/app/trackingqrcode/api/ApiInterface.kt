@@ -12,7 +12,11 @@ import retrofit2.http.Query
 interface ApiInterface {
 
     @POST("login")
-    fun login(@Body userRequest: UserRequest): Call<UserResponse>
+    fun login(
+        @Query("station_id") idStation: String?,
+        @Query("username") username: String?,
+        @Query("password") password: String?
+    ): Call<UserResponse>
 
     @POST("trace/qr")
     fun scan(@Body qrCodeRequest: QRCodeRequest): Call<QRResponse>

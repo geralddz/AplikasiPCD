@@ -12,4 +12,8 @@ class UserRequest {
     @Expose
     var password : String? = null
 
+    @SerializedName("password")
+    @Expose
+    var station_id : Int? = 1
+
 }

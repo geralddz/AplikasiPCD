@@ -17,7 +17,7 @@ import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
 import com.app.trackingqrcode.response.DetailPlanResponse
-import com.app.trackingqrcode.socket.ListenDataSocket
+import com.app.trackingqrcode.socket.ListenDataTemp
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_detail_part.Pavail
@@ -49,6 +49,7 @@ class DetailPlanActivity : AppCompatActivity() {
     private var _receivedEvent = MutableLiveData<Any>()
     private var receivedEvent = _receivedEvent
     private var echo: Echo? = null
+    private val CHANNEL_MESSAGES = "dashboard"
 
     companion object {
         const val PartName = "partname"
@@ -60,7 +61,6 @@ class DetailPlanActivity : AppCompatActivity() {
         const val KEY_PLAN = "id_plan"
         const val SHIFT = "shift"
         const val SERVER_URL = "http://10.14.130.94:6001"
-        const val CHANNEL_MESSAGES = "dashboard"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -305,7 +305,7 @@ class DetailPlanActivity : AppCompatActivity() {
         ) { args -> Log.e("socket","error while connecting: $args") }
     }
 
-    private fun displayNewEvent(event: ListenDataSocket?) {
+    private fun displayNewEvent(event: ListenDataTemp?) {
         Log.e("value", "new event $event")
         _receivedEvent.postValue(event)
     }
@@ -314,9 +314,8 @@ class DetailPlanActivity : AppCompatActivity() {
         echo?.let { it ->
             it.channel(CHANNEL_MESSAGES)
                 .listen("Achievement_$id_station") {
-                    val data = ListenDataSocket.showdata(it)
+                    val data = ListenDataTemp.showdata(it)
                     displayNewEvent(data)
-                    Log.e("event baru", "$data")
 
                 }
         }
@@ -332,7 +331,7 @@ class DetailPlanActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun displayEventData(event: Any) {
-        if (event is ListenDataSocket) {
+        if (event is ListenDataTemp) {
             val temp = event.temp_achievement[0]
             val temp1 = Gson().toJson(temp)
             val objec = Gson().fromJson(temp1, DetailPlanResponse::class.java)

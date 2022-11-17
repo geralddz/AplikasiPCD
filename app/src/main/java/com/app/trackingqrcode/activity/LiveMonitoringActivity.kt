@@ -29,6 +29,7 @@ import java.util.*
 class LiveMonitoringActivity : AppCompatActivity(){
 
     var stationstatus: String? = null
+    private lateinit var Downtimect : String
     private var adapter: LiveMonitorAdapter? = null
     private val Lstation = ArrayList<String>()
     private var selectedStation = ""
@@ -36,6 +37,7 @@ class LiveMonitoringActivity : AppCompatActivity(){
     private var selectedStart = "start"
     private var selectedProblem = "problem"
     private var livemonitordata: MutableList<LiveMonitorData> = ArrayList()
+    private var startTime = ""
     private lateinit var sharedPrefTimer: SharedPrefTimer
 
     @SuppressLint("NotifyDataSetChanged")
@@ -204,19 +206,25 @@ class LiveMonitoringActivity : AppCompatActivity(){
                                         for(d in downtimedata!!.indices){
                                             val statusdown = downtimedata[d]?.status
                                             val planiddown = downtimedata[d]?.planningId
+                                            val downtimeCt = downtimedata[d]?.downtimeCategory
+                                            Downtimect = downtimeCt.toString()
+                                            val startt = downtimedata[d]?.startTime.toString()
+                                            val splitan = startt.split(" ").toTypedArray()
+                                            startTime = splitan[1]
+
                                             if (planid==planiddown&&statusdown==0){
                                                 onplan = false
                                             }
                                         }
                                         if (onplan){
                                             stationstatus = "start"
-                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))
+                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus,"","")))
                                             Log.e("idstation","$stationid")
                                             sumCG[0] += 1
                                             green.text = "${sumCG[0]} Station"
                                         }else{
                                             stationstatus = "problem"
-                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))
+                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus,startTime,Downtimect)))
                                             Log.e("idstation","$stationid")
                                             sumCY[0] += 1
                                             yellow.text = "${sumCY[0]} Station"
@@ -237,7 +245,7 @@ class LiveMonitoringActivity : AppCompatActivity(){
                                 })
                             }else {
                                 stationstatus = "stop"
-                                livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus)))
+                                livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus,"","")))
                                 Log.e("idstation","$stationid")
                                 sumCR[0] += 1
                                 red.text = "${sumCR[0]} Station"
@@ -307,7 +315,6 @@ class LiveMonitoringActivity : AppCompatActivity(){
             stopTimer()
         }
     }
-
     private fun resetActionTimer() {
         sharedPrefTimer.setStopTime(null)
         sharedPrefTimer.setStartTime(null)

@@ -10,17 +10,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.activity.DetailPlanActivity.Companion.SERVER_URL
 import com.app.trackingqrcode.adapter.AndonAdapter
+import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
-import com.app.trackingqrcode.model.AndonData
+import com.app.trackingqrcode.response.AndonResponse
 import com.app.trackingqrcode.socket.ListenDataAndon
-import com.app.trackingqrcode.socket.ListenDataTemp
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_andon.*
 import kotlinx.android.synthetic.main.activity_andon.back
+import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_live_monitoring.*
 import kotlinx.android.synthetic.main.item_andon.*
 import net.mrbin99.laravelechoandroid.Echo
 import net.mrbin99.laravelechoandroid.EchoOptions
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AndonActivity : AppCompatActivity() {
     private var _receivedEvent = MutableLiveData<Any>()
@@ -29,6 +33,7 @@ class AndonActivity : AppCompatActivity() {
     private val CHANNEL_MESSAGES = "Andon"
     private lateinit var iduser: String
     private lateinit var sharedPref: SharedPref
+    private var departemendId: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_andon)
@@ -36,28 +41,40 @@ class AndonActivity : AppCompatActivity() {
         iduser = sharedPref.getIdUser().toString()
         Log.e("iduser", "data: $iduser")
 
-
+        departemendId = sharedPref.getDepartement().toString()
+        Log.e("departemendid", "$departemendId")
         back.setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
         }
-        rvandon.layoutManager = LinearLayoutManager(this)
 
-        modelAdapter()
+        showAndon()
         connectToSocket()
         initLiveDataListener()
     }
 
-    private fun modelAdapter() {
-        val andon = listOf(
-            AndonData("Station-1060-1 Mengalami Downtime ", "Penyebab : Kuras Manifold", "10:00"),
-            AndonData("Station-1060-2 Mengalami Downtime ", "Penyebab : Printer Rusak", "12:00"),
-            AndonData("Station-1060-3 Mengalami Downtime ", "Penyebab : Komputer Ngelag", "09:00"),
-            AndonData("Station-1060-4 Mengalami Downtime ", "Penyebab : Operator Sakit", "14:00"),
-            AndonData("Station-1060-5 Mengalami Downtime ", "Penyebab : LCD Rusak", "18:00"),
-            AndonData("Station-1060-6 Mengalami Downtime ", "Penyebab : Keyboard Hilang", "15:00")
-        )
-        val andonAdapter = AndonAdapter(andon)
-        rvandon.adapter=andonAdapter
+    private fun showAndon(){
+        val retro = ApiUtils().getUserService()
+        retro.getAndon(departemendId).enqueue(object : Callback<AndonResponse>{
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<AndonResponse>, response: Response<AndonResponse>) {
+                val andon = response.body()
+                val andondata = andon?.data
+                if (andon?.success == true){
+                    val andonadapter = AndonAdapter(andondata)
+                    rvandon.apply {
+                        layoutManager = LinearLayoutManager(this@AndonActivity)
+                        setHasFixedSize(true)
+                        adapter = andonadapter
+                        andonadapter.notifyDataSetChanged()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<AndonResponse>, t: Throwable) {
+                Log.e("Error", t.message!!)
+            }
+
+        })
     }
     private fun connectToSocket() {
         val options = EchoOptions()
@@ -65,10 +82,10 @@ class AndonActivity : AppCompatActivity() {
         options.eventNamespace = ""
         echo = Echo(options)
         echo?.connect({
-            Log.d("socket","successful connect")
+            Log.d("socket", "successful connect")
             listenForEvents()
         }
-        ) { args -> Log.e("socket","error while connecting: $args") }
+        ) { args -> Log.e("socket", "error while connecting: $args") }
     }
 
     private fun displayNewEvent(event: ListenDataAndon?) {
@@ -94,6 +111,7 @@ class AndonActivity : AppCompatActivity() {
             }
         }
     }
+
     @SuppressLint("SetTextI18n")
     private fun displayEventData(event: Any) {
         if (event is ListenDataAndon) {

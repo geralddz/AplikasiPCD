@@ -5,5 +5,7 @@ data class LiveMonitorData(
     var nama_station: String?,
     var partname: String?,
     var id_plan: Int?,
-    var status: String?
+    var status: String?,
+    var starttime: String?,
+    var downtimect: String?
 )

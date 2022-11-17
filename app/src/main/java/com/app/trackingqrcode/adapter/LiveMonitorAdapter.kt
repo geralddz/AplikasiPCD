@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,16 +43,18 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
         val station_nama = datamonitoring[position].nama_station.toString()
         val status = datamonitoring[position].status.toString()
         val partname = datamonitoring[position].partname.toString()
+        val startTime = datamonitoring[position].starttime.toString()
+        val downtimeCt = datamonitoring[position].downtimect
 
         holder.station_num.text = station_nama
         holder.part_name.text = partname
+        holder.part_name.setTypeface(null, Typeface.BOLD)
 
         when (status) {
             "stop" -> {
                 holder.cs.setBackgroundResource(R.drawable.bgred)
                 holder.station_num.setTextColor(Color.WHITE)
                 holder.part_name.text = "STOPPED"
-                holder.part_name.setTypeface(null, Typeface.BOLD)
                 holder.part_name.setTextColor(Color.WHITE)
 
                 holder.card.setOnClickListener {
@@ -66,8 +69,6 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
             }
             "problem" -> {
                 holder.cs.setBackgroundResource(R.drawable.bgyellow)
-                holder.part_name.text = "HAS BEEN PROBLEM"
-                holder.part_name.setTypeface(null,Typeface.BOLD)
 
                 holder.card.setOnClickListener {
                     val intent = Intent(it.context, DetailStationActivity::class.java)
@@ -76,6 +77,8 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
                     sharedPref.setIdStation(id_station)
                     sharedPref.setStatus(status)
                     sharedPref.setPartname(partname)
+                    sharedPref.setDowntimeCategory(downtimeCt!!)
+                    sharedPref.setStartTime(startTime)
                     it.context.startActivity(intent)
                 }
             }

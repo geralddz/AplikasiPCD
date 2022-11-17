@@ -72,12 +72,12 @@ class DetailSummaryActivity : AppCompatActivity() {
                     val avail = detailsummary.data.avaibility
                     val perform = detailsummary.data.performance
                     val downtimeps = detailsummary.data.downtime?.toFloat()
-                    val targetpersen = 100.div(target!!).times(target)
-                    val actualpersen = 100.div(target).times(actual!!)
+                    val targetpersen = 100.div(target!!).times(target).toInt()
+                    val actualpersen = 100.div(target).times(actual!!).toInt()
                     val downtimepm = ceil(downtimeps?.div(60)!!)
                     val achievement = ((actual /(target))*100).roundToInt()
-                    val okratio = ((actual / (actual + reject!!))*100).roundToInt()
-                    val rejection = ((reject / (actual + reject))*100).roundToInt()
+                    val okratio = ((actual / (actual + reject!!))*100).toInt()
+                    val rejection = ((reject / (actual + reject))*100).toInt()
 
                     tv1.text = detailsummary.data.sku
                     tv2.text = detailsummary.data.partName
@@ -120,8 +120,9 @@ class DetailSummaryActivity : AppCompatActivity() {
                         PbOk.progress = okratio
                     }
 
-                    if (perform!! <70){
-                        PbPerform.progressTintList = ColorStateList.valueOf(Color.RED)
+                    if (perform != null){
+                        if (perform <70){
+                            PbPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                         PbPerform.progress = perform
                     }else if(perform in 70..80){
                         PbPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
@@ -130,7 +131,7 @@ class DetailSummaryActivity : AppCompatActivity() {
                         PbPerform.progressTintList = ColorStateList.valueOf(Color.GREEN)
                         PbPerform.progress = perform
                     }
-
+                    }
                     PbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
                     PbTarget.progress = targetpersen.toInt()
 

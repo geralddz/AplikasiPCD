@@ -39,14 +39,14 @@ class FragmentShift1 : Fragment() {
         showDataShift1()
     }
 
-    private fun showDataShift1(){
+    private fun showDataShift1() {
         val retro = ApiUtils().getUserService()
         retro.getDetailStation(idStation!!).enqueue(object : Callback<DetailStationResponse> {
             @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
             override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
                 val detailstation = response.body()
                 val detailstationdata = detailstation?.data
-                for (d in detailstationdata!!.indices){
+                for (d in detailstationdata!!.indices) {
                     val startpro = detailstationdata[d].startTime
                     val finishpro = detailstationdata[d].finishTime
                     val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
@@ -57,12 +57,12 @@ class FragmentShift1 : Fragment() {
                     val finishShift1 = "17:59:59"
                     if (timeStartpro<finishShift1){
                         if((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
-                        val sku = detailstationdata[d].sku
-                        val partname = detailstationdata[d].partName
-                        val operator = detailstationdata[d].statusFlag
-                        val sph = detailstationdata[d].cycleTime
-                        val totaltime = detailstationdata[d].totalTime
-                        val planid = detailstationdata[d].planId
+                            val sku = detailstationdata[d].sku
+                            val partname = detailstationdata[d].partName
+                            val operator = detailstationdata[d].statusFlag
+                            val sph = detailstationdata[d].cycleTime
+                            val totaltime = detailstationdata[d].totalTime
+                            val planid = detailstationdata[d].planId
 
                             try {
                                 shift1data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 1")))
@@ -74,12 +74,12 @@ class FragmentShift1 : Fragment() {
                                     detailstationadapter.notifyDataSetChanged()
                                 }
                             } catch (e: Exception) {
-                                Log.e("shift1", "error",e)
+                                Log.e("shift1", "error", e)
                             }
                         }
-                  }
+                    }
+                }
             }
-        }
             override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }

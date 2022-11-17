@@ -3,7 +3,7 @@ package com.app.trackingqrcode.api
 import android.content.Context
 import android.content.SharedPreferences
 
-class SharedPref (context : Context){
+class SharedPref(context: Context) {
 
     val PRIVATE_MODE = 0
     private val PREF_NAME = "SharedPreferences"
@@ -32,17 +32,18 @@ class SharedPref (context : Context){
         editor?.putString("idplan", idplan)
         editor?.commit()
     }
+
     fun setIdStation(idstation: String) {
         editor?.putString("idstation", idstation)
         editor?.commit()
     }
 
-    fun setStatus(status: String){
+    fun setStatus(status: String) {
         editor?.putString("status", status)
         editor?.commit()
     }
 
-    fun setPartname(partname: String){
+    fun setPartname(partname: String) {
         editor?.putString("partname", partname)
         editor?.commit()
     }
@@ -51,6 +52,31 @@ class SharedPref (context : Context){
     fun setSignIn(isLogin: Boolean) {
         editor?.putBoolean(IS_LOGIN, isLogin)
         editor?.commit()
+    }
+
+    fun setDepartement(Departement: String) {
+        editor?.putString("Departement", Departement)
+        editor?.commit()
+    }
+
+    fun setStartTime(time: String) {
+        editor?.putString("time", time)
+        editor?.commit()
+    }
+    fun setDowntimeCategory(DtCategory: String) {
+        editor?.putString("DtCategory", DtCategory)
+        editor?.commit()
+    }
+
+    fun getDepartement(): String? {
+        return pref?.getString("Departement", "")
+    }
+    fun getDowntimeCategory(): String? {
+        return pref?.getString("DtCategory", "")
+    }
+
+    fun getStartTime(): String? {
+        return pref?.getString("time", "")
     }
 
     fun getName(): String? {

@@ -50,7 +50,7 @@ data class DataDowntime(
 	val id: Int? = null,
 
 	@field:SerializedName("total_time")
-	val totalTime: Any? = null,
+	val totalTime: Int? = null,
 
 	@field:SerializedName("finish_by")
 	val finishBy: Any? = null,

@@ -59,4 +59,15 @@ interface ApiInterface {
         @Query("planning_id") Idplanning: String?
     ): Call<DetailPlanResponse>
 
+    @GET("rejection/station-planning")
+    fun getRejectionPlan(
+        @Query("planning_id") Idplanning: String?,
+        @Query("station_id") Idstation: String?
+    ): Call<RejectionPlanResponse>
+
+    @GET("downtime/department")
+    fun getAndon(
+        @Query("department_id") DepartId: String?,
+    ): Call<AndonResponse>
+
 }

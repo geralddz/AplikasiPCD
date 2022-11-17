@@ -1,7 +1,7 @@
 package com.app.trackingqrcode.adapter
 
+import android.annotation.SuppressLint
 import android.app.Dialog
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +9,13 @@ import android.view.Window
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.app.trackingqrcode.R
-import com.app.trackingqrcode.model.AndonData
+import com.app.trackingqrcode.response.DataAndon
 import kotlinx.android.synthetic.main.dialog_assign_andon.*
 import kotlinx.android.synthetic.main.item_andon.view.*
 
 private var tambaheskalasi : Int = 1
 
-class AndonAdapter(private var Andon: List<AndonData>) : RecyclerView.Adapter<AndonAdapter.MyViewHolder>() {
+class AndonAdapter(val dataAndon: List<DataAndon>?) : RecyclerView.Adapter<AndonAdapter.MyViewHolder>() {
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtstation = itemView.head
@@ -32,37 +32,49 @@ class AndonAdapter(private var Andon: List<AndonData>) : RecyclerView.Adapter<An
         return MyViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.txtstation.text = Andon?.get(position)?.head
-        holder.txtreason.text = Andon?.get(position)?.reason
-        holder.txtTime.text = Andon?.get(position)?.time
-        holder.txtdone.text = ""
+        val stationname = dataAndon?.get(position)?.stationNum.toString()
+        val reason = dataAndon?.get(position)?.name.toString()
+        val timee = dataAndon?.get(position)?.startTime.toString()
+//        val starttime = timee[1]
+        val eskal = dataAndon?.get(position)?.escalation
+        val status = dataAndon?.get(position)?.status
 
-        holder.btnAssign.setOnClickListener {
-            val dialog =  Dialog(it.context)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setContentView(R.layout.dialog_assign_andon)
-            dialog.btnOK.setOnClickListener {
-                holder.eskalasi.curValue = tambaheskalasi++
-                dialog.dismiss()
-                holder.txtdone.text = "DONE"
-                Toast.makeText(it.context, "Berhasil", Toast.LENGTH_SHORT
-                ).show()            }
-            dialog.btnBatal.setOnClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-
+        holder.txtstation.text = "Station $stationname Mengalami Downtime"
+        holder.txtreason.text = "Penyebab : $reason"
+        holder.txtTime.text = timee
+        if (eskal != null) {
+            holder.eskalasi.curValue = eskal
         }
-//        holder.txtTandai.setOnClickListener {
-//            holder.txtTandai.text = "Telah Dibaca"
-//            holder.txtTandai.setTextColor(Color.BLACK)
-//        }
+
+        if (status==0){
+            holder.txtdone.visibility = View.GONE
+            holder.btnAssign.visibility = View.VISIBLE
+            holder.btnAssign.setOnClickListener {
+                val dialog =  Dialog(it.context)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.dialog_assign_andon)
+                dialog.btnOK.setOnClickListener {
+                    holder.eskalasi.curValue = tambaheskalasi++
+                    dialog.dismiss()
+                    holder.txtdone.text = "DONE"
+                    Toast.makeText(it.context, "Berhasil", Toast.LENGTH_SHORT
+                    ).show()            }
+                dialog.btnBatal.setOnClickListener {
+                    dialog.dismiss()
+                }
+                dialog.show()
+            }
+        }else{
+            holder.txtdone.visibility = View.VISIBLE
+            holder.btnAssign.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int {
-        return Andon.size
+        return dataAndon!!.size
     }
 
 }

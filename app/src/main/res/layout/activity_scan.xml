@@ -415,7 +415,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="10dp"
                             android:fontFamily="@font/popmedium"
-                            android:text="0%"
+                            android:text="%"
                             android:textColor="#000000"
                             android:textSize="18sp" />
 
@@ -452,13 +452,13 @@
                     android:paddingHorizontal="10dp">
 
                     <TextView
-                        android:id="@+id/Percentagereject"
+                        android:id="@+id/Prejec"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
                         android:layout_toStartOf="@+id/btnexpand5"
                         android:fontFamily="@font/popmedium"
-                        android:text="0%"
+                        android:text="%"
                         android:textColor="#000000"
                         android:textSize="18sp" />
 
@@ -528,7 +528,7 @@
                                 android:layout_marginEnd="10dp"
                                 android:layout_toStartOf="@+id/btnexpand1"
                                 android:fontFamily="@font/popmedium"
-                                android:text="0%"
+                                android:text="%"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 
@@ -583,12 +583,12 @@
                                     android:layout_toEndOf="@+id/availibility" />
 
                                 <TextView
-                                    android:id="@+id/percentage"
+                                    android:id="@+id/pavail"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/popmedium"
-                                    android:text="100%" />
+                                    android:text="%" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -615,12 +615,12 @@
                                     android:layout_toEndOf="@+id/performance" />
 
                                 <TextView
-                                    android:id="@+id/percentage1"
+                                    android:id="@+id/pperform"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="25%" />
+                                    android:text="%" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -647,12 +647,12 @@
                                     android:layout_toEndOf="@+id/OkRatio" />
 
                                 <TextView
-                                    android:id="@+id/percentage7"
+                                    android:id="@+id/pokr"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/popmedium"
-                                    android:text="25%" />
+                                    android:text="%" />
                             </RelativeLayout>
                         </LinearLayout>
                     </LinearLayout>
@@ -690,6 +690,34 @@
                             android:text="Achievement"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                             android:textSize="16sp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:paddingHorizontal="10dp">
+
+                            <TextView
+                                android:id="@+id/Pach"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="10dp"
+                                android:layout_toStartOf="@+id/btnexpand6"
+                                android:fontFamily="@font/popmedium"
+                                android:text="%"
+                                android:textColor="#000000"
+                                android:textSize="18sp" />
+
+                            <ImageButton
+                                android:id="@+id/btnexpand6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:background="@android:color/transparent"
+                                tools:ignore="ContentDescription" />
+
+
+                        </RelativeLayout>
 
                     </LinearLayout>
 
@@ -731,12 +759,12 @@
                                     android:layout_toEndOf="@+id/targeta" />
 
                                 <TextView
-                                    android:id="@+id/percentagetrgt"
+                                    android:id="@+id/ptrgt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:fontFamily="@font/poppins_regular"
-                                    android:text="1000" />
+                                    android:text="" />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -762,11 +790,11 @@
                                     android:layout_toEndOf="@+id/actual" />
 
                                 <TextView
-                                    android:id="@+id/percentageact"
+                                    android:id="@+id/pact"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
-                                    android:text="500" />
+                                    android:text="" />
                             </RelativeLayout>
 
                         </LinearLayout>

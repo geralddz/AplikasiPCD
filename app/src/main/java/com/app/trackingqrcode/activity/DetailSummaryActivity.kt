@@ -16,7 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.response.DetailSummaryResponse
+import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_detail_summary.*
+import kotlinx.android.synthetic.main.activity_detail_summary.Pavail
+import kotlinx.android.synthetic.main.activity_detail_summary.Pperform
+import kotlinx.android.synthetic.main.activity_detail_summary.Vefficiency
+import kotlinx.android.synthetic.main.activity_detail_summary.Voee
+import kotlinx.android.synthetic.main.activity_detail_summary.backSum
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -66,19 +72,6 @@ class DetailSummaryActivity : AppCompatActivity() {
                     tvstation.text = intent.getStringExtra(STATION).toString()
                     tvcust.text = intent.getStringExtra(CUSTOMER).toString()
 
-                    val actual = detailsummary.data.actual?.toFloat()
-                    val target = detailsummary.data.target?.toFloat()
-                    val reject = detailsummary.data.rejection?.toFloat()
-                    val avail = detailsummary.data.avaibility
-                    val perform = detailsummary.data.performance
-                    val downtimeps = detailsummary.data.downtime?.toFloat()
-                    val targetpersen = 100.div(target!!).times(target).toInt()
-                    val actualpersen = 100.div(target).times(actual!!).toInt()
-                    val downtimepm = ceil(downtimeps?.div(60)!!)
-                    val achievement = ((actual /(target))*100).roundToInt()
-                    val okratio = ((actual / (actual + reject!!))*100).toInt()
-                    val rejection = ((reject / (actual + reject))*100).toInt()
-
                     tv1.text = detailsummary.data.sku
                     tv2.text = detailsummary.data.partName
                     tv3.text = detailsummary.data.operatorName
@@ -87,63 +80,137 @@ class DetailSummaryActivity : AppCompatActivity() {
                     tv6.text = detailsummary.data.cycleTime.toString()
                     tv7.text = detailsummary.data.target.toString()
 
-                    Vefficiency.text = "${detailsummary.data.efficiency.toString()}%"
-                    Voee.text = "${detailsummary.data.oee.toString()}%"
-                    Vachievement.text = "$achievement%"
-                    Vrejection.text = "$rejection"
-                    Vdowntime.text = downtimepm.toInt().toString()+" Menit"
-                    Pactual.text = detailsummary.data.actual.toString()
-                    Ptarget.text = detailsummary.data.target.toString()
-                    Pavail.text = "${detailsummary.data.avaibility.toString()}%"
-                    Pperform.text = "${detailsummary.data.performance.toString()}%"
-                    Pokratio.text = "$okratio%"
+                    val actual = detailsummary.data.actual
+                    val target = detailsummary.data.target
+                    val reject = detailsummary.data.rejection
+                    val avail = detailsummary.data.avaibility
+                    val perform = detailsummary.data.performance
+                    val efficiency = detailsummary.data.efficiency
+                    val oee = detailsummary.data.oee
+                    val downtime = detailsummary.data.downtime
 
-                    if (avail!! <70){
+                    if(efficiency != null && efficiency != 0){
+                        Vefficiency.text = "$efficiency%"
+                    }else{
+                        Vefficiency.text = "0%"
+                    }
+
+                    if(oee != null && oee != 0){
+                        Voee.text = "$oee%"
+                    }else{
+                        Voee.text = "0%"
+                    }
+
+                    if(avail != null && avail != 0){
+                        Pavail.text = "$avail%"
+                    }else{
+                        Pavail.text = "0%"
+                    }
+
+                    if(perform != null && perform != 0){
+                        Pperform.text = "$perform%"
+                    }else{
+                        Pperform.text = "0%"
+                    }
+
+                    if (downtime!=null && downtime!=0){
+                        val downtimeps = downtime.toFloat()
+                        val downtimepm = ceil(downtimeps.div(60)).toInt().toString()
+                        Vdowntime.text = "$downtimepm Menit"
+                    }else{
+                        Vdowntime.text = "0 Menit"
+                    }
+
+                    if (target!=null && actual!=null && reject!=null){
+                        val targetFloat = target.toFloat()
+                        val actualFloat = actual.toFloat()
+                        val rejectFloat = reject.toFloat()
+                        val targetpersen = 100.div(targetFloat).times(targetFloat).toInt()
+                        val actualpersen = 100.div(targetFloat).times(actualFloat).toInt()
+                        val okratio = (actualFloat.div(actualFloat.plus(rejectFloat))).times(100)
+                        val achievement = (actualFloat.div(targetFloat)).times(100)
+                        val rejection = (rejectFloat.div((actualFloat.plus(rejectFloat))).times(100))
+
+                        if(!okratio.isNaN() && !achievement.isNaN() && !rejection.isNaN()){
+                            val number3digits = (rejection * 1000.0).roundToInt() / 1000.0
+                            val number2digits = (number3digits * 100.0).roundToInt() / 100.0
+                            val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
+
+                            PbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PbTarget.progress = targetpersen
+
+                            if (okratio.roundToInt() <70){
+                                PbOk.progressTintList = ColorStateList.valueOf(Color.RED)
+                                PbOk.progress = okratio.roundToInt()
+                            }else if(okratio.roundToInt() in 70..80){
+                                PbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                PbOk.progress = okratio.roundToInt()
+                            }else{
+                                PbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                PbOk.progress = okratio.roundToInt()
+                            }
+
+                            Vachievemen.text = "${achievement.toInt()}%"
+                            Vrejections.text = "$rejectdec%"
+                            Pokratioo.text = "${okratio.toInt()}%"
+                            Ptarget.text = target.toString()
+                            Pactual.text = actual.toString()
+
+                            if (actualpersen <70){
+                                PbAct.progressTintList = ColorStateList.valueOf(Color.RED)
+                                PbAct.progress = actualpersen
+                            }else if(actualpersen in 70..80){
+                                PbAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                PbAct.progress = actualpersen
+                            }else{
+                                PbAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                PbAct.progress = actualpersen
+                            }
+                        }else{
+                            Vachievemen.text = "0%"
+                            Vrejections.text = "0"
+                            Pokratioo.text = "0%"
+                            Ptarget.text = "0"
+                            Pactual.text = "0"
+                        }
+                    }else{
+                        Vachievemen.text = "0%"
+                        Vrejections.text = "0"
+                        Pokratioo.text = "0%"
+                        Ptarget.text = "0"
+                        Pactual.text = "0"
+                    }
+
+                    if (avail != null) {
+                        if (avail < 70){
+                            PbAvail.progressTintList = ColorStateList.valueOf(Color.RED)
+                            PbAvail.progress = avail
+                        }else if(avail in 70..80){
+                            PbAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            PbAvail.progress = avail
+                        }else{
+                            PbAvail.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PbAvail.progress = avail
+                        }
+                    }else{
                         PbAvail.progressTintList = ColorStateList.valueOf(Color.RED)
-                        PbAvail.progress = avail
-                    }else if(avail in 70..80){
-                        PbAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        PbAvail.progress = avail
-                    }else{
-                        PbAvail.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        PbAvail.progress = avail
+                        PbAvail.progress = 0
                     }
 
-                    if (okratio <70){
-                        PbOk.progressTintList = ColorStateList.valueOf(Color.RED)
-                        PbOk.progress = okratio
-                    }else if(okratio in 70..80){
-                        PbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        PbOk.progress = okratio
-                    }else{
-                        PbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        PbOk.progress = okratio
-                    }
-
-                    if (perform != null){
+                    if (perform != null) {
                         if (perform <70){
                             PbPerform.progressTintList = ColorStateList.valueOf(Color.RED)
-                        PbPerform.progress = perform
-                    }else if(perform in 70..80){
-                        PbPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        PbPerform.progress = perform
+                            PbPerform.progress = perform
+                        }else if(perform in 70..80){
+                            PbPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            PbPerform.progress = perform
+                        }else{
+                            PbPerform.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PbPerform.progress = perform
+                        }
                     }else{
-                        PbPerform.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        PbPerform.progress = perform
-                    }
-                    }
-                    PbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                    PbTarget.progress = targetpersen.toInt()
-
-                    if (actualpersen <70){
-                        PbAct.progressTintList = ColorStateList.valueOf(Color.RED)
-                        PbAct.progress = actualpersen.toInt()
-                    }else if(actualpersen.toInt() in 70..80){
-                        PbAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                        PbAct.progress = actualpersen.toInt()
-                    }else{
-                        PbAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        PbAct.progress = actualpersen.toInt()
+                        PbPerform.progressTintList = ColorStateList.valueOf(Color.RED)
+                        PbPerform.progress = 0
                     }
 
                 }else{

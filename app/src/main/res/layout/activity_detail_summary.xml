@@ -562,7 +562,7 @@
                                     android:layout_toEndOf="@+id/OKratio" />
 
                                 <TextView
-                                    android:id="@+id/Pokratio"
+                                    android:id="@+id/Pokratioo"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
@@ -615,7 +615,7 @@
                             android:paddingHorizontal="10dp">
 
                             <TextView
-                                android:id="@+id/Vachievement"
+                                android:id="@+id/Vachievemen"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_toStartOf="@+id/btnexpandach"
@@ -964,7 +964,7 @@
                             android:paddingHorizontal="10dp">
 
                             <TextView
-                                android:id="@+id/Vrejection"
+                                android:id="@+id/Vrejections"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"

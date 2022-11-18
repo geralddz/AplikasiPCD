@@ -383,11 +383,11 @@ class SummaryActivity : AppCompatActivity() {
         }
         return filteredList
     }
+
     private fun showSummary() {
         val retro = ApiUtils().getUserService()
         retro.getSummary().enqueue(object : Callback<SummaryResponse> {
-            override fun onResponse(call: Call<SummaryResponse>, response: Response<SummaryResponse>)
-            {
+            override fun onResponse(call: Call<SummaryResponse>, response: Response<SummaryResponse>) {
                 val summary = response.body()!!.data
                 for (i in summary.indices){
                     val partid = summary[i].id
@@ -417,7 +417,6 @@ class SummaryActivity : AppCompatActivity() {
                                     adapter = summaryadapter
                                     summaryadapter.notifyDataSetChanged()
                                 }
-                                stopShimmer()
                                 if (!Lstation_num.contains(single)) {
                                     Lstation_num.add(single)
                                 }
@@ -430,15 +429,14 @@ class SummaryActivity : AppCompatActivity() {
                                 if (!Lpart.contains(partlist)) {
                                     Lpart.add(partlist)
                                 }
+                                stopShimmer()
                             }
                             override fun onFailure(call: Call<StationIdResponse?>, t: Throwable) {
                                 Log.e("Error", t.message!!)
                             }
                         })
                     }
-
                 }
-
             }
             override fun onFailure(call: Call<SummaryResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)

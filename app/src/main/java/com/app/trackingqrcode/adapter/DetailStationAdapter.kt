@@ -6,19 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.app.trackingqrcode.activity.DetailPlanActivity
 import com.app.trackingqrcode.R
+import com.app.trackingqrcode.activity.DetailPlanActivity
 import com.app.trackingqrcode.model.DetailStationData
-import kotlinx.android.synthetic.main.activity_detail_part.view.*
-import kotlinx.android.synthetic.main.fragment_shift1.view.*
 import kotlinx.android.synthetic.main.item_detail_station.view.*
-import kotlinx.android.synthetic.main.item_detail_station.view.tvfinish
-import kotlinx.android.synthetic.main.item_detail_station.view.tvop
-import kotlinx.android.synthetic.main.item_detail_station.view.tvpn
-import kotlinx.android.synthetic.main.item_detail_station.view.tvsku
-import kotlinx.android.synthetic.main.item_detail_station.view.tvsph
-import kotlinx.android.synthetic.main.item_detail_station.view.tvstart
-import kotlinx.android.synthetic.main.item_detail_station.view.tvtarget
 
 class DetailStationAdapter(var context: Context , val dataDetailStation : List<DetailStationData>): RecyclerView.Adapter<DetailStationAdapter.MyViewHolder>(){
     companion object {

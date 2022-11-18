@@ -178,7 +178,11 @@ class DetailPlanActivity : AppCompatActivity() {
                     val oee = detailplan.oee
                     val operator = detailplan.operator
 
-                    tvop.text = operator.toString()
+                    if(operator!=null){
+                        tvop.text = operator.toString()
+                    }else{
+                        tvop.text = ""
+                    }
 
                     if(efficiency != null && efficiency != 0){
                         Vefficiency.text = "$efficiency%"

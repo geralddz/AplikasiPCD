@@ -10,7 +10,7 @@ import com.app.trackingqrcode.response.DataDowntime
 import kotlinx.android.synthetic.main.item_plan.view.*
 import kotlin.math.roundToInt
 
-class DowntimePlanAdapter(val dataDowntime: List<DataDowntime?>?): RecyclerView.Adapter<DowntimePlanAdapter.MyViewHolder>() {
+class DowntimePlanAdapter(private val dataDowntime: List<DataDowntime?>?): RecyclerView.Adapter<DowntimePlanAdapter.MyViewHolder>() {
     class MyViewHolder(view: View):RecyclerView.ViewHolder(view) {
         val txtname = view.txt2
         val txttime = view.txt4
@@ -25,12 +25,16 @@ class DowntimePlanAdapter(val dataDowntime: List<DataDowntime?>?): RecyclerView.
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val nama = dataDowntime?.get(position)?.downtimeCategory.toString()
         val time = dataDowntime?.get(position)?.totalTime?.toFloat()
-        val totaltime = (time?.div(60)!!)
-        val number3digits = Math.round(totaltime * 1000.0) / 1000.0
-        val number2digits = Math.round(number3digits * 100.0) / 100.0
-        val downtime = Math.round(number2digits * 10.0) / 10.0
+        if (time!=null){
+            val totaltime = (time.div(60))
+            val number3digits = (totaltime.times(1000.0)).roundToInt() / 1000.0
+            val number2digits = (number3digits * 100.0).roundToInt() / 100.0
+            val downtime = (number2digits * 10.0).roundToInt() / 10.0
+            holder.txttime.text = "$downtime Menit"
+        }else{
+            holder.txttime.text = "0 Menit"
+        }
         holder.txtname.text = nama
-        holder.txttime.text = "$downtime Menit"
     }
 
     override fun getItemCount(): Int {

@@ -8,7 +8,7 @@ import com.app.trackingqrcode.R
 import com.app.trackingqrcode.response.DataRejectionPlan
 import kotlinx.android.synthetic.main.item_plan.view.*
 
-class RejectionPlanAdapter (val dataRejectionPlan: List<DataRejectionPlan>?): RecyclerView.Adapter<RejectionPlanAdapter.MyViewHolder>() {
+class RejectionPlanAdapter (private val dataRejectionPlan: List<DataRejectionPlan>?): RecyclerView.Adapter<RejectionPlanAdapter.MyViewHolder>() {
     class MyViewHolder (view: View):RecyclerView.ViewHolder(view){
         val txtname = view.txt2
         val txtValue = view.txt4

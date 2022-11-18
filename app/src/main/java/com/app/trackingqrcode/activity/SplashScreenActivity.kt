@@ -23,7 +23,7 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun checkAuth() {
-       if (sharedPref.isSignIn() == false){
+       if (!sharedPref.isSignIn()){
            startActivity(Intent(this, SignInActivity::class.java))
            finish()
         }else{

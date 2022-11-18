@@ -7,5 +7,5 @@ data class LiveMonitorData(
     var id_plan: Int?,
     var status: String?,
     var starttime: String?,
-    var downtimect: String?
+    var downtimecty: String?
 )

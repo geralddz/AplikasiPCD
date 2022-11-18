@@ -5,8 +5,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.activity.DetailSummaryActivity
@@ -14,7 +12,7 @@ import com.app.trackingqrcode.model.SummaryList
 import kotlinx.android.synthetic.main.item_summary.view.*
 
 
-class SummaryAdapter(var context: Context, val datasummary: List<SummaryList>): RecyclerView.Adapter<SummaryAdapter.MyViewHolder>() {
+class SummaryAdapter(var context: Context, private val datasummary: List<SummaryList>): RecyclerView.Adapter<SummaryAdapter.MyViewHolder>() {
 
     companion object {
         private const val KEY_STATION = "id_station"

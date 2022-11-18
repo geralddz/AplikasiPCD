@@ -9,7 +9,7 @@ class ListenDataAndon (
         companion object {
             fun showandon(downtime: Array<Any>): ListenDataAndon? {
                 val messageData = downtime[1] as org.json.JSONObject
-                Log.e("socket", "data: $messageData")
+                Log.e("socketAndon", "data: $messageData")
                 try {
                     return Gson().fromJson(messageData.toString(), ListenDataAndon::class.java)
                 } catch (e: Exception) {

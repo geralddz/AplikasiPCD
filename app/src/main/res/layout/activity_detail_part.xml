@@ -41,7 +41,6 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
-
                         android:fontFamily="@font/popmedium"
                         android:gravity="center"
                         android:text="Detail Planning"
@@ -105,7 +104,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
                         android:fontFamily="@font/popmedium"
                         android:paddingHorizontal="10dp"
                         android:text="status"
@@ -392,7 +390,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="10dp"
                             android:fontFamily="@font/popmedium"
-                            android:text="0%"
+                            android:text="%"
                             android:textColor="#000000"
                             android:textSize="18sp" />
 
@@ -443,7 +441,7 @@
                                 android:layout_marginEnd="10dp"
                                 android:layout_toStartOf="@+id/btexpandoee"
                                 android:fontFamily="@font/popmedium"
-                                android:text="0%"
+                                android:text="%"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 
@@ -621,7 +619,7 @@
                                 android:layout_marginEnd="10dp"
                                 android:layout_toStartOf="@+id/btexpandach"
                                 android:fontFamily="@font/popmedium"
-                                android:text="0%"
+                                android:text="%"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 

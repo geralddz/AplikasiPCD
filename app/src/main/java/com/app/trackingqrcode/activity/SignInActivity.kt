@@ -1,14 +1,15 @@
 package com.app.trackingqrcode.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
-import com.app.trackingqrcode.request.UserRequest
 import com.app.trackingqrcode.response.UserResponse
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import retrofit2.Call
@@ -51,16 +52,17 @@ class SignInActivity : AppCompatActivity() {
         val stid = "Administrator"
         val retro = ApiUtils().getUserService()
         retro.login(stid,user,passw).enqueue(object : Callback<UserResponse>{
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                val user = response.body()
-                if (user != null) {
+                val userlogin = response.body()
+                if (userlogin != null) {
                     Toast.makeText(applicationContext, "Login Berhasil , Selamat Datang ", Toast.LENGTH_SHORT
                     ).show()
                     val intent = Intent (applicationContext,HomeActivity::class.java)
-                    val iduser = user.data?.id.toString()
-                    val name = user.data?.name.toString()
-                    val depid = user.data?.departmentId.toString()
-                    Log.e("depid","$depid")
+                    val iduser = userlogin.data?.id.toString()
+                    val name = userlogin.data?.name.toString()
+                    val depid = userlogin.data?.departmentId.toString()
+                    Log.e("depid", depid)
                     sharedPref.setDepartement(depid)
                     sharedPref.setIdUser(iduser)
                     sharedPref.setName(name)
@@ -68,6 +70,7 @@ class SignInActivity : AppCompatActivity() {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    applicationContext.startForegroundService(intent)
                     startActivity(intent)
                     finish()
                 } else {

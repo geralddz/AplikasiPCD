@@ -20,7 +20,6 @@ import com.app.trackingqrcode.adapter.DowntimePlanAdapter
 import com.app.trackingqrcode.adapter.RejectionPlanAdapter
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.api.SharedPref
-import com.app.trackingqrcode.response.DataRejectionPlan
 import com.app.trackingqrcode.response.DetailPlanResponse
 import com.app.trackingqrcode.response.DowntimeResponse
 import com.app.trackingqrcode.response.RejectionPlanResponse
@@ -35,14 +34,13 @@ import kotlinx.android.synthetic.main.activity_detail_part.Vefficiency
 import kotlinx.android.synthetic.main.activity_detail_part.Voee
 import kotlinx.android.synthetic.main.activity_detail_part.Vrejection
 import kotlinx.android.synthetic.main.activity_detail_part.backSum
+import kotlinx.android.synthetic.main.activity_detail_summary.*
 import net.mrbin99.laravelechoandroid.Echo
 import net.mrbin99.laravelechoandroid.EchoOptions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.ceil
-import kotlin.math.log
-import kotlin.math.round
 import kotlin.math.roundToInt
 
 class DetailPlanActivity : AppCompatActivity() {
@@ -104,15 +102,19 @@ class DetailPlanActivity : AppCompatActivity() {
     }
 
     private fun coloring() {
-        if (status == "stop"){
-            cvplan.setCardBackgroundColor(Color.RED)
-            statusStation.setTextColor(Color.WHITE)
-            shiftStation.setTextColor(Color.WHITE)
-            namaStation.setTextColor(Color.WHITE)
-        }else if(status == "start"){
-            cvplan.setCardBackgroundColor(Color.GREEN)
-        }else{
-            cvplan.setCardBackgroundColor(Color.YELLOW)
+        when (status) {
+            "stop" -> {
+                cvplan.setCardBackgroundColor(Color.RED)
+                statusStation.setTextColor(Color.WHITE)
+                shiftStation.setTextColor(Color.WHITE)
+                namaStation.setTextColor(Color.WHITE)
+            }
+            "start" -> {
+                cvplan.setCardBackgroundColor(Color.GREEN)
+            }
+            else -> {
+                cvplan.setCardBackgroundColor(Color.YELLOW)
+            }
         }
     }
 
@@ -219,11 +221,11 @@ class DetailPlanActivity : AppCompatActivity() {
                         val okratio = (actualFloat.div(actualFloat.plus(rejectFloat))).times(100)
                         val achievement = (actualFloat.div(targetFloat)).times(100)
                         val rejection = (rejectFloat.div((actualFloat.plus(rejectFloat))).times(100))
-                        val number3digits = Math.round(rejection * 1000.0) / 1000.0
-                        val number2digits = Math.round(number3digits * 100.0) / 100.0
-                        val rejectdec = Math.round(number2digits * 10.0) / 10.0
 
-                        if(okratio.isNaN()==false && achievement.isNaN()==false && rejection.isNaN()==false){
+                        if(!okratio.isNaN() && !achievement.isNaN() && !rejection.isNaN()){
+                            val number3digits = (rejection * 1000.0).roundToInt() / 1000.0
+                            val number2digits = (number3digits * 100.0).roundToInt() / 100.0
+                            val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
 
                             PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
                             PTarget.progress = targetpersen
@@ -468,9 +470,9 @@ class DetailPlanActivity : AppCompatActivity() {
                 val okratio = (actualFloat.div(actualFloat.plus(rejectFloat!!))).times(100).toInt()
                 val achievement = (actualFloat.div(targetFloat)).times(100).toInt()
                 val rejection = (rejectFloat.div((actualFloat.plus(rejectFloat))).times(100))
-                val number3digits = Math.round(rejection * 1000.0) / 1000.0
-                val number2digits = Math.round(number3digits * 100.0) / 100.0
-                val rejectdec = Math.round(number2digits * 10.0) / 10.0
+                val number3digits = (rejection * 1000.0).roundToInt() / 1000.0
+                val number2digits = (number3digits * 100.0).roundToInt() / 100.0
+                val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
 
                 if(eff != null && eff != 0){
                     Vefficiency.text = "$eff%"
@@ -560,8 +562,8 @@ class DetailPlanActivity : AppCompatActivity() {
                 }
 
                 if (down!=null && down!=0){
-                    val downtimeps = down?.toFloat()
-                    val downtimepm = ceil(downtimeps?.div(60)!!).toInt().toString()
+                    val downtimeps = down.toFloat()
+                    val downtimepm = ceil(downtimeps.div(60)).toInt().toString()
                     Vdowntim.text = "$downtimepm Menit"
                 }else{
                     Vdowntim.text = "0 Menit"

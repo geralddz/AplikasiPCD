@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.activity_scan.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.math.roundToInt
 
 class ScanActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner

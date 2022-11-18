@@ -46,6 +46,8 @@ class AndonAdapter(val dataAndon: List<DataAndon>?) : RecyclerView.Adapter<Andon
         holder.txtTime.text = timee
         if (eskal != null) {
             holder.eskalasi.curValue = eskal
+        }else{
+            holder.eskalasi.curValue = 1
         }
 
         if (status==0){

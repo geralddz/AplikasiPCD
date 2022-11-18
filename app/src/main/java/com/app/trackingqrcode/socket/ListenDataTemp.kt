@@ -10,7 +10,7 @@ class ListenDataTemp(
     companion object {
         fun showdata(temp_achievement: Array<Any>): ListenDataTemp?{
             val messageData = temp_achievement[1] as org.json.JSONObject
-            Log.e("socket", "data: $messageData")
+            Log.e("socketPlan", "data: $messageData")
             try {
                 return Gson().fromJson(messageData.toString(), ListenDataTemp::class.java)
             } catch (e: Exception) {

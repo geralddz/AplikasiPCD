@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,12 +42,12 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
         val station_nama = datamonitoring[position].nama_station.toString()
         val status = datamonitoring[position].status.toString()
         val partname = datamonitoring[position].partname.toString()
-        val startTime = datamonitoring[position].starttime.toString()
-        val downtimeCt = datamonitoring[position].downtimect
+        val downtimecty = datamonitoring[position].downtimecty.toString()
+        val starttime = datamonitoring[position].starttime
 
         holder.station_num.text = station_nama
         holder.part_name.text = partname
-        holder.part_name.setTypeface(null, Typeface.BOLD)
+        holder.part_name.setTypeface(null,Typeface.BOLD)
 
         when (status) {
             "stop" -> {
@@ -77,8 +76,8 @@ class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMoni
                     sharedPref.setIdStation(id_station)
                     sharedPref.setStatus(status)
                     sharedPref.setPartname(partname)
-                    sharedPref.setDowntimeCategory(downtimeCt!!)
-                    sharedPref.setStartTime(startTime)
+                    sharedPref.setStartTime(starttime!!)
+                    sharedPref.setDowntimeCategory(downtimecty)
                     it.context.startActivity(intent)
                 }
             }

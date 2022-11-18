@@ -30,7 +30,7 @@ class SummaryActivity : AppCompatActivity() {
     private val Lpart = ArrayList<String>()
     private var selectedStation = ""
     private var selectedCustomer = ""
-    private var selectedType= ""
+    private var selectedType = ""
     private var selectedPart = ""
     private val summarylist: MutableList<SummaryList> = ArrayList()
 
@@ -74,7 +74,7 @@ class SummaryActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
         })
-        filterStation.setOnItemClickListener { parent, view, position, id ->
+        filterStation.setOnItemClickListener { parent, _, position, _ ->
             selectedStation = parent.getItemAtPosition(position).toString()
             filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             filterCostumer.visibility = View.VISIBLE
@@ -97,7 +97,7 @@ class SummaryActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
         })
-        filterCostumer.setOnItemClickListener { parent, view, position, id ->
+        filterCostumer.setOnItemClickListener { parent, _, position, _ ->
             selectedCustomer = parent.getItemAtPosition(position).toString()
             filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             filterType.visibility = View.VISIBLE
@@ -121,7 +121,7 @@ class SummaryActivity : AppCompatActivity() {
             }
 
         })
-        filterType.setOnItemClickListener { parent, view, position, id ->
+        filterType.setOnItemClickListener { parent, _, position, _ ->
             selectedType = parent.getItemAtPosition(position).toString()
             filter(selectedStation, selectedCustomer, selectedType, selectedPart)
             filterPart.visibility = View.VISIBLE
@@ -143,7 +143,7 @@ class SummaryActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
         })
-        filterPart.setOnItemClickListener { parent, view, position, id ->
+        filterPart.setOnItemClickListener { parent, _, position, _ ->
             selectedPart = parent.getItemAtPosition(position).toString()
             filter(selectedStation, selectedCustomer, selectedType, selectedPart)
         }

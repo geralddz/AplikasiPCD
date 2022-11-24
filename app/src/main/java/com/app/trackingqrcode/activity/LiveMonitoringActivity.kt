@@ -198,7 +198,7 @@ class LiveMonitoringActivity : AppCompatActivity(){
                             val planid = planningdata?.get(0)?.planningId
                             val partname = planningdata?.get(0)?.partName
                             if (planning?.success == true) {
-                                retro.getDowntime(stationid, planid).enqueue(object : Callback<DowntimeResponse> {
+                                retro.getDowntime(stationid.toString(), planid.toString()).enqueue(object : Callback<DowntimeResponse> {
                                     override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
                                         val downtime = response.body()
                                         val downtimedata = downtime?.data

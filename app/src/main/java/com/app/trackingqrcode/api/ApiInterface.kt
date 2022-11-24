@@ -1,7 +1,6 @@
 package com.app.trackingqrcode.api
 
 import com.app.trackingqrcode.request.QRCodeRequest
-import com.app.trackingqrcode.request.UserRequest
 import com.app.trackingqrcode.response.*
 import retrofit2.Call
 import retrofit2.http.Body
@@ -50,8 +49,8 @@ interface ApiInterface {
 
     @GET("downtime/not-null")
     fun getDowntime(
-        @Query("station_id") Idstation: Int?,
-        @Query("planning_id") Idplanning: Int?
+        @Query("station_id") Idstation: String?,
+        @Query("planning_id") Idplanning: String?
     ): Call<DowntimeResponse>
 
     @GET("dashboard/data")

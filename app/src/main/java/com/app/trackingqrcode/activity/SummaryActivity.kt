@@ -16,6 +16,7 @@ import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.model.SummaryList
 import com.app.trackingqrcode.response.StationIdResponse
 import com.app.trackingqrcode.response.SummaryResponse
+import kotlinx.android.synthetic.main.activity_live_monitoring.*
 import kotlinx.android.synthetic.main.activity_summary.*
 import kotlinx.android.synthetic.main.activity_summary.back
 import retrofit2.Call
@@ -28,12 +29,15 @@ class SummaryActivity : AppCompatActivity() {
     private val Lcustomer = ArrayList<String>()
     private val Ltype = ArrayList<String>()
     private val Lpart = ArrayList<String>()
+    private var adapter: SummaryAdapter? = null
+    private var stationid:Int = 0
     private var selectedStation = ""
     private var selectedCustomer = ""
     private var selectedType = ""
     private var selectedPart = ""
-    private val summarylist: MutableList<SummaryList> = ArrayList()
+    private var summarylist: MutableList<SummaryList> = ArrayList()
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_summary)
@@ -48,10 +52,19 @@ class SummaryActivity : AppCompatActivity() {
 
         swiper.setOnRefreshListener {
             setShimmer()
-            rvHistory.visibility = View.GONE
+            summarylist = ArrayList()
+            adapter?.notifyDataSetChanged()
+            showSummary()
+            val summaryadapter = SummaryAdapter(
+                this@SummaryActivity, summarylist
+            )
+            rvSummary.apply {
+                layoutManager = LinearLayoutManager(this@SummaryActivity)
+                setHasFixedSize(true)
+                adapter = summaryadapter
+                summaryadapter.notifyDataSetChanged()
+            }
             swiper.isRefreshing = false
-            rvHistory.visibility = View.VISIBLE
-            stopShimmer()
         }
 
         val dataStation = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, Lstation_num)
@@ -152,7 +165,7 @@ class SummaryActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun setAdapter(list: List<SummaryList>){
         val adapterSummary = SummaryAdapter(this, list)
-        rvHistory!!.adapter = adapterSummary
+        rvSummary!!.adapter = adapterSummary
         adapterSummary.notifyDataSetChanged()
     }
 
@@ -388,53 +401,61 @@ class SummaryActivity : AppCompatActivity() {
         val retro = ApiUtils().getUserService()
         retro.getSummary().enqueue(object : Callback<SummaryResponse> {
             override fun onResponse(call: Call<SummaryResponse>, response: Response<SummaryResponse>) {
-                val summary = response.body()!!.data
-                for (i in summary.indices){
-                    val partid = summary[i].id
-                    val partcus = summary[i].customer
-                    val parttype = summary[i].type
-                    val partlist = summary[i].partName
-                    val stationlist = summary[i].stationNum
-                    val singleStationlist = stationlist?.split(", ")?.toTypedArray()
-                    for(single in singleStationlist!!){
-                        val stationResponse = retro.getStationId(single)
-                        stationResponse!!.enqueue(object : Callback<StationIdResponse?> {
-                            @SuppressLint("NotifyDataSetChanged")
-                            override fun onResponse(call: Call<StationIdResponse?>, response: Response<StationIdResponse?>) {
-                                val station = response.body()!!.data
-                                val stationid = station?.id
-                                Log.e("Station ID", "onResponse: $stationid")
+                val responsebody = response.body()
+                val summary = responsebody?.data
+                if (summary != null) {
+                    for (i in summary.indices){
+                        val partid = summary[i].id
+                        val partcus = summary[i].customer
+                        val parttype = summary[i].type
+                        val partlist = summary[i].partName
+                        val stationlist = summary[i].stationNum
+                        val singleStationlist = stationlist?.split(", ")?.toTypedArray()
+                        for(single in singleStationlist!!){
+                            val stationResponse = retro.getStationId(single)
+                            stationResponse!!.enqueue(object : Callback<StationIdResponse?> {
+                                @SuppressLint("NotifyDataSetChanged")
+                                override fun onResponse(call: Call<StationIdResponse?>, response: Response<StationIdResponse?>) {
+                                    val stationrespon = response.body()
+                                    val station = stationrespon?.data
+                                    if (station != null){
+                                        stationid = station.id!!
+                                    }
+                                    Log.e("Station ID", "onResponse: $stationid")
 
-                                summarylist.addAll(listOf(SummaryList(single, partlist!!, stationid!!, partid!!, partcus!!, parttype!!)))
+                                    summarylist.addAll(listOf(SummaryList(single, partlist!!,
+                                        stationid, partid!!, partcus!!, parttype!!)))
 
-                                val summaryadapter = SummaryAdapter(
-                                    this@SummaryActivity,
-                                    summarylist as List<SummaryList>
-                                )
-                                rvHistory.apply {
-                                    layoutManager = LinearLayoutManager(this@SummaryActivity)
-                                    setHasFixedSize(true)
-                                    adapter = summaryadapter
-                                    summaryadapter.notifyDataSetChanged()
+                                    val summaryadapter = SummaryAdapter(
+                                        this@SummaryActivity,
+                                        summarylist as List<SummaryList>
+                                    )
+                                    rvSummary.apply {
+                                        layoutManager = LinearLayoutManager(this@SummaryActivity)
+                                        setHasFixedSize(true)
+                                        adapter = summaryadapter
+                                        summaryadapter.notifyDataSetChanged()
+                                    }
+                                    if (!Lstation_num.contains(single)) {
+                                        Lstation_num.add(single)
+                                    }
+                                    if (!Lcustomer.contains(partcus)) {
+                                        Lcustomer.add(partcus)
+                                    }
+                                    if (!Ltype.contains(parttype)) {
+                                        Ltype.add(parttype)
+                                    }
+                                    if (!Lpart.contains(partlist)) {
+                                        Lpart.add(partlist)
+                                    }
+                                    stopShimmer()
                                 }
-                                if (!Lstation_num.contains(single)) {
-                                    Lstation_num.add(single)
+
+                                override fun onFailure(call: Call<StationIdResponse?>, t: Throwable) {
+                                    Log.e("Error", t.message!!)
                                 }
-                                if (!Lcustomer.contains(partcus)) {
-                                    Lcustomer.add(partcus)
-                                }
-                                if (!Ltype.contains(parttype)) {
-                                    Ltype.add(parttype)
-                                }
-                                if (!Lpart.contains(partlist)) {
-                                    Lpart.add(partlist)
-                                }
-                                stopShimmer()
-                            }
-                            override fun onFailure(call: Call<StationIdResponse?>, t: Throwable) {
-                                Log.e("Error", t.message!!)
-                            }
-                        })
+                            })
+                        }
                     }
                 }
             }
@@ -445,11 +466,10 @@ class SummaryActivity : AppCompatActivity() {
 
     }
 
-
     private fun setShimmer() {
         shimmer.showShimmer(true)
         shimmer.visibility = View.VISIBLE
-        rvHistory.visibility = View.GONE
+        rvSummary.visibility = View.GONE
 
     }
 
@@ -465,7 +485,7 @@ class SummaryActivity : AppCompatActivity() {
     private fun stopShimmer() {
         shimmer.stopShimmer()
         shimmer.visibility = View.GONE
-        rvHistory.visibility = View.VISIBLE
+        rvSummary.visibility = View.VISIBLE
 
     }
     override fun onBackPressed() {

@@ -22,10 +22,14 @@ import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ScanMode
+import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_scan.*
+import kotlinx.android.synthetic.main.activity_scan.Vefficiency
+import kotlinx.android.synthetic.main.activity_scan.Voee
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.roundToInt
 
 class ScanActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner
@@ -99,8 +103,6 @@ class ScanActivity : AppCompatActivity() {
                     val rejectqr = qr.recap?.Rejection
                     val avail = qr.recap?.Avaibility?.toInt()
                     val perform = qr.recap?.Performance?.toInt()
-                    val oee = qr.recap?.OEE?.toInt()
-                    val efficiency = qr.recap?.Efficiency?.toInt()
 
 
                     tv1.text = qr.data?.operatorName.toString()
@@ -122,17 +124,17 @@ class ScanActivity : AppCompatActivity() {
                     }
 
 
-                    if(efficiency != null && efficiency != 0){
-                        Vefficiency.text = "$efficiency%"
-                    }else{
-                        Vefficiency.text = "0%"
-                    }
-
-                    if(oee != null && oee != 0){
-                        Voee.text = "$oee%"
-                    }else{
-                        Voee.text = "0%"
-                    }
+//                    if(efficiency != null && efficiency != 0){
+//                        Vefficiency.text = "$efficiency%"
+//                    }else{
+//                        Vefficiency.text = "0%"
+//                    }
+//
+//                    if(oee != null && oee != 0){
+//                        Voee.text = "$oee%"
+//                    }else{
+//                        Voee.text = "0%"
+//                    }
 
                     if(avail != null && avail != 0){
                         pavail.text = "$avail%"
@@ -151,51 +153,69 @@ class ScanActivity : AppCompatActivity() {
                         val targett = target.toFloat()
                         val rejecttt = rejectqr.toFloat()
                         val hasilok = (actuall.plus(rejecttt))
-                        val okeratio = ((actuall.div(hasilok)).times(100)).toInt()
-                        val hasilreject = ((rejecttt.div(hasilok)).times(100)).toInt()
-                        val achievement = (actuall.div(targett)).times(100).toInt()
+                        val okeratio = ((actuall.div(hasilok)).times(100))
+                        val hasilreject = ((rejecttt.div(hasilok)).times(100))
+                        val achievement = (actuall.div(targett)).times(100)
                         val targetpersen = 100.div(targett).times(targett).toInt()
                         val actualpersen = 100.div(targett).times(actuall).toInt()
 
-                        Pach.text = "$achievement%"
-                        Prejec.text = "$hasilreject%"
-                        pokr.text = "$okeratio%"
-                        ptrgt.text = target.toString()
-                        pact.text = actual.toString()
-                        pbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                        pbTarget.progress = targetpersen
+                        if(!okeratio.isNaN() && !achievement.isNaN() && !hasilreject.isNaN()){
+                            val number3digits = (hasilreject * 1000.0).roundToInt() / 1000.0
+                            val number2digits = (number3digits * 100.0).roundToInt() / 100.0
+                            val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
 
-                        if (actualpersen < 70) {
-                            pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
-                            pbActual.progress = actualpersen
-                        }else if(actualpersen in 70..80){
-                            pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                            pbActual.progress = actualpersen
+                            if (avail!=null&&perform!=null) {
+                                val oee = (avail.times(perform).times(okeratio)).div(10000).toInt()
+                                Voee.text = "$oee%"
+                            }
+
+                            Vefficiency.text = "${achievement.toInt()}%"
+                            Pach.text = "${achievement.toInt()}%"
+                            Prejec.text = "$rejectdec%"
+                            pokr.text = "${okeratio.roundToInt()}%"
+                            ptrgt.text = target.toString()
+                            pact.text = actual.toString()
+
+                            pbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            pbTarget.progress = targetpersen
+
+                            if (actualpersen < 70) {
+                                pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
+                                pbActual.progress = actualpersen
+                            }else if(actualpersen in 70..80){
+                                pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                pbActual.progress = actualpersen
+                            }else{
+                                pbActual.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                pbActual.progress = actualpersen
+                            }
+
+                            if (okeratio.roundToInt() < 70) {
+                                pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
+                                pbOk.progress = okeratio.roundToInt()
+                            } else if (okeratio.roundToInt() in 70..80) {
+                                pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                                pbOk.progress = okeratio.roundToInt()
+                            } else {
+                                pbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                                pbOk.progress = okeratio.roundToInt()
+                            }
                         }else{
-                            pbActual.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                            pbActual.progress = actualpersen
+                            Vefficiency.text = "0%"
+                            Pach.text = "0%"
+                            Prejec.text = "0%"
+                            pokr.text = "0%"
+                            ptrgt.text = "0"
+                            pact.text = "0"
                         }
-
-                        if (okeratio < 70) {
-                            pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
-                            pbOk.progress = okeratio
-                        } else if (okeratio in 70..80) {
-                            pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                            pbOk.progress = okeratio
-                        } else {
-                            pbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                            pbOk.progress = okeratio
-                        }
-
                     }else{
+                        Vefficiency.text = "0%"
                         Pach.text = "0%"
-                        Prejec.text = "0"
+                        Prejec.text = "0%"
                         pokr.text = "0%"
                         ptrgt.text = "0"
                         pact.text = "0"
                     }
-
-
 
                     if (avail != null) {
                         if (avail < 70){

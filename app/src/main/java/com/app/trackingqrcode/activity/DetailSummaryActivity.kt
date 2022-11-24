@@ -13,9 +13,14 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
+import com.app.trackingqrcode.adapter.DowntimePlanAdapter
+import com.app.trackingqrcode.adapter.RejectionPlanAdapter
 import com.app.trackingqrcode.api.ApiUtils
 import com.app.trackingqrcode.response.DetailSummaryResponse
+import com.app.trackingqrcode.response.DowntimeResponse
+import com.app.trackingqrcode.response.RejectionPlanResponse
 import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_detail_summary.*
 import kotlinx.android.synthetic.main.activity_detail_summary.Pavail
@@ -33,6 +38,7 @@ import kotlin.math.roundToInt
 class DetailSummaryActivity : AppCompatActivity() {
     private lateinit var idstation : String
     private lateinit var idproduct : String
+    private lateinit var idplan : String
     private var rotate: Animation? = null
     private var rotateup: Animation? = null
 
@@ -80,26 +86,16 @@ class DetailSummaryActivity : AppCompatActivity() {
                     tv6.text = detailsummary.data.cycleTime.toString()
                     tv7.text = detailsummary.data.target.toString()
 
+                    idplan = detailsummary.data.planningId.toString()
+                    Log.e("station", "onResponse: $idstation")
+                    Log.e("plan", "onResponse: $idplan")
+
                     val actual = detailsummary.data.actual
                     val target = detailsummary.data.target
                     val reject = detailsummary.data.rejection
                     val avail = detailsummary.data.avaibility
                     val perform = detailsummary.data.performance
-                    val efficiency = detailsummary.data.efficiency
-                    val oee = detailsummary.data.oee
                     val downtime = detailsummary.data.downtime
-
-                    if(efficiency != null && efficiency != 0){
-                        Vefficiency.text = "$efficiency%"
-                    }else{
-                        Vefficiency.text = "0%"
-                    }
-
-                    if(oee != null && oee != 0){
-                        Voee.text = "$oee%"
-                    }else{
-                        Voee.text = "0%"
-                    }
 
                     if(avail != null && avail != 0){
                         Pavail.text = "$avail%"
@@ -136,6 +132,11 @@ class DetailSummaryActivity : AppCompatActivity() {
                             val number2digits = (number3digits * 100.0).roundToInt() / 100.0
                             val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
 
+                            if (avail!=null&&perform!=null){
+                                val oee = (avail.times(perform).times(okratio)).div(10000).toInt()
+                                Voee.text ="$oee%"
+                            }
+
                             PbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
                             PbTarget.progress = targetpersen
 
@@ -149,10 +150,10 @@ class DetailSummaryActivity : AppCompatActivity() {
                                 PbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
                                 PbOk.progress = okratio.roundToInt()
                             }
-
+                            Vefficiency.text = "${achievement.toInt()}%"
                             Vachievemen.text = "${achievement.toInt()}%"
                             Vrejections.text = "$rejectdec%"
-                            Pokratioo.text = "${okratio.toInt()}%"
+                            Pokratioo.text = "${okratio.roundToInt()}%"
                             Ptarget.text = target.toString()
                             Pactual.text = actual.toString()
 
@@ -167,6 +168,7 @@ class DetailSummaryActivity : AppCompatActivity() {
                                 PbAct.progress = actualpersen
                             }
                         }else{
+                            Vefficiency.text = "0%"
                             Vachievemen.text = "0%"
                             Vrejections.text = "0"
                             Pokratioo.text = "0%"
@@ -174,6 +176,7 @@ class DetailSummaryActivity : AppCompatActivity() {
                             Pactual.text = "0"
                         }
                     }else{
+                        Vefficiency.text = "0%"
                         Vachievemen.text = "0%"
                         Vrejections.text = "0"
                         Pokratioo.text = "0%"
@@ -212,6 +215,49 @@ class DetailSummaryActivity : AppCompatActivity() {
                         PbPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                         PbPerform.progress = 0
                     }
+
+                    retro.getRejectionPlan(idplan,idstation).enqueue(object : Callback<RejectionPlanResponse> {
+                        @SuppressLint("NotifyDataSetChanged")
+                        override fun onResponse(call: Call<RejectionPlanResponse>, response: Response<RejectionPlanResponse>) {
+                            val rejectplan = response.body()
+                            val dataRejectionPlan = rejectplan?.data
+                            if (rejectplan?.success == true){
+                                val rejectionPlanAdapter = RejectionPlanAdapter(dataRejectionPlan)
+
+                                rvrejectionsum.apply {
+                                    layoutManager = LinearLayoutManager(this@DetailSummaryActivity)
+                                    setHasFixedSize(true)
+                                    adapter = rejectionPlanAdapter
+                                    rejectionPlanAdapter.notifyDataSetChanged()
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<RejectionPlanResponse>, t: Throwable) {
+                            Log.e("Error", t.message!!)
+                        }
+                    })
+
+                    retro.getDowntime(idstation,idplan).enqueue(object : Callback<DowntimeResponse>{
+                        @SuppressLint("NotifyDataSetChanged")
+                        override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
+                            val downtime = response.body()
+                            val datadowntime = downtime?.data
+                            if (downtime?.success == true){
+                                val downtimePlanAdapter = DowntimePlanAdapter(datadowntime)
+                                rvdownsum.apply {
+                                    layoutManager = LinearLayoutManager(this@DetailSummaryActivity)
+                                    setHasFixedSize(true)
+                                    adapter = downtimePlanAdapter
+                                    downtimePlanAdapter.notifyDataSetChanged()
+                                }
+                            }
+
+                        }
+                        override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {
+                            Log.e("Error", t.message!!)
+                        }
+                    })
 
                 }else{
                     Toast.makeText(applicationContext, "Data Detail Summary Tidak Ada", Toast.LENGTH_LONG).show()

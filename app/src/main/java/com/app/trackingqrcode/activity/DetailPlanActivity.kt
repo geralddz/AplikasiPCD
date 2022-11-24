@@ -34,7 +34,10 @@ import kotlinx.android.synthetic.main.activity_detail_part.Vefficiency
 import kotlinx.android.synthetic.main.activity_detail_part.Voee
 import kotlinx.android.synthetic.main.activity_detail_part.Vrejection
 import kotlinx.android.synthetic.main.activity_detail_part.backSum
+import kotlinx.android.synthetic.main.activity_detail_part.cardAch
+import kotlinx.android.synthetic.main.activity_detail_part.cardOee
 import kotlinx.android.synthetic.main.activity_detail_summary.*
+import kotlinx.android.synthetic.main.activity_scan.*
 import net.mrbin99.laravelechoandroid.Echo
 import net.mrbin99.laravelechoandroid.EchoOptions
 import retrofit2.Call
@@ -141,7 +144,7 @@ class DetailPlanActivity : AppCompatActivity() {
             }
         })
 
-        retro.getDowntime(id_station.toInt(),id_plan.toInt()).enqueue(object : Callback<DowntimeResponse>{
+        retro.getDowntime(id_station ,id_plan).enqueue(object : Callback<DowntimeResponse>{
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
                 val downtime = response.body()
@@ -174,26 +177,12 @@ class DetailPlanActivity : AppCompatActivity() {
                     val avail = detailplan.avaibility
                     val perform = detailplan.performance
                     val downtime = detailplan.downtime
-                    val efficiency = detailplan.efficiency
-                    val oee = detailplan.oee
                     val operator = detailplan.operator
 
                     if(operator!=null){
                         tvop.text = operator.toString()
                     }else{
                         tvop.text = ""
-                    }
-
-                    if(efficiency != null && efficiency != 0){
-                        Vefficiency.text = "$efficiency%"
-                    }else{
-                        Vefficiency.text = "0%"
-                    }
-
-                    if(oee != null && oee != 0){
-                        Voee.text = "$oee%"
-                    }else{
-                        Voee.text = "0%"
                     }
 
                     if(avail != null && avail != 0){
@@ -231,6 +220,10 @@ class DetailPlanActivity : AppCompatActivity() {
                             val number2digits = (number3digits * 100.0).roundToInt() / 100.0
                             val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
 
+                            if (avail!=null&&perform!=null){
+                                val oee = (avail.times(perform).times(okratio)).div(10000).toInt()
+                                Voee.text ="$oee%"
+                            }
                             PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
                             PTarget.progress = targetpersen
 
@@ -246,8 +239,9 @@ class DetailPlanActivity : AppCompatActivity() {
                             }
 
                             Vachievement.text = "${achievement.toInt()}%"
+                            Vefficiency.text = "${achievement.toInt()}%"
                             Vrejection.text = "$rejectdec%"
-                            Pokratio.text = "${okratio.toInt()}%"
+                            Pokratio.text = "${okratio.roundToInt()}%"
                             ptarget.text = target.toString()
                             pactual.text = actual.toString()
 
@@ -262,6 +256,7 @@ class DetailPlanActivity : AppCompatActivity() {
                                 PAct.progress = actualpersen
                             }
                         }else{
+                            Vefficiency.text = "0%"
                             Vachievement.text = "0%"
                             Vrejection.text = "0"
                             Pokratio.text = "0%"
@@ -269,6 +264,7 @@ class DetailPlanActivity : AppCompatActivity() {
                             pactual.text = "0"
                         }
                     }else{
+                        Vefficiency.text = "0%"
                         Vachievement.text = "0%"
                         Vrejection.text = "0"
                         Pokratio.text = "0%"
@@ -436,7 +432,7 @@ class DetailPlanActivity : AppCompatActivity() {
                     }
                 })
 
-                retro.getDowntime(id_station.toInt(),id_plan.toInt()).enqueue(object : Callback<DowntimeResponse>{
+                retro.getDowntime(id_station,id_plan).enqueue(object : Callback<DowntimeResponse>{
                     @SuppressLint("NotifyDataSetChanged")
                     override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
                         val downtime = response.body()
@@ -459,36 +455,11 @@ class DetailPlanActivity : AppCompatActivity() {
 
                 Toast.makeText(applicationContext, "Update Data Plan $id_plan Berhasil", Toast.LENGTH_LONG).show()
                 val down = objec.downtime
-                val eff = objec.efficiency
                 val avail = objec?.avaibility
                 val perform = objec.performance
                 val actual = objec.actual
                 val target = objec.cumTarget
-                val oee = objec.oee
                 val reject = objec.rejection
-                val rejectFloat = reject?.toFloat()
-                val targetFloat = target?.toFloat()
-                val actualFloat = actual?.toFloat()
-                val targetpersen = 100.div(targetFloat!!).times(targetFloat).toInt()
-                val actualpersen = 100.div(targetFloat).times(actualFloat!!).toInt()
-                val okratio = (actualFloat.div(actualFloat.plus(rejectFloat!!))).times(100).toInt()
-                val achievement = (actualFloat.div(targetFloat)).times(100).toInt()
-                val rejection = (rejectFloat.div((actualFloat.plus(rejectFloat))).times(100))
-                val number3digits = (rejection * 1000.0).roundToInt() / 1000.0
-                val number2digits = (number3digits * 100.0).roundToInt() / 100.0
-                val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
-
-                if(eff != null && eff != 0){
-                    Vefficiency.text = "$eff%"
-                }else{
-                    Vefficiency.text = "0%"
-                }
-
-                if(oee != null && oee != 0){
-                    Voee.text = "$oee%"
-                }else{
-                    Voee.text = "0%"
-                }
 
                 if(avail != null && avail != 0){
                     Pavail.text = "$avail%"
@@ -502,35 +473,84 @@ class DetailPlanActivity : AppCompatActivity() {
                     Pperform.text = "0%"
                 }
 
-                Pokratio.text = "$okratio%"
-                ptarget.text = target.toString()
-                pactual.text = actual.toString()
-                Vachievement.text = "$achievement%"
-                Vrejection.text = "$rejectdec%"
-
-                if (okratio <70){
-                    POk.progressTintList = ColorStateList.valueOf(Color.RED)
-                    POk.progress = okratio
-                }else if(okratio in 70..80){
-                    POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                    POk.progress = okratio
+                if (down!=null && down!=0){
+                    val downtimeps = down.toFloat()
+                    val downtimepm = ceil(downtimeps.div(60)).toInt().toString()
+                    Vdowntim.text = "$downtimepm Menit"
                 }else{
-                    POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                    POk.progress = okratio
+                    Vdowntim.text = "0 Menit"
                 }
 
-                PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                PTarget.progress = targetpersen
+                if (target!=null && actual!=null && reject!=null){
+                    val targetFloat = target.toFloat()
+                    val actualFloat = actual.toFloat()
+                    val rejectFloat = reject.toFloat()
+                    val targetpersen = 100.div(targetFloat).times(targetFloat).toInt()
+                    val actualpersen = 100.div(targetFloat).times(actualFloat).toInt()
+                    val okratio = (actualFloat.div(actualFloat.plus(rejectFloat))).times(100)
+                    val achievement = (actualFloat.div(targetFloat)).times(100)
+                    val rejection = (rejectFloat.div((actualFloat.plus(rejectFloat))).times(100))
 
-                if (actualpersen <70){
-                    PAct.progressTintList = ColorStateList.valueOf(Color.RED)
-                    PAct.progress = actualpersen
-                }else if(actualpersen in 70..80){
-                    PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                    PAct.progress = actualpersen
+                    if(!okratio.isNaN() && !achievement.isNaN() && !rejection.isNaN()){
+                        val number3digits = (rejection * 1000.0).roundToInt() / 1000.0
+                        val number2digits = (number3digits * 100.0).roundToInt() / 100.0
+                        val rejectdec = (number2digits * 10.0).roundToInt() / 10.0
+
+                        if (avail!=null&&perform!=null){
+                            val oee = (avail.times(perform).times(okratio)).div(10000).roundToInt()
+                            if (oee!=0){
+                                Voee.text = "$oee%"
+                            }else {
+                                Voee.text = "0%"
+                            }
+                        }
+
+                        PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                        PTarget.progress = targetpersen
+
+                        if (okratio.roundToInt() <70){
+                            POk.progressTintList = ColorStateList.valueOf(Color.RED)
+                            POk.progress = okratio.roundToInt()
+                        }else if(okratio.roundToInt() in 70..80){
+                            POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            POk.progress = okratio.roundToInt()
+                        }else{
+                            POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            POk.progress = okratio.roundToInt()
+                        }
+
+                        Vachievement.text = "${achievement.roundToInt()}%"
+                        Vefficiency.text = "${achievement.roundToInt()}%"
+                        Vrejection.text = "$rejectdec%"
+                        Pokratio.text = "${okratio.roundToInt()}%"
+                        ptarget.text = target.toString()
+                        pactual.text = actual.toString()
+
+                        if (actualpersen <70){
+                            PAct.progressTintList = ColorStateList.valueOf(Color.RED)
+                            PAct.progress = actualpersen
+                        }else if(actualpersen in 70..80){
+                            PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                            PAct.progress = actualpersen
+                        }else{
+                            PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PAct.progress = actualpersen
+                        }
+                    }else{
+                        Vefficiency.text = "0%"
+                        Vachievement.text = "0%"
+                        Vrejection.text = "0"
+                        Pokratio.text = "0%"
+                        ptarget.text = "0"
+                        pactual.text = "0"
+                    }
                 }else{
-                    PAct.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                    PAct.progress = actualpersen
+                    Vefficiency.text = "0%"
+                    Vachievement.text = "0%"
+                    Vrejection.text = "0"
+                    Pokratio.text = "0%"
+                    ptarget.text = "0"
+                    pactual.text = "0"
                 }
 
                 if (avail != null) {
@@ -563,14 +583,6 @@ class DetailPlanActivity : AppCompatActivity() {
                 }else{
                     PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                     PPerform.progress = 0
-                }
-
-                if (down!=null && down!=0){
-                    val downtimeps = down.toFloat()
-                    val downtimepm = ceil(downtimeps.div(60)).toInt().toString()
-                    Vdowntim.text = "$downtimepm Menit"
-                }else{
-                    Vdowntim.text = "0 Menit"
                 }
             }
         }

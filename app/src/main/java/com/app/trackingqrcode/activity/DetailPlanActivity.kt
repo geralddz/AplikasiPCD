@@ -151,7 +151,6 @@ class DetailPlanActivity : AppCompatActivity() {
                         downtimePlanAdapter.notifyDataSetChanged()
                     }
                 }
-
             }
             override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
@@ -301,7 +300,6 @@ class DetailPlanActivity : AppCompatActivity() {
             override fun onFailure(call: Call<DetailPlanResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }
-
         })
     }
 
@@ -367,8 +365,7 @@ class DetailPlanActivity : AppCompatActivity() {
         echo?.connect({
             Log.d("socket", "successful connect")
             listenForEvents()
-        }
-        ) { args -> Log.e("socket", "error while connecting: $args") }
+        }) { args -> Log.e("socket", "error while connecting: $args") }
     }
 
     private fun listenForEvents() {
@@ -379,7 +376,6 @@ class DetailPlanActivity : AppCompatActivity() {
                     if (data != null) {
                         displayEventData(data)
                     }
-
                 }
         }
     }
@@ -553,7 +549,6 @@ class DetailPlanActivity : AppCompatActivity() {
                         }
                     }
                 }
-
                 override fun onFailure(call: Call<RejectionPlanResponse>, t: Throwable) {
                     Log.e("Error", t.message!!)
                 }
@@ -573,7 +568,6 @@ class DetailPlanActivity : AppCompatActivity() {
                             downtimePlanAdapter.notifyDataSetChanged()
                         }
                     }
-
                 }
                 override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {
                     Log.e("Error", t.message!!)

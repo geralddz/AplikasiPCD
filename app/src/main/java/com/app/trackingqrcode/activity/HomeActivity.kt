@@ -9,11 +9,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.utils.SharedPref
 import kotlinx.android.synthetic.main.activity_home.*
-import net.mrbin99.laravelechoandroid.Echo
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var iduser: String
@@ -62,7 +60,6 @@ class HomeActivity : AppCompatActivity() {
                 }.setNegativeButton("No") { dialog: DialogInterface, _: Int ->
                     dialog.cancel()
                 }.show()
-
         }
     }
 

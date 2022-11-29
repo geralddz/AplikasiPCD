@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.AndonAdapter
@@ -22,9 +21,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class AndonActivity : AppCompatActivity() {
-    private var _receivedEvent = MutableLiveData<Any>()
     private lateinit var iduser: String
     private lateinit var sharedPref: SharedPref
     private lateinit var departemendId: String

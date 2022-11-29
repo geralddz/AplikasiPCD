@@ -120,7 +120,6 @@ class DetailStationActivity : AppCompatActivity() {
         }
 
         selisihwaktu = selisihdtk
-
         if (downmnt > mntnow) {
             while (downmnt != mntnow) {
                 if (downmnt == 60) {
@@ -136,7 +135,6 @@ class DetailStationActivity : AppCompatActivity() {
         }
 
         selisihwaktu += selisihmnt * 60
-
         if (downjam > jamnow) {
             while (downjam != jamnow) {
                 if (downjam == 24) {

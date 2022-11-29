@@ -260,9 +260,7 @@ class ScanActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "QR Code Tidak Terdaftar", Toast.LENGTH_LONG
                     ).show()
                 }
-
             }
-
             override fun onFailure(call: Call<QRResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }

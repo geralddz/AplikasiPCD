@@ -463,7 +463,6 @@ class SummaryActivity : AppCompatActivity() {
                 Log.e("Error", t.message!!)
             }
         })
-
     }
 
     private fun setShimmer() {

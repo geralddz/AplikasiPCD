@@ -143,8 +143,6 @@ class LiveMonitoringActivity : AppCompatActivity(){
         setAdapter(station)
     }
 
-
-
     @SuppressLint("SetTextI18n")
     private fun countStation(list: List<LiveMonitorData>) {
         var cgreen = 0
@@ -268,7 +266,6 @@ class LiveMonitoringActivity : AppCompatActivity(){
                         }
                     })
                 }
-
             }
             override fun onFailure(call: Call<StationResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)

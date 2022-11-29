@@ -34,7 +34,6 @@ import retrofit2.Response
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-
 class DetailSummaryActivity : AppCompatActivity() {
     private lateinit var idstation : String
     private lateinit var idproduct : String

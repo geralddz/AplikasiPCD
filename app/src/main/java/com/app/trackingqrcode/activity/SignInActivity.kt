@@ -32,7 +32,6 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-
     private fun checkvalidation(user: String, pass: String): Boolean {
         if (user.isEmpty()) {
             etUserSignIn.error = "Masukkan Username Anda"

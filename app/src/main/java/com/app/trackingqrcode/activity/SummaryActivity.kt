@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.SummaryAdapter
-import com.app.trackingqrcode.api.ApiUtils
+import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.model.SummaryList
 import com.app.trackingqrcode.response.StationIdResponse
 import com.app.trackingqrcode.response.SummaryResponse

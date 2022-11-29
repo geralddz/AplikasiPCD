@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.AndonAdapter
-import com.app.trackingqrcode.api.ApiUtils
-import com.app.trackingqrcode.api.SharedPref
+import com.app.trackingqrcode.utils.ApiUtils
+import com.app.trackingqrcode.utils.SharedPref
 import com.app.trackingqrcode.response.AndonResponse
 import kotlinx.android.synthetic.main.activity_andon.*
 import kotlinx.android.synthetic.main.activity_andon.back

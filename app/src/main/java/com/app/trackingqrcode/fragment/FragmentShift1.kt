@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.activity.DetailStationActivity.Companion.id_station
 import com.app.trackingqrcode.adapter.DetailStationAdapter
-import com.app.trackingqrcode.api.ApiUtils
+import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.model.DetailStationData
 import com.app.trackingqrcode.response.DetailStationResponse
 import kotlinx.android.synthetic.main.fragment_shift1.*
@@ -19,7 +19,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.ArrayList
-import kotlin.math.log
 
 class FragmentShift1 : Fragment() {
 
@@ -46,39 +45,41 @@ class FragmentShift1 : Fragment() {
             override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
                 val detailstation = response.body()
                 val detailstationdata = detailstation?.data
-                for (d in detailstationdata!!.indices) {
-                    val startpro = detailstationdata[d].startTime
-                    val finishpro = detailstationdata[d].finishTime
-                    val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
-                    val dtfinishpro = finishpro?.split(" ".toRegex())?.toTypedArray()
-                    val timeStartpro = dtstartpro?.get(1).toString()
-                    val timeFinishpro = dtfinishpro?.get(1).toString()
-                    val startShift1 = "06:00:00"
-                    val finishShift1 = "17:59:59"
-                    if (timeStartpro<finishShift1){
-                        if((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
-                            val sku = detailstationdata[d].sku
-                            val partname = detailstationdata[d].partName
-                            val operator = detailstationdata[d].statusFlag
-                            val sph = detailstationdata[d].cycleTime
-                            val totaltime = detailstationdata[d].totalTime
-                            val planid = detailstationdata[d].planId
+                    if (detailstationdata!=null){
+                        for (d in detailstationdata.indices) {
+                            val startpro = detailstationdata[d].startTime
+                            val finishpro = detailstationdata[d].finishTime
+                            val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
+                            val dtfinishpro = finishpro?.split(" ".toRegex())?.toTypedArray()
+                            val timeStartpro = dtstartpro?.get(1).toString()
+                            val timeFinishpro = dtfinishpro?.get(1).toString()
+                            val startShift1 = "06:00:00"
+                            val finishShift1 = "17:59:59"
+                            if (timeStartpro<finishShift1){
+                                if((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
+                                    val sku = detailstationdata[d].sku
+                                    val partname = detailstationdata[d].partName
+                                    val operator = detailstationdata[d].statusFlag
+                                    val sph = detailstationdata[d].cycleTime
+                                    val totaltime = detailstationdata[d].totalTime
+                                    val planid = detailstationdata[d].planId
 
-                            try {
-                                shift1data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 1")))
-                                val detailstationadapter = DetailStationAdapter(context!!, shift1data)
-                                rvshift1.apply {
-                                    layoutManager = LinearLayoutManager(context)
-                                    setHasFixedSize(true)
-                                    adapter = detailstationadapter
-                                    detailstationadapter.notifyDataSetChanged()
+                                    try {
+                                        shift1data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 1")))
+                                        val detailstationadapter = DetailStationAdapter(context!!, shift1data)
+                                        rvshift1.apply {
+                                            layoutManager = LinearLayoutManager(context)
+                                            setHasFixedSize(true)
+                                            adapter = detailstationadapter
+                                            detailstationadapter.notifyDataSetChanged()
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e("shift1", "error", e)
+                                    }
                                 }
-                            } catch (e: Exception) {
-                                Log.e("shift1", "error", e)
                             }
                         }
                     }
-                }
             }
             override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)

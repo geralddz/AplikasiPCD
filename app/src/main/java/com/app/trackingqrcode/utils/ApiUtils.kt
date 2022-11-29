@@ -1,4 +1,4 @@
-package com.app.trackingqrcode.api
+package com.app.trackingqrcode.utils
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

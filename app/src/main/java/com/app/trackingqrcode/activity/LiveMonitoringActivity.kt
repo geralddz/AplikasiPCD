@@ -12,8 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.LiveMonitorAdapter
-import com.app.trackingqrcode.api.ApiUtils
-import com.app.trackingqrcode.api.SharedPrefTimer
+import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.model.LiveMonitorData
 import com.app.trackingqrcode.response.DowntimeResponse
 import com.app.trackingqrcode.response.OnPlanningResponse
@@ -38,14 +37,11 @@ class LiveMonitoringActivity : AppCompatActivity(){
     private var selectedProblem = "problem"
     private var livemonitordata: MutableList<LiveMonitorData> = ArrayList()
     private lateinit var startTime: String
-    private lateinit var sharedPrefTimer: SharedPrefTimer
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_monitoring)
-
-        sharedPrefTimer = SharedPrefTimer(this)
         back.setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
         }
@@ -309,23 +305,7 @@ class LiveMonitoringActivity : AppCompatActivity(){
         red.visibility = View.VISIBLE
         rvLive.visibility = View.VISIBLE
     }
-    private fun stopActionTimer(){
-        if (sharedPrefTimer.TimeCounting()) {
-            sharedPrefTimer.setStopTime(Date())
-            stopTimer()
-        }
-    }
 
-    private fun resetActionTimer() {
-        sharedPrefTimer.setStopTime(null)
-        sharedPrefTimer.setStartTime(null)
-        stopTimer()
-    }
-
-    private fun stopTimer() {
-        sharedPrefTimer.setTimerCounting(false)
-
-    }
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent (applicationContext,HomeActivity::class.java)

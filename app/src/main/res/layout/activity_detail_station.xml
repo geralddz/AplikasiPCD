@@ -55,17 +55,7 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             android:text="Nama Station" />
-        <Button
-            android:id="@+id/start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="start"/>
-        <Button
-            android:id="@+id/reset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="reset"/>
+
         <TextView
             android:id="@+id/statusStation"
             android:layout_width="wrap_content"
@@ -108,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:textColor="@color/black"
                 android:layout_height="wrap_content"
-                android:text="Ditangan : Ahmad Soebardjo" />
+                android:text="Ditangani : " />
 
             <TextView
                 android:id="@+id/statusPenanganan"

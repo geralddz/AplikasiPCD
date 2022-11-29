@@ -100,8 +100,7 @@
                         app:boxStrokeColor="@color/black"
                         app:counterOverflowTextColor="@color/black"
                         app:passwordToggleEnabled="true"
-                        app:startIconDrawable="@drawable/password"
-                        tools:ignore="NotSibling">
+                        app:startIconDrawable="@drawable/password">
 
                         <EditText
                             android:id="@+id/etPassSignIn"

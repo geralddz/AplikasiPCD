@@ -11,11 +11,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.trackingqrcode.activity.DetailStationActivity
 import com.app.trackingqrcode.R
-import com.app.trackingqrcode.api.SharedPref
+import com.app.trackingqrcode.utils.SharedPref
 import com.app.trackingqrcode.model.LiveMonitorData
 import kotlinx.android.synthetic.main.item_station.view.*
 
-class LiveMonitorAdapter(var context: Context ,val datamonitoring: List<LiveMonitorData>): RecyclerView.Adapter<LiveMonitorAdapter.MyViewHolder>(){
+class LiveMonitorAdapter(var context: Context, private val datamonitoring: List<LiveMonitorData>): RecyclerView.Adapter<LiveMonitorAdapter.MyViewHolder>(){
 
     private lateinit var sharedPref: SharedPref
 

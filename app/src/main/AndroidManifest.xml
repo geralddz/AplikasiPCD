@@ -11,7 +11,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name=".api.NotificationChannels"
+        android:name=".socket.AndonSocket"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,6 +23,15 @@
         android:theme="@style/Theme.TrackingQRCode"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <receiver
+            android:name=".utils.BroadcastReceiverNotif"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activity.DetailPlanActivity"
             android:exported="false">

@@ -3,14 +3,14 @@ package com.app.trackingqrcode.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.PagerAdapter
-import com.app.trackingqrcode.api.SharedPref
-import com.app.trackingqrcode.api.SharedPrefTimer
+import com.app.trackingqrcode.utils.SharedPref
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_detail_station.*
 import java.time.LocalTime
@@ -18,15 +18,12 @@ import java.util.*
 
 class DetailStationActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPref
-    private lateinit var sharedPrefTimer: SharedPrefTimer
     private lateinit var startDowntime: String
     private lateinit var status: String
     private lateinit var stationname: String
     private lateinit var partname: String
     private lateinit var downtimecty : String
-
     private var tabtitle = arrayOf("shift 1", "shift 3")
-    private val timer = Timer()
     private var selisihdtk: Int = 0
     private var selisihmnt: Int = 0
     private var selisihjam: Int = 0
@@ -45,18 +42,6 @@ class DetailStationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_station)
         sharedPref = SharedPref(this)
-        sharedPrefTimer = SharedPrefTimer(this)
-
-        if (sharedPrefTimer.TimeCounting()) {
-            startTimer()
-        } else {
-            stopTimer()
-            if (sharedPrefTimer.startTimee() != null && sharedPrefTimer.stopTime() != null) {
-                val time = Date().time - calcRestartTime().time
-                timerr.text = timeStringFromLong(time)
-            }
-        }
-//        timer.scheduleAtFixedRate(TimeTask(), 0, 500)
 
         back.setOnClickListener {
             startActivity(Intent(this, LiveMonitoringActivity::class.java))
@@ -81,26 +66,18 @@ class DetailStationActivity : AppCompatActivity() {
                 problem.visibility = View.GONE
                 onprogress.visibility = View.GONE
                 stopped.visibility = View.VISIBLE
-                start.visibility = View.GONE
-                reset.visibility = View.GONE
             }
-
             "problem" -> {
                 problem.visibility = View.VISIBLE
                 onprogress.visibility = View.GONE
                 stopped.visibility = View.GONE
                 dtcty.text = downtimecty
-                start.visibility = View.GONE
-                reset.visibility = View.GONE
-                getTimeNow()
-                startAction()
+                counterTime()
             }
             else -> {
                 problem.visibility = View.GONE
                 onprogress.visibility = View.VISIBLE
                 stopped.visibility = View.GONE
-                start.visibility = View.GONE
-                reset.visibility = View.GONE
                 station_on.text = stationname
                 part_on.text = partname
             }
@@ -112,31 +89,8 @@ class DetailStationActivity : AppCompatActivity() {
         }.attach()
     }
 
-//    private inner class TimeTask : TimerTask() {
-//        override fun run() {
-//            if (sharedPrefTimer.TimeCounting()) {
-//                val time = Date().time - sharedPrefTimer.startTimee()!!.time
-//                timerr.text = timeStringFromLong(time)
-//            }
-//        }
-//    }
-
-    private fun startAction() {
-        if (sharedPrefTimer.TimeCounting()) {
-            sharedPrefTimer.setStopTime(Date())
-        } else {
-            if (sharedPrefTimer.stopTime() != null) {
-                sharedPrefTimer.setStartTime(calcRestartTime())
-                sharedPrefTimer.setStopTime(null)
-            } else {
-                sharedPrefTimer.setStartTime(Date())
-            }
-            startTimer()
-        }
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTimeNow() {
+    private fun counterTime() {
         val timenow = LocalTime.now()
         val splitan = timenow.toString().split(".").toTypedArray()
         val time = splitan[0]
@@ -197,73 +151,56 @@ class DetailStationActivity : AppCompatActivity() {
         }
 
         selisihwaktu += selisihjam * 3600
-
-
-        val jam: Int = selisihwaktu / 3600
+        var jam: Int = selisihwaktu / 3600
 
         selisihwaktu %= 3600
-
-        val menit: Int
-        val detik: Int
+        var menit: Int
+        var second: Int
         if (selisihwaktu >= 60) {
             menit = selisihwaktu / 60
-            detik = selisihwaktu % 60
+            second = selisihwaktu % 60
         } else {
             menit = 0
-            detik = selisihwaktu
+            second = selisihwaktu
         }
+        val count = object : CountDownTimer(timenow.nano.toLong(),1000){
+            override fun onTick(millisUntilFinished: Long) {
 
+                second+=1
+                if(second>59){
+                    second=0
+                    menit+=1
+                }
+                if(menit>59){
+                    menit=0
+                    jam+=1
+                }
 
-        hour = if (jam < 10) {
-            "0$jam"
-        } else {
-            "$jam"
+                hour = if (jam < 10) {
+                    "0$jam"
+                } else {
+                    "$jam"
+                }
+
+                minute = if (menit < 10) {
+                    "0$menit"
+                } else {
+                    "$menit"
+                }
+
+                sec = if (second < 10) {
+                    "0$second"
+                } else {
+                    "$second"
+                }
+
+                waktu = "$hour:$minute:$sec"
+                timerr.text = waktu
+            }
+            override fun onFinish() {
+            }
         }
-
-        minute = if (menit < 10) {
-            "0$menit"
-        } else {
-            "$menit"
-        }
-
-        sec = if (detik < 10) {
-            "0$detik"
-        } else {
-            "$detik"
-        }
-
-        waktu = "$hour:$minute:$sec"
-        timerr.text = waktu
-    }
-
-    private fun timeStringFromLong(ms: Long): String {
-        val seconds = (ms / 1000) % 60
-        val minutes = (ms / (1000 * 60) % 60)
-        val hours = (ms / (1000 * 60 * 60) % 24)
-        return makeTimeString(hours, minutes, seconds)
-    }
-
-    private fun makeTimeString(hours: Long, minutes: Long, seconds: Long): String {
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    }
-
-    private fun stopTimer() {
-        sharedPrefTimer.setTimerCounting(false)
-    }
-
-    private fun resetActionTimer() {
-        sharedPrefTimer.setStopTime(null)
-        sharedPrefTimer.setStartTime(null)
-        stopTimer()
-    }
-
-    private fun startTimer() {
-        sharedPrefTimer.setTimerCounting(true)
-    }
-
-    private fun calcRestartTime(): Date {
-        val diff = sharedPrefTimer.startTimee!!.time - sharedPrefTimer.stopTime()!!.time
-        return Date(System.currentTimeMillis() + diff)
+        count.start()
     }
 
     override fun onBackPressed() {

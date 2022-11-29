@@ -1,4 +1,4 @@
-package com.app.trackingqrcode.api
+package com.app.trackingqrcode.utils
 
 import com.app.trackingqrcode.request.QRCodeRequest
 import com.app.trackingqrcode.response.*

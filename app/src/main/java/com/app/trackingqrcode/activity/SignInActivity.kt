@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.app.trackingqrcode.R
-import com.app.trackingqrcode.api.ApiUtils
-import com.app.trackingqrcode.api.SharedPref
+import com.app.trackingqrcode.utils.ApiUtils
+import com.app.trackingqrcode.utils.SharedPref
 import com.app.trackingqrcode.response.UserResponse
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import retrofit2.Call

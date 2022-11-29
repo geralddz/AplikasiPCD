@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.app.trackingqrcode.R
-import com.app.trackingqrcode.api.SharedPref
+import com.app.trackingqrcode.utils.SharedPref
 
 
 @SuppressLint("CustomSplashScreen")

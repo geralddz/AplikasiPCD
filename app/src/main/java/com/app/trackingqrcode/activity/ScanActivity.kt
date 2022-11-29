@@ -15,14 +15,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.RejectionAdapter
-import com.app.trackingqrcode.api.ApiUtils
+import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.request.QRCodeRequest
 import com.app.trackingqrcode.response.QRResponse
 import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ScanMode
-import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_scan.*
 import kotlinx.android.synthetic.main.activity_scan.Vefficiency
 import kotlinx.android.synthetic.main.activity_scan.Voee

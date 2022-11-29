@@ -13,26 +13,21 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.DowntimePlanAdapter
 import com.app.trackingqrcode.adapter.RejectionPlanAdapter
-import com.app.trackingqrcode.api.ApiUtils
-import com.app.trackingqrcode.api.SharedPref
 import com.app.trackingqrcode.response.DetailPlanResponse
 import com.app.trackingqrcode.response.DowntimeResponse
 import com.app.trackingqrcode.response.RejectionPlanResponse
-import com.app.trackingqrcode.socket.ListenDataTemp
+import com.app.trackingqrcode.utils.ApiUtils
+import com.app.trackingqrcode.utils.SharedPref
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_detail_part.Pavail
-import kotlinx.android.synthetic.main.activity_detail_part.Pokratio
 import kotlinx.android.synthetic.main.activity_detail_part.Pperform
-import kotlinx.android.synthetic.main.activity_detail_part.Vachievement
 import kotlinx.android.synthetic.main.activity_detail_part.Vefficiency
 import kotlinx.android.synthetic.main.activity_detail_part.Voee
-import kotlinx.android.synthetic.main.activity_detail_part.Vrejection
 import kotlinx.android.synthetic.main.activity_detail_part.backSum
 import kotlinx.android.synthetic.main.activity_detail_part.cardAch
 import kotlinx.android.synthetic.main.activity_detail_part.cardOee
@@ -40,6 +35,7 @@ import kotlinx.android.synthetic.main.activity_detail_summary.*
 import kotlinx.android.synthetic.main.activity_scan.*
 import net.mrbin99.laravelechoandroid.Echo
 import net.mrbin99.laravelechoandroid.EchoOptions
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,8 +51,6 @@ class DetailPlanActivity : AppCompatActivity() {
     private lateinit var partname: String
     private var rotate: Animation? = null
     private var rotateup: Animation? = null
-    private var _receivedEvent = MutableLiveData<Any>()
-    private var receivedEvent = _receivedEvent
     private var echo: Echo? = null
     private val CHANNEL_MESSAGES = "dashboard"
 
@@ -80,7 +74,6 @@ class DetailPlanActivity : AppCompatActivity() {
             startActivity(Intent(this, DetailStationActivity::class.java))
         }
         connectToSocket()
-        initLiveDataListener()
         id_station = sharedPref.getIdStation().toString()
         status = sharedPref.getStatus().toString()
         stationname = sharedPref.getStation().toString()
@@ -378,82 +371,39 @@ class DetailPlanActivity : AppCompatActivity() {
         ) { args -> Log.e("socket", "error while connecting: $args") }
     }
 
-    private fun displayNewEvent(event: ListenDataTemp?) {
-        _receivedEvent.postValue(event)
-    }
-
     private fun listenForEvents() {
         echo?.let { it ->
             it.channel(CHANNEL_MESSAGES)
                 .listen("Achievement_$id_station") {
-                    val data = ListenDataTemp.showdata(it)
-                    displayNewEvent(data)
+                    val data = showdata(it)
+                    if (data != null) {
+                        displayEventData(data)
+                    }
 
                 }
         }
     }
 
-    private fun initLiveDataListener() {
-        receivedEvent.observe(this) {
-            if (it != null) {
-                displayEventData(it)
-            }
+    private fun showdata(temp_achievement: Array<Any>): JSONObject?{
+        val messageData = temp_achievement[1] as JSONObject
+        Log.e("socketPlan", "data: $messageData")
+        try {
+            return messageData
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+        return null
     }
 
     @SuppressLint("SetTextI18n")
-    private fun displayEventData(event: Any) {
-        if (event is ListenDataTemp) {
-            val temp = event.temp_achievement[0]
-            val temp1 = Gson().toJson(temp)
-            val objec = Gson().fromJson(temp1, DetailPlanResponse::class.java)
-            val idplan = objec.planningId.toString()
-            if (id_plan==idplan){
-                val retro = ApiUtils().getUserService()
-                retro.getRejectionPlan(id_plan,id_station).enqueue(object : Callback<RejectionPlanResponse> {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onResponse(call: Call<RejectionPlanResponse>, response: Response<RejectionPlanResponse>) {
-                        val rejectplan = response.body()
-                        val dataRejectionPlan = rejectplan?.data
-                        if (rejectplan?.success == true){
-                            val rejectionPlanAdapter = RejectionPlanAdapter(dataRejectionPlan)
-
-                            rvrejectionplan.apply {
-                                layoutManager = LinearLayoutManager(this@DetailPlanActivity)
-                                setHasFixedSize(true)
-                                adapter = rejectionPlanAdapter
-                                rejectionPlanAdapter.notifyDataSetChanged()
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<RejectionPlanResponse>, t: Throwable) {
-                        Log.e("Error", t.message!!)
-                    }
-                })
-
-                retro.getDowntime(id_station,id_plan).enqueue(object : Callback<DowntimeResponse>{
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
-                        val downtime = response.body()
-                        val datadowntime = downtime?.data
-                        if (downtime?.success == true){
-                            val downtimePlanAdapter = DowntimePlanAdapter(datadowntime)
-                            rvdown.apply {
-                                layoutManager = LinearLayoutManager(this@DetailPlanActivity)
-                                setHasFixedSize(true)
-                                adapter = downtimePlanAdapter
-                                downtimePlanAdapter.notifyDataSetChanged()
-                            }
-                        }
-
-                    }
-                    override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {
-                        Log.e("Error", t.message!!)
-                    }
-                })
-
-                Toast.makeText(applicationContext, "Update Data Plan $id_plan Berhasil", Toast.LENGTH_LONG).show()
+    private fun displayEventData(event: JSONObject) {
+        val temp = event.optJSONArray("temp_achievement")?.get(0).toString()
+        val namauser = event.optJSONObject("user")?.get("name")
+        val objec = Gson().fromJson(temp, DetailPlanResponse::class.java)
+        val idplan = objec.planningId.toString()
+        if (id_plan==idplan){
+            runOnUiThread {
+                tvop.text = namauser.toString()
                 val down = objec.downtime
                 val avail = objec?.avaibility
                 val perform = objec.performance
@@ -584,10 +534,53 @@ class DetailPlanActivity : AppCompatActivity() {
                     PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                     PPerform.progress = 0
                 }
+                Toast.makeText(applicationContext, "Update Data Plan $id_plan Berhasil", Toast.LENGTH_LONG).show()
             }
+
+            val retro = ApiUtils().getUserService()
+            retro.getRejectionPlan(id_plan,id_station).enqueue(object : Callback<RejectionPlanResponse> {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onResponse(call: Call<RejectionPlanResponse>, response: Response<RejectionPlanResponse>) {
+                    val rejectplan = response.body()
+                    val dataRejectionPlan = rejectplan?.data
+                    if (rejectplan?.success == true){
+                        val rejectionPlanAdapter = RejectionPlanAdapter(dataRejectionPlan)
+                        rvrejectionplan.apply {
+                            layoutManager = LinearLayoutManager(this@DetailPlanActivity)
+                            setHasFixedSize(true)
+                            adapter = rejectionPlanAdapter
+                            rejectionPlanAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<RejectionPlanResponse>, t: Throwable) {
+                    Log.e("Error", t.message!!)
+                }
+            })
+
+            retro.getDowntime(id_station,id_plan).enqueue(object : Callback<DowntimeResponse>{
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
+                    val downtime = response.body()
+                    val datadowntime = downtime?.data
+                    if (downtime?.success == true){
+                        val downtimePlanAdapter = DowntimePlanAdapter(datadowntime)
+                        rvdown.apply {
+                            layoutManager = LinearLayoutManager(this@DetailPlanActivity)
+                            setHasFixedSize(true)
+                            adapter = downtimePlanAdapter
+                            downtimePlanAdapter.notifyDataSetChanged()
+                        }
+                    }
+
+                }
+                override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {
+                    Log.e("Error", t.message!!)
+                }
+            })
         }
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

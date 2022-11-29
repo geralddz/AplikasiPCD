@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.activity.DetailStationActivity.Companion.id_station
 import com.app.trackingqrcode.adapter.DetailStationAdapter
-import com.app.trackingqrcode.api.ApiUtils
+import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.model.DetailStationData
 import com.app.trackingqrcode.response.DetailStationResponse
 import kotlinx.android.synthetic.main.fragment_shift1.*

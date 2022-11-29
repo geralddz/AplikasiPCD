@@ -1,4 +1,4 @@
-package com.app.trackingqrcode.api
+package com.app.trackingqrcode.utils
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -34,6 +34,11 @@ class SharedPref(context: Context) {
 
     fun setIdStation(idstation: String) {
         editor?.putString("idstation", idstation)
+        editor?.commit()
+    }
+
+    fun setStationAndon(stationandon: String) {
+        editor?.putString("idstationuser", stationandon)
         editor?.commit()
     }
 
@@ -84,6 +89,10 @@ class SharedPref(context: Context) {
 
     fun getIdUser(): String? {
         return pref.getString("iduser", "")
+    }
+
+    fun getStationAndon(): String? {
+        return pref.getString("stationandon", "")
     }
 
     fun getStation(): String? {

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.DowntimePlanAdapter
 import com.app.trackingqrcode.adapter.RejectionPlanAdapter
-import com.app.trackingqrcode.api.ApiUtils
+import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.response.DetailSummaryResponse
 import com.app.trackingqrcode.response.DowntimeResponse
 import com.app.trackingqrcode.response.RejectionPlanResponse

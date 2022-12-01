@@ -204,5 +204,51 @@
                 app:autoSizeMinTextSize="10sp"
                 app:autoSizeTextType="uniform" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tstatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:padding="5dp"
+                android:text="Status                 : "
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/tstatus"
+                android:fontFamily="@font/popmedium"
+                android:padding="5dp"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:autoSizeMaxTextSize="13sp"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeTextType="uniform" />
+
+            <ImageView
+                android:id="@+id/ivgo"
+                android:layout_width="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_height="20dp"
+                android:layout_toEndOf="@id/tvStatus"
+                android:src="@drawable/goo2" />
+            <ImageView
+                android:id="@+id/ivfinish"
+                android:layout_width="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_height="20dp"
+                android:layout_toEndOf="@id/tvStatus"
+                android:src="@drawable/finish" />
+        </RelativeLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

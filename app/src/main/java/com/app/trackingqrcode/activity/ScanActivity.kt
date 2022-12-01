@@ -5,10 +5,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,17 +24,22 @@ import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ScanMode
+import com.google.android.material.timepicker.TimeFormat
 import kotlinx.android.synthetic.main.activity_scan.*
 import kotlinx.android.synthetic.main.activity_scan.Vefficiency
 import kotlinx.android.synthetic.main.activity_scan.Voee
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ISO_TIME
 import kotlin.math.roundToInt
 
 class ScanActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner
     private lateinit var name: String
+    private lateinit var timestmp: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,6 +96,7 @@ class ScanActivity : AppCompatActivity() {
         request.qr = tvHasil.text.toString().trim()
         val retro = ApiUtils().getUserService()
         retro.scan(request).enqueue(object : Callback<QRResponse> {
+            @RequiresApi(Build.VERSION_CODES.O)
             @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
             override fun onResponse(call: Call<QRResponse>, response: Response<QRResponse>) {
                 val qr = response.body()
@@ -111,6 +119,14 @@ class ScanActivity : AppCompatActivity() {
                     tv5.text = qr.data?.customer.toString()
                     tv6.text = qr.data?.stationName.toString()
                     tv7.text = qr.data?.timestamp.toString()
+                    timestmp = qr.data?.timestamp.toString()
+                    Log.e("timestamp","$timestmp")
+                    val splitan = timestmp.split("T").toTypedArray()
+                    val timestampp = splitan[1]
+                    val time = LocalTime.parse(timestampp, DateTimeFormatter.ISO_TIME)
+
+                    Log.e("timestamp","$time")
+
 
                     if (qr.data?.status.toString() == "OK"){
                         tvOK.visibility = View.VISIBLE

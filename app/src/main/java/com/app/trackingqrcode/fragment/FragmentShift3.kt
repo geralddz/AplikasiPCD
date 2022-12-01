@@ -59,12 +59,12 @@ class FragmentShift3 : Fragment() {
                         if ((timeStartpro in startShift3..startShift3final)||(timeFinishpro in finishShift3..finishShift3Final)||(timeStartpro in finishShift3..finishShift3Final)||(timeFinishpro in startShift3..startShift3final)){
                             val sku = detailstationdata[d].sku
                             val partname = detailstationdata[d].partName
-                            val operator = detailstationdata[d].statusFlag
+                            val statusplan = detailstationdata[d].statusFlag
                             val sph = detailstationdata[d].cycleTime
                             val totaltime = detailstationdata[d].totalTime
                             val planid = detailstationdata[d].planId
                             try {
-                                shift3data.addAll(listOf(DetailStationData(startpro,operator,sph,totaltime,sku,finishpro,planid,partname,"Shift 3")))
+                                shift3data.addAll(listOf(DetailStationData(startpro,statusplan,sph,totaltime,sku,finishpro,planid,partname,"Shift 3")))
                                 val detailstationadapter = DetailStationAdapter(context!!, shift3data)
                                 rvshift3.apply {
                                     layoutManager = LinearLayoutManager(context)

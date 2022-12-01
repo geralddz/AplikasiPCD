@@ -13,7 +13,7 @@ import com.app.trackingqrcode.R
 import com.app.trackingqrcode.utils.SharedPref
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity() {
+class   HomeActivity : AppCompatActivity() {
     private lateinit var iduser: String
     private lateinit var departemendId: String
     private lateinit var sharedPref: SharedPref

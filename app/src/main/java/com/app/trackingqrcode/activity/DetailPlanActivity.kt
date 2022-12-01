@@ -576,8 +576,18 @@ class DetailPlanActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        echo?.disconnect()
+    }
     override fun onDestroy() {
         super.onDestroy()
         echo?.disconnect()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        echo?.disconnect()
+        startActivity(Intent(this, DetailStationActivity::class.java))
     }
 }

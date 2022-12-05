@@ -67,10 +67,9 @@ class DetailStationAdapter(var context: Context, val dataDetailStation: List<Det
         }
         holder.lastfinish.text = dataDetailStation[position].finishTime
         holder.sku.text = dataDetailStation[position].sku
-        val totaltime = dataDetailStation[position].totalTime
+        val target = dataDetailStation[position].target
         val ct = dataDetailStation[position].cycleTime
         val sph = 3600.div(ct!!)
-        val target = totaltime?.div(sph)
         holder.sph.text = sph.toString()
         holder.targett.text = target.toString()
         holder.card.setOnClickListener {

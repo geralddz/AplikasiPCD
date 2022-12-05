@@ -17,23 +17,19 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.RejectionAdapter
-import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.request.QRCodeRequest
 import com.app.trackingqrcode.response.QRResponse
+import com.app.trackingqrcode.utils.ApiUtils
 import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ScanMode
-import com.google.android.material.timepicker.TimeFormat
 import kotlinx.android.synthetic.main.activity_scan.*
-import kotlinx.android.synthetic.main.activity_scan.Vefficiency
-import kotlinx.android.synthetic.main.activity_scan.Voee
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ISO_TIME
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.roundToInt
 
 class ScanActivity : AppCompatActivity() {
@@ -118,14 +114,14 @@ class ScanActivity : AppCompatActivity() {
                     tv4.text = qr.data?.pnCust.toString()
                     tv5.text = qr.data?.customer.toString()
                     tv6.text = qr.data?.stationName.toString()
-                    tv7.text = qr.data?.timestamp.toString()
                     timestmp = qr.data?.timestamp.toString()
-                    Log.e("timestamp","$timestmp")
-                    val splitan = timestmp.split("T").toTypedArray()
-                    val timestampp = splitan[1]
-                    val time = LocalTime.parse(timestampp, DateTimeFormatter.ISO_TIME)
+                    val inputformatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+                    val ouputformatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+                    val timedate = inputformatter.parse(timestmp)
+                    val outputdate = ouputformatter.format(timedate!!)
+                    Log.e("timestamp", outputdate)
+                    tv7.text = outputdate.toString()
 
-                    Log.e("timestamp","$time")
 
 
                     if (qr.data?.status.toString() == "OK"){
@@ -137,19 +133,6 @@ class ScanActivity : AppCompatActivity() {
                         tvNG.text = qr.data?.status.toString()
                         tvOK.visibility = View.GONE
                     }
-
-
-//                    if(efficiency != null && efficiency != 0){
-//                        Vefficiency.text = "$efficiency%"
-//                    }else{
-//                        Vefficiency.text = "0%"
-//                    }
-//
-//                    if(oee != null && oee != 0){
-//                        Voee.text = "$oee%"
-//                    }else{
-//                        Voee.text = "0%"
-//                    }
 
                     if(avail != null && avail != 0){
                         pavail.text = "$avail%"

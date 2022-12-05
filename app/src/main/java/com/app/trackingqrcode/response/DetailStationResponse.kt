@@ -17,6 +17,9 @@ data class DetailStation(
 	@field:SerializedName("start_time")
 	var startTime: String? = null,
 
+	@field:SerializedName("target")
+	var target: Int? = null,
+
 	@field:SerializedName("status_flag")
 	var statusFlag: String? = null,
 

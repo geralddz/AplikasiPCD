@@ -37,7 +37,6 @@ class AndonAdapter(val dataAndon: List<DataAndon>?) : RecyclerView.Adapter<Andon
         val stationname = dataAndon?.get(position)?.stationNum.toString()
         val reason = dataAndon?.get(position)?.name.toString()
         val timee = dataAndon?.get(position)?.startTime.toString()
-//        val starttime = timee[1]
         val eskal = dataAndon?.get(position)?.escalation
         val status = dataAndon?.get(position)?.status
 

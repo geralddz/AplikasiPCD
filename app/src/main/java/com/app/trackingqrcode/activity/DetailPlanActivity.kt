@@ -73,7 +73,6 @@ class DetailPlanActivity : AppCompatActivity() {
         backSum.setOnClickListener {
             startActivity(Intent(this, DetailStationActivity::class.java))
         }
-        connectToSocket()
         id_station = sharedPref.getIdStation().toString()
         status = sharedPref.getStatus().toString()
         stationname = sharedPref.getStation().toString()
@@ -90,6 +89,8 @@ class DetailPlanActivity : AppCompatActivity() {
         tvfinish.text = intent.getStringExtra(LastFinish).toString()
         tvsph.text = intent.getStringExtra(SPH).toString()
         tvtarget.text = intent.getStringExtra(TARGET).toString()
+
+        connectToSocket()
         showDetailPlan()
         hide()
         animation()

@@ -6,7 +6,7 @@ data class DetailStationData(
     var startTime: String?,
     var statusFlag: String?,
     var cycleTime: Int?,
-    var totalTime: Int?,
+    var target: Int?,
     var sku: String?,
     var finishTime: String?,
     var planId: Int?,

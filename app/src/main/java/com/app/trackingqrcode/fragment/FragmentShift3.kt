@@ -61,10 +61,10 @@ class FragmentShift3 : Fragment() {
                             val partname = detailstationdata[d].partName
                             val statusplan = detailstationdata[d].statusFlag
                             val sph = detailstationdata[d].cycleTime
-                            val totaltime = detailstationdata[d].totalTime
+                            val target = detailstationdata[d].target
                             val planid = detailstationdata[d].planId
                             try {
-                                shift3data.addAll(listOf(DetailStationData(startpro,statusplan,sph,totaltime,sku,finishpro,planid,partname,"Shift 3")))
+                                shift3data.addAll(listOf(DetailStationData(startpro,statusplan,sph,target,sku,finishpro,planid,partname,"Shift 3")))
                                 val detailstationadapter = DetailStationAdapter(context!!, shift3data)
                                 rvshift3.apply {
                                     layoutManager = LinearLayoutManager(context)

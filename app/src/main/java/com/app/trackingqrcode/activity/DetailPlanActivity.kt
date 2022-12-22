@@ -26,11 +26,13 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_detail_part.Pavail
 import kotlinx.android.synthetic.main.activity_detail_part.Pperform
-import kotlinx.android.synthetic.main.activity_detail_part.Vefficiency
 import kotlinx.android.synthetic.main.activity_detail_part.Voee
 import kotlinx.android.synthetic.main.activity_detail_part.backSum
 import kotlinx.android.synthetic.main.activity_detail_part.cardAch
 import kotlinx.android.synthetic.main.activity_detail_part.cardOee
+import kotlinx.android.synthetic.main.activity_detail_part.namaStation
+import kotlinx.android.synthetic.main.activity_detail_part.statusStation
+import kotlinx.android.synthetic.main.activity_detail_station.*
 import kotlinx.android.synthetic.main.activity_detail_summary.*
 import kotlinx.android.synthetic.main.activity_scan.*
 import net.mrbin99.laravelechoandroid.Echo
@@ -48,6 +50,7 @@ class DetailPlanActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPref
     private lateinit var status: String
     private lateinit var stationname: String
+    private lateinit var downtime : String
     private lateinit var partname: String
     private var rotate: Animation? = null
     private var rotateup: Animation? = null
@@ -73,6 +76,7 @@ class DetailPlanActivity : AppCompatActivity() {
         backSum.setOnClickListener {
             startActivity(Intent(this, DetailStationActivity::class.java))
         }
+        downtime = sharedPref.getIsDowntime().toString()
         id_station = sharedPref.getIdStation().toString()
         status = sharedPref.getStatus().toString()
         stationname = sharedPref.getStation().toString()
@@ -82,7 +86,6 @@ class DetailPlanActivity : AppCompatActivity() {
         rotateup = AnimationUtils.loadAnimation(this, R.anim.rotateup)
         shiftStation.text = intent.getStringExtra(SHIFT).toString()
         namaStation.text = stationname
-        statusStation.text = status
         tvsku.text = intent.getStringExtra(SKU).toString()
         tvpn.text = intent.getStringExtra(PartName).toString()
         tvstart.text = intent.getStringExtra(Startprod).toString()
@@ -99,19 +102,20 @@ class DetailPlanActivity : AppCompatActivity() {
     }
 
     private fun coloring() {
-        when (status) {
-            "stop" -> {
-                cvplan.setCardBackgroundColor(Color.RED)
-                statusStation.setTextColor(Color.WHITE)
-                shiftStation.setTextColor(Color.WHITE)
-                namaStation.setTextColor(Color.WHITE)
-            }
-            "start" -> {
-                cvplan.setCardBackgroundColor(Color.GREEN)
-            }
-            else -> {
+        if (status == "Start") {
+            if (downtime == "1") {
                 cvplan.setCardBackgroundColor(Color.YELLOW)
+                statusStation.text = "Problem"
+            } else {
+                cvplan.setCardBackgroundColor(Color.GREEN)
+                statusStation.text = "Start"
             }
+        } else {
+            statusStation.text = "Stop"
+            cvplan.setCardBackgroundColor(Color.RED)
+            statusStation.setTextColor(Color.WHITE)
+            shiftStation.setTextColor(Color.WHITE)
+            namaStation.setTextColor(Color.WHITE)
         }
     }
 
@@ -220,28 +224,27 @@ class DetailPlanActivity : AppCompatActivity() {
                             PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
                             PTarget.progress = targetpersen
 
-                            if (okratio.roundToInt() <70){
+                            if (okratio.toInt() <70){
                                 POk.progressTintList = ColorStateList.valueOf(Color.RED)
-                                POk.progress = okratio.roundToInt()
-                            }else if(okratio.roundToInt() in 70..80){
+                                POk.progress = okratio.toInt()
+                            }else if(okratio.toInt() in 70..90){
                                 POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                                POk.progress = okratio.roundToInt()
+                                POk.progress = okratio.toInt()
                             }else{
                                 POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                POk.progress = okratio.roundToInt()
+                                POk.progress = okratio.toInt()
                             }
 
                             Vachievement.text = "${achievement.toInt()}%"
-                            Vefficiency.text = "${achievement.toInt()}%"
                             Vrejection.text = "$rejectdec%"
-                            Pokratio.text = "${okratio.roundToInt()}%"
+                            Pokratio.text = "${okratio.toInt()}%"
                             ptarget.text = target.toString()
                             pactual.text = actual.toString()
 
                             if (actualpersen <70){
                                 PAct.progressTintList = ColorStateList.valueOf(Color.RED)
                                 PAct.progress = actualpersen
-                            }else if(actualpersen in 70..80){
+                            }else if(actualpersen in 70..90){
                                 PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                                 PAct.progress = actualpersen
                             }else{
@@ -249,7 +252,6 @@ class DetailPlanActivity : AppCompatActivity() {
                                 PAct.progress = actualpersen
                             }
                         }else{
-                            Vefficiency.text = "0%"
                             Vachievement.text = "0%"
                             Vrejection.text = "0"
                             Pokratio.text = "0%"
@@ -257,7 +259,6 @@ class DetailPlanActivity : AppCompatActivity() {
                             pactual.text = "0"
                         }
                     }else{
-                        Vefficiency.text = "0%"
                         Vachievement.text = "0%"
                         Vrejection.text = "0"
                         Pokratio.text = "0%"
@@ -269,7 +270,7 @@ class DetailPlanActivity : AppCompatActivity() {
                         if (avail < 70){
                             PAvail.progressTintList = ColorStateList.valueOf(Color.RED)
                             PAvail.progress = avail
-                        }else if(avail in 70..80){
+                        }else if(avail in 70..90){
                             PAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                             PAvail.progress = avail
                         }else{
@@ -285,7 +286,7 @@ class DetailPlanActivity : AppCompatActivity() {
                         if (perform <70){
                             PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                             PPerform.progress = perform
-                        }else if(perform in 70..80){
+                        }else if(perform in 70..90){
                             PPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                             PPerform.progress = perform
                         }else{
@@ -455,28 +456,27 @@ class DetailPlanActivity : AppCompatActivity() {
                         PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
                         PTarget.progress = targetpersen
 
-                        if (okratio.roundToInt() <70){
+                        if (okratio.toInt() <70){
                             POk.progressTintList = ColorStateList.valueOf(Color.RED)
-                            POk.progress = okratio.roundToInt()
-                        }else if(okratio.roundToInt() in 70..80){
+                            POk.progress = okratio.toInt()
+                        }else if(okratio.toInt() in 70..90){
                             POk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                            POk.progress = okratio.roundToInt()
+                            POk.progress = okratio.toInt()
                         }else{
                             POk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                            POk.progress = okratio.roundToInt()
+                            POk.progress = okratio.toInt()
                         }
 
                         Vachievement.text = "${achievement.roundToInt()}%"
-                        Vefficiency.text = "${achievement.roundToInt()}%"
                         Vrejection.text = "$rejectdec%"
-                        Pokratio.text = "${okratio.roundToInt()}%"
+                        Pokratio.text = "${okratio.toInt()}%"
                         ptarget.text = target.toString()
                         pactual.text = actual.toString()
 
                         if (actualpersen <70){
                             PAct.progressTintList = ColorStateList.valueOf(Color.RED)
                             PAct.progress = actualpersen
-                        }else if(actualpersen in 70..80){
+                        }else if(actualpersen in 70..90){
                             PAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                             PAct.progress = actualpersen
                         }else{
@@ -484,7 +484,6 @@ class DetailPlanActivity : AppCompatActivity() {
                             PAct.progress = actualpersen
                         }
                     }else{
-                        Vefficiency.text = "0%"
                         Vachievement.text = "0%"
                         Vrejection.text = "0"
                         Pokratio.text = "0%"
@@ -492,7 +491,6 @@ class DetailPlanActivity : AppCompatActivity() {
                         pactual.text = "0"
                     }
                 }else{
-                    Vefficiency.text = "0%"
                     Vachievement.text = "0%"
                     Vrejection.text = "0"
                     Pokratio.text = "0%"
@@ -504,7 +502,7 @@ class DetailPlanActivity : AppCompatActivity() {
                     if (avail < 70){
                         PAvail.progressTintList = ColorStateList.valueOf(Color.RED)
                         PAvail.progress = avail
-                    }else if(avail in 70..80){
+                    }else if(avail in 70..90){
                         PAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                         PAvail.progress = avail
                     }else{
@@ -520,7 +518,7 @@ class DetailPlanActivity : AppCompatActivity() {
                     if (perform <70){
                         PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                         PPerform.progress = perform
-                    }else if(perform in 70..80){
+                    }else if(perform in 70..90){
                         PPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                         PPerform.progress = perform
                     }else{
@@ -531,7 +529,7 @@ class DetailPlanActivity : AppCompatActivity() {
                     PPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                     PPerform.progress = 0
                 }
-                Toast.makeText(applicationContext, "Update Data Plan $id_plan Berhasil", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Update Data Planning Berhasil", Toast.LENGTH_LONG).show()
             }
 
             val retro = ApiUtils().getUserService()

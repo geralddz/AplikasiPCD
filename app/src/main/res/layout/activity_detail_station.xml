@@ -93,12 +93,6 @@
                 android:textSize="14dp"
                 android:text="Kuras Manifold" />
 
-            <TextView
-                android:id="@+id/penanggungJawab"
-                android:layout_width="wrap_content"
-                android:textColor="@color/black"
-                android:layout_height="wrap_content"
-                android:text="Ditangani : " />
 
             <TextView
                 android:id="@+id/statusPenanganan"
@@ -130,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:textStyle="bold"
-            android:text="Station Stop Operasi"
+            android:text="Mesin Stop Operasi"
             android:textColor="@color/white"
             />
 

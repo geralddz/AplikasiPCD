@@ -167,10 +167,9 @@ class ScanActivity : AppCompatActivity() {
                                 Voee.text = "$oee%"
                             }
 
-                            Vefficiency.text = "${achievement.toInt()}%"
                             Pach.text = "${achievement.toInt()}%"
                             Prejec.text = "$rejectdec%"
-                            pokr.text = "${okeratio.roundToInt()}%"
+                            pokr.text = "${okeratio.toInt()}%"
                             ptrgt.text = target.toString()
                             pact.text = actual.toString()
 
@@ -180,7 +179,7 @@ class ScanActivity : AppCompatActivity() {
                             if (actualpersen < 70) {
                                 pbActual.progressTintList = ColorStateList.valueOf(Color.RED)
                                 pbActual.progress = actualpersen
-                            }else if(actualpersen in 70..80){
+                            }else if(actualpersen in 70..90){
                                 pbActual.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                                 pbActual.progress = actualpersen
                             }else{
@@ -188,18 +187,17 @@ class ScanActivity : AppCompatActivity() {
                                 pbActual.progress = actualpersen
                             }
 
-                            if (okeratio.roundToInt() < 70) {
+                            if (okeratio.toInt() < 70) {
                                 pbOk.progressTintList = ColorStateList.valueOf(Color.RED)
-                                pbOk.progress = okeratio.roundToInt()
-                            } else if (okeratio.roundToInt() in 70..80) {
+                                pbOk.progress = okeratio.toInt()
+                            } else if (okeratio.toInt() in 70..90) {
                                 pbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                                pbOk.progress = okeratio.roundToInt()
+                                pbOk.progress = okeratio.toInt()
                             } else {
                                 pbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                pbOk.progress = okeratio.roundToInt()
+                                pbOk.progress = okeratio.toInt()
                             }
                         }else{
-                            Vefficiency.text = "0%"
                             Pach.text = "0%"
                             Prejec.text = "0%"
                             pokr.text = "0%"
@@ -207,7 +205,6 @@ class ScanActivity : AppCompatActivity() {
                             pact.text = "0"
                         }
                     }else{
-                        Vefficiency.text = "0%"
                         Pach.text = "0%"
                         Prejec.text = "0%"
                         pokr.text = "0%"
@@ -219,7 +216,7 @@ class ScanActivity : AppCompatActivity() {
                         if (avail < 70){
                             pbavail.progressTintList = ColorStateList.valueOf(Color.RED)
                             pbavail.progress = avail
-                        }else if(avail in 70..80){
+                        }else if(avail in 70..90){
                             pbavail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                             pbavail.progress = avail
                         }else{
@@ -235,7 +232,7 @@ class ScanActivity : AppCompatActivity() {
                         if (perform < 70) {
                             pbperformance.progressTintList = ColorStateList.valueOf(Color.RED)
                             pbperformance.progress = perform
-                        }else if(perform in 70..80){
+                        }else if(perform in 70..90){
                             pbperformance.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                             pbperformance.progress = perform
                         }else{

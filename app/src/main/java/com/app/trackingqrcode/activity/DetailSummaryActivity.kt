@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.main.activity_detail_part.*
 import kotlinx.android.synthetic.main.activity_detail_summary.*
 import kotlinx.android.synthetic.main.activity_detail_summary.Pavail
 import kotlinx.android.synthetic.main.activity_detail_summary.Pperform
-import kotlinx.android.synthetic.main.activity_detail_summary.Vefficiency
 import kotlinx.android.synthetic.main.activity_detail_summary.Voee
 import kotlinx.android.synthetic.main.activity_detail_summary.backSum
 import retrofit2.Call
@@ -139,27 +138,26 @@ class DetailSummaryActivity : AppCompatActivity() {
                             PbTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
                             PbTarget.progress = targetpersen
 
-                            if (okratio.roundToInt() <70){
+                            if (okratio.toInt() <70){
                                 PbOk.progressTintList = ColorStateList.valueOf(Color.RED)
-                                PbOk.progress = okratio.roundToInt()
-                            }else if(okratio.roundToInt() in 70..80){
+                                PbOk.progress = okratio.toInt()
+                            }else if(okratio.toInt() in 70..90){
                                 PbOk.progressTintList = ColorStateList.valueOf(Color.YELLOW)
-                                PbOk.progress = okratio.roundToInt()
+                                PbOk.progress = okratio.toInt()
                             }else{
                                 PbOk.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                PbOk.progress = okratio.roundToInt()
+                                PbOk.progress = okratio.toInt()
                             }
-                            Vefficiency.text = "${achievement.toInt()}%"
                             Vachievemen.text = "${achievement.toInt()}%"
                             Vrejections.text = "$rejectdec%"
-                            Pokratioo.text = "${okratio.roundToInt()}%"
+                            Pokratioo.text = "${okratio.toInt()}%"
                             Ptarget.text = target.toString()
                             Pactual.text = actual.toString()
 
                             if (actualpersen <70){
                                 PbAct.progressTintList = ColorStateList.valueOf(Color.RED)
                                 PbAct.progress = actualpersen
-                            }else if(actualpersen in 70..80){
+                            }else if(actualpersen in 70..90){
                                 PbAct.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                                 PbAct.progress = actualpersen
                             }else{
@@ -167,7 +165,6 @@ class DetailSummaryActivity : AppCompatActivity() {
                                 PbAct.progress = actualpersen
                             }
                         }else{
-                            Vefficiency.text = "0%"
                             Vachievemen.text = "0%"
                             Vrejections.text = "0"
                             Pokratioo.text = "0%"
@@ -175,7 +172,6 @@ class DetailSummaryActivity : AppCompatActivity() {
                             Pactual.text = "0"
                         }
                     }else{
-                        Vefficiency.text = "0%"
                         Vachievemen.text = "0%"
                         Vrejections.text = "0"
                         Pokratioo.text = "0%"
@@ -187,7 +183,7 @@ class DetailSummaryActivity : AppCompatActivity() {
                         if (avail < 70){
                             PbAvail.progressTintList = ColorStateList.valueOf(Color.RED)
                             PbAvail.progress = avail
-                        }else if(avail in 70..80){
+                        }else if(avail in 70..90){
                             PbAvail.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                             PbAvail.progress = avail
                         }else{
@@ -203,7 +199,7 @@ class DetailSummaryActivity : AppCompatActivity() {
                         if (perform <70){
                             PbPerform.progressTintList = ColorStateList.valueOf(Color.RED)
                             PbPerform.progress = perform
-                        }else if(perform in 70..80){
+                        }else if(perform in 70..90){
                             PbPerform.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                             PbPerform.progress = perform
                         }else{

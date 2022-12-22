@@ -41,7 +41,10 @@ class SharedPref(context: Context) {
         editor?.putString("idstationuser", stationandon)
         editor?.commit()
     }
-
+    fun setIsDowntime(isDowntime: String) {
+        editor?.putString("isDowntime", isDowntime)
+        editor?.commit()
+    }
     fun setStatus(status: String) {
         editor?.putString("status", status)
         editor?.commit()
@@ -70,6 +73,10 @@ class SharedPref(context: Context) {
     fun setDowntimeCategory(DtCategory: String) {
         editor?.putString("DtCategory", DtCategory)
         editor?.commit()
+    }
+
+    fun getIsDowntime(): String? {
+        return pref.getString("isDowntime", "")
     }
 
     fun getDepartement(): String? {

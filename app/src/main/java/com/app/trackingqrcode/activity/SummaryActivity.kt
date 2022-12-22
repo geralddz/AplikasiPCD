@@ -48,6 +48,9 @@ class SummaryActivity : AppCompatActivity() {
 
         hidefilter()
         setShimmer()
+
+        //masih ada problem di fun showSummary
+        //problemnya terkait optimasi API (terlalu berat untuk looping ke Server)
         showSummary()
 
         swiper.setOnRefreshListener {
@@ -397,6 +400,8 @@ class SummaryActivity : AppCompatActivity() {
         return filteredList
     }
 
+    //masih ada problem di fun showSummary
+    //problemnya terkait optimasi API (terlalu berat untuk looping ke Server)
     private fun showSummary() {
         val retro = ApiUtils().getUserService()
         retro.getSummary().enqueue(object : Callback<SummaryResponse> {

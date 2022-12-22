@@ -376,60 +376,11 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardEff"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/cvhasil2"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="10dp"
-                android:elevation="5dp"
-                app:cardCornerRadius="10dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:fontFamily="@font/popmedium"
-                        android:gravity="center_vertical"
-                        android:text="Efficiency"
-                        android:textStyle="bold"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textSize="16sp" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="10dp">
-
-                        <TextView
-                            android:id="@+id/Vefficiency"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
-                            android:fontFamily="@font/popmedium"
-                            android:text="%"
-                            android:textColor="#000000"
-                            android:textSize="18sp" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvhasil3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/cardEff"
+                android:layout_below="@id/cvhasil2"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="10dp"
                 android:padding="20dp"

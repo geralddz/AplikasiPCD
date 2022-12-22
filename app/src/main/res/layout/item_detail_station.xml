@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
                 android:padding="5dp"
-                android:text="Part Name          : "
+                android:text="Part Name         : "
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
                 android:padding="5dp"
-                android:text="Start Produksi     : "
+                android:text="Start Produksi    : "
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 
@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
                 android:padding="5dp"
-                android:text="Target                 : "
+                android:text="Target                : "
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 
@@ -216,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
                 android:padding="5dp"
-                android:text="Status                 : "
+                android:text="Status                : "
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 

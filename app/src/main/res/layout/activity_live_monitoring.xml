@@ -174,6 +174,7 @@
                     <TextView
                         android:id="@+id/yellow"
                         android:layout_width="70dp"
+                        android:textColor="@color/black"
                         android:layout_height="wrap_content"
                         tools:ignore="MissingConstraints" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -222,7 +223,7 @@
                         app:layout_constraintStart_toStartOf="parent">
 
                         <LinearLayout
-                            android:layout_width="60dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
@@ -233,7 +234,7 @@
 
                     <TextView
                         android:id="@+id/red"
-                        android:layout_width="60dp"
+                        android:layout_width="70dp"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content"
                         tools:ignore="MissingConstraints" />
@@ -281,41 +282,48 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-                <include layout="@layout/data_placeholder" />
+<!--                <include layout="@layout/data_placeholder" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swiperlive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvLive"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
+                android:orientation="vertical">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvLive"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp" />
+            </LinearLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
 

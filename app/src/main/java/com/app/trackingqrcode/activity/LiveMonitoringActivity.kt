@@ -14,9 +14,7 @@ import com.app.trackingqrcode.R
 import com.app.trackingqrcode.adapter.LiveMonitorAdapter
 import com.app.trackingqrcode.utils.ApiUtils
 import com.app.trackingqrcode.model.LiveMonitorData
-import com.app.trackingqrcode.response.DowntimeResponse
-import com.app.trackingqrcode.response.OnPlanningResponse
-import com.app.trackingqrcode.response.StationResponse
+import com.app.trackingqrcode.response.*
 import kotlinx.android.synthetic.main.activity_detail_station.*
 import kotlinx.android.synthetic.main.activity_live_monitoring.*
 import kotlinx.android.synthetic.main.activity_live_monitoring.back
@@ -35,7 +33,7 @@ class LiveMonitoringActivity : AppCompatActivity(){
     private var selectedStop = "stop"
     private var selectedStart = "start"
     private var selectedProblem = "problem"
-    private var livemonitordata: MutableList<LiveMonitorData> = ArrayList()
+    private var livemonitordata: MutableList<DataLive> = ArrayList()
     private lateinit var startTime: String
 
     @SuppressLint("NotifyDataSetChanged")
@@ -93,45 +91,45 @@ class LiveMonitoringActivity : AppCompatActivity(){
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setAdapter(list: List<LiveMonitorData>){
+    private fun setAdapter(list: List<DataLive>){
         val adapterLiveMonitor = LiveMonitorAdapter(this, list)
         rvLive.adapter = adapterLiveMonitor
         adapterLiveMonitor.notifyDataSetChanged()
     }
 
-    private fun queryStation(selectedStation: String): List<LiveMonitorData>{
-        val filteredList: MutableList<LiveMonitorData> = ArrayList()
+    private fun queryStation(selectedStation: String): List<DataLive>{
+        val filteredList: MutableList<DataLive> = ArrayList()
         for (item in livemonitordata) {
-            if (item.nama_station!!.lowercase(Locale.ROOT).contains(selectedStation.lowercase())) {
+            if (item.name!!.lowercase(Locale.ROOT).contains(selectedStation.lowercase())) {
                 filteredList.add(item)
             }
         }
         return filteredList
     }
-    private fun queryStop(): List<LiveMonitorData>{
-        val filteredList: MutableList<LiveMonitorData> = ArrayList()
+    private fun queryStop(): List<DataLive>{
+        val filteredList: MutableList<DataLive> = ArrayList()
         for (item in livemonitordata) {
-            if (item.status!!.contains(selectedStop)) {
-                filteredList.add(item)
-            }
-        }
-        return filteredList
-    }
-
-    private fun queryStart(): List<LiveMonitorData>{
-        val filteredList: MutableList<LiveMonitorData> = ArrayList()
-        for (item in livemonitordata) {
-            if (item.status!!.contains(selectedStart)) {
+            if ((item.status==null||item.status=="Finish") && item.isDowntime==0) {
                 filteredList.add(item)
             }
         }
         return filteredList
     }
 
-    private fun queryProblem(): List<LiveMonitorData>{
-        val filteredList: MutableList<LiveMonitorData> = ArrayList()
+    private fun queryStart(): List<DataLive>{
+        val filteredList: MutableList<DataLive> = ArrayList()
         for (item in livemonitordata) {
-            if (item.status!!.contains(selectedProblem)) {
+            if (item.status=="Start" && item.isDowntime==0) {
+                filteredList.add(item)
+            }
+        }
+        return filteredList
+    }
+
+    private fun queryProblem(): List<DataLive>{
+        val filteredList: MutableList<DataLive> = ArrayList()
+        for (item in livemonitordata) {
+            if (item.status=="Start" && item.isDowntime==1) {
                 filteredList.add(item)
             }
         }
@@ -144,21 +142,19 @@ class LiveMonitoringActivity : AppCompatActivity(){
     }
 
     @SuppressLint("SetTextI18n")
-    private fun countStation(list: List<LiveMonitorData>) {
+    private fun countStation(list: List<DataLive>) {
         var cgreen = 0
         var cyellow = 0
         var cred = 0
         for (item in list) {
-            when (item.status) {
-                "start" -> {
+            if (item.status=="Start"){
+                if (item.isDowntime==1){
+                    cyellow += 1
+                }else{
                     cgreen += 1
                 }
-                "problem" -> {
-                    cyellow += 1
-                }
-                else -> {
-                    cred +=1
-                }
+            }else {
+                cred += 1
             }
         }
         green.text = "$cgreen Station"
@@ -166,113 +162,58 @@ class LiveMonitoringActivity : AppCompatActivity(){
         red.text = "$cred Station"
     }
 
-    @SuppressLint("SetTextI18n")
-    fun showStation(){
-        val retro = ApiUtils().getUserService()
+    private fun showStation(){
         green.text = "0 Station"
         yellow.text = "0 Station"
         red.text = "0 Station"
         val countRed = intArrayOf(0)
         val countGreen = intArrayOf(0)
         val countYellow = intArrayOf(0)
-        retro.getStation()!!.enqueue(object : Callback<StationResponse>{
-            override fun onResponse(call: Call<StationResponse>, response: Response<StationResponse>) {
-                val station = response.body()?.data
-                for (s in station!!.indices){
-                    val stationid = station[s].id
-                    val stationname = station[s].name
+        val retro = ApiUtils().getUserService()
+        retro.getLiveStation()?.enqueue(object : Callback<LiveStationResponse>{
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<LiveStationResponse>, response: Response<LiveStationResponse>) {
+                val livemonitor = response.body()?.data
+                livemonitordata = livemonitor as MutableList<DataLive>
+                for (s in livemonitor.indices){
                     val sumCG = arrayOf(countGreen[0])
                     val sumCY = arrayOf(countYellow[0])
                     val sumCR = arrayOf(countRed[0])
-                    retro.getOnPlanning(stationid).enqueue(object : Callback<OnPlanningResponse> {
-                        @SuppressLint("NotifyDataSetChanged")
-                        override fun onResponse(call: Call<OnPlanningResponse>, response: Response<OnPlanningResponse>) {
-                            val planning = response.body()
-                            val planningdata = planning?.data
-                            val planid = planningdata?.get(0)?.planningId
-                            val partname = planningdata?.get(0)?.partName
-                            if (planning?.success == true) {
-                                retro.getDowntime(stationid.toString(), planid.toString()).enqueue(object : Callback<DowntimeResponse> {
-                                    override fun onResponse(call: Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
-                                        val downtime = response.body()
-                                        val downtimedata = downtime?.data
-                                        var onplan = true
-                                        for(d in downtimedata!!.indices){
-                                            val statusdown = downtimedata[d]?.status
-                                            val planiddown = downtimedata[d]?.planningId
-                                            val downtimeCt = downtimedata[d]?.downtimeCategory
-                                            downtimecty = downtimeCt.toString()
-                                            val startt = downtimedata[d]?.startTime.toString()
-                                            val splitan = startt.split(" ").toTypedArray()
-                                            startTime = splitan[1]
-
-                                            if (planid==planiddown&&statusdown==0){
-                                                onplan = false
-                                            }
-                                        }
-                                        if (onplan){
-                                            stationstatus = "start"
-                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus,"","")))
-                                            Log.e("idstation","$stationid")
-                                            sumCG[0] += 1
-                                            green.text = "${sumCG[0]} Station"
-                                        }else{
-                                            stationstatus = "problem"
-                                            livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus,startTime,downtimecty)))
-                                            Log.e("idstation","$stationid")
-                                            sumCY[0] += 1
-                                            yellow.text = "${sumCY[0]} Station"
-                                        }
-                                        val liveadapter = LiveMonitorAdapter(this@LiveMonitoringActivity, livemonitordata)
-                                        rvLive.apply {
-                                            layoutManager =
-                                                LinearLayoutManager(this@LiveMonitoringActivity)
-                                            setHasFixedSize(true)
-                                            adapter = liveadapter
-                                            liveadapter.notifyDataSetChanged()
-                                        }
-                                        countStation(livemonitordata)
-                                    }
-                                    override fun onFailure(call: Call<DowntimeResponse>, t: Throwable) {
-                                        Log.e("Error", t.message!!)
-                                    }
-                                })
-                            }else {
-                                stationstatus = "stop"
-                                livemonitordata.addAll(listOf(LiveMonitorData(stationid, stationname, partname, planid, stationstatus,"","")))
-                                Log.e("idstation","$stationid")
-                                sumCR[0] += 1
-                                red.text = "${sumCR[0]} Station"
-                            }
-                            val liveadapter = LiveMonitorAdapter(
-                                this@LiveMonitoringActivity,
-                                livemonitordata
-                            )
-                            rvLive.apply {
-                                layoutManager =
-                                    LinearLayoutManager(this@LiveMonitoringActivity)
-                                setHasFixedSize(true)
-                                adapter = liveadapter
-                                liveadapter.notifyDataSetChanged()
-                            }
-                            countStation(livemonitordata)
-                            stopShimmer()
-                            if (!Lstation.contains(stationname)) {
-                                Lstation.add(stationname!!)
-                            }
-                        }
-                        override fun onFailure(call: Call<OnPlanningResponse>, t: Throwable) {
-                            Log.e("Error", t.message!!)
-                        }
-                    })
+                    val stationname = livemonitor[s].name
+                    val status = livemonitor[s].status
+                    val downtime = livemonitor[s].isDowntime
+                    if (status=="Start"){
+                       if(downtime==1){
+                           sumCY[0] += 1
+                           yellow.text = "${sumCY[0]} Station"
+                       }else{
+                           sumCG[0] += 1
+                           green.text = "${sumCG[0]} Station"
+                       }
+                    }else{
+                        sumCR[0] += 1
+                        red.text = "${sumCR[0]} Station"
+                    }
+                    if (!Lstation.contains(stationname)) {
+                        Lstation.add(stationname!!)
+                    }
                 }
+                val livestationadapter = LiveMonitorAdapter(applicationContext, livemonitordata)
+                rvLive.apply {
+                    layoutManager = LinearLayoutManager(this@LiveMonitoringActivity)
+                    setHasFixedSize(true)
+                    adapter = livestationadapter
+                    livestationadapter.notifyDataSetChanged()
+                }
+                countStation(livemonitordata as List<DataLive>)
+                stopShimmer()
+
             }
-            override fun onFailure(call: Call<StationResponse>, t: Throwable) {
+            override fun onFailure(call: Call<LiveStationResponse>, t: Throwable) {
                 Log.e("Error", t.message!!)
             }
         })
     }
-
     private fun setShimmer() {
         shimmerlayout.startShimmer()
         shimmerlayout1.startShimmer()
@@ -309,4 +250,3 @@ class LiveMonitoringActivity : AppCompatActivity(){
         startActivity(intent)
     }
 }
-

@@ -2,8 +2,10 @@ package com.app.trackingqrcode.socket
 
 import android.app.Application
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Handler
 import android.util.Log
+import com.app.trackingqrcode.R
 import com.app.trackingqrcode.model.AndonNotifData
 import com.app.trackingqrcode.utils.BroadcastReceiverNotif
 import com.app.trackingqrcode.utils.SharedPref
@@ -22,10 +24,12 @@ class AndonSocket : Application() {
     private lateinit var iduser: String
     private lateinit var sharedPref: SharedPref
     private val SERVER_URL = "http://10.14.130.94:6001"
+    var mp: MediaPlayer? = null
 
     override fun onCreate() {
         super.onCreate()
         sharedPref = SharedPref(this)
+        mp = MediaPlayer.create(this, R.raw.andon)
         iduser = sharedPref.getIdUser().toString()
         connectToSocket()
     }
@@ -70,6 +74,7 @@ class AndonSocket : Application() {
         val temp1 = event.optJSONArray("downtime")?.get(0).toString()
         val andon = Gson().fromJson(temp1, AndonNotifData::class.java)
         val stationandon = andon.stationName.toString()
+        mp?.start()
         val intent = Intent(this, BroadcastReceiverNotif::class.java)
         intent.putExtra(stationAndon, stationandon)
         sendBroadcast(intent)

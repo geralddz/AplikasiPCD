@@ -26,6 +26,9 @@ interface ApiInterface {
     @GET("station")
     fun getStation(): Call<StationResponse>?
 
+    @GET("live-station")
+    fun getLiveStation(): Call<LiveStationResponse>?
+
     @GET("station/station-num")
     fun getStationId(
         @Query("station_num") station_num: String?

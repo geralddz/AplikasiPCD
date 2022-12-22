@@ -47,9 +47,9 @@ class DetailStationAdapter(var context: Context, val dataDetailStation: List<Det
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val shift = dataDetailStation[position].shift
+        val status = dataDetailStation[position].statusFlag
         holder.pn.text = dataDetailStation[position].partName
         holder.startprod.text = dataDetailStation[position].startTime
-        val status = dataDetailStation[position].statusFlag
         holder.status.text = dataDetailStation[position].statusFlag
         when (status) {
             "Start" -> {

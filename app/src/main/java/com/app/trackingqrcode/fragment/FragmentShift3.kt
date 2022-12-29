@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
@@ -37,15 +38,16 @@ class FragmentShift3 : Fragment() {
         showDataShift3()
     }
 
-    private fun showDataShift3(){
-        val retro = ApiUtils().getUserService()
-        retro.getDetailStation(idStation!!).enqueue(object :
-            Callback<DetailStationResponse> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
-                val detailstation = response.body()
-                val detailstationdata = detailstation?.data
-                    for (d in detailstationdata!!.indices){
+    private fun showDataShift3() {
+        if (idStation != null) {
+            val retro = ApiUtils().getUserService()
+            retro.getDetailStation(idStation!!).enqueue(object :
+                Callback<DetailStationResponse> {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
+                    val detailstation = response.body()
+                    val detailstationdata = detailstation?.data
+                    for (d in detailstationdata!!.indices) {
                         val startpro = detailstationdata[d].startTime
                         val finishpro = detailstationdata[d].finishTime
                         val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
@@ -56,7 +58,7 @@ class FragmentShift3 : Fragment() {
                         val startShift3final = "23:59:59"
                         val finishShift3 = "00:00:00"
                         val finishShift3Final = "05:59:59"
-                        if ((timeStartpro in startShift3..startShift3final)||(timeFinishpro in finishShift3..finishShift3Final)||(timeStartpro in finishShift3..finishShift3Final)||(timeFinishpro in startShift3..startShift3final)){
+                        if ((timeStartpro in startShift3..startShift3final) || (timeFinishpro in finishShift3..finishShift3Final) || (timeStartpro in finishShift3..finishShift3Final) || (timeFinishpro in startShift3..startShift3final)) {
                             val sku = detailstationdata[d].sku
                             val partname = detailstationdata[d].partName
                             val statusplan = detailstationdata[d].statusFlag
@@ -64,8 +66,9 @@ class FragmentShift3 : Fragment() {
                             val target = detailstationdata[d].target
                             val planid = detailstationdata[d].planId
                             try {
-                                shift3data.addAll(listOf(DetailStationData(startpro,statusplan,sph,target,sku,finishpro,planid,partname,"Shift 3")))
-                                val detailstationadapter = DetailStationAdapter(context!!, shift3data)
+                                shift3data.addAll(listOf(DetailStationData(startpro, statusplan, sph, target, sku, finishpro, planid, partname, "Shift 3")))
+                                val detailstationadapter =
+                                    DetailStationAdapter(context!!, shift3data)
                                 rvshift3.apply {
                                     layoutManager = LinearLayoutManager(context)
                                     setHasFixedSize(true)
@@ -73,15 +76,18 @@ class FragmentShift3 : Fragment() {
                                     detailstationadapter.notifyDataSetChanged()
                                 }
                             } catch (e: Exception) {
-                                Log.e("shift3", "error",e)
+                                Log.e("shift3", "error", e)
                             }
                         }
                     }
                 }
-                override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
-                Log.e("Error", t.message!!)
-            }
-        })
-    }
 
+                override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
+                    Log.e("Error", t.message!!)
+                }
+            })
+        }else{
+            Toast.makeText(context, "Planning Shift 3 Tidak Ada", Toast.LENGTH_SHORT).show()
+        }
+    }
 }

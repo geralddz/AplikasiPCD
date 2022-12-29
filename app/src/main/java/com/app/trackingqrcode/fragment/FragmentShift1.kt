@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.trackingqrcode.R
@@ -39,51 +40,55 @@ class FragmentShift1 : Fragment() {
     }
 
     private fun showDataShift1() {
-        val retro = ApiUtils().getUserService()
-        retro.getDetailStation(idStation!!).enqueue(object : Callback<DetailStationResponse> {
-            @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
-            override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
-                val detailstation = response.body()
-                val detailstationdata = detailstation?.data
-                    if (detailstationdata!=null){
-                        for (d in detailstationdata.indices) {
-                            val startpro = detailstationdata[d].startTime
-                            val finishpro = detailstationdata[d].finishTime
-                            val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
-                            val dtfinishpro = finishpro?.split(" ".toRegex())?.toTypedArray()
-                            val timeStartpro = dtstartpro?.get(1).toString()
-                            val timeFinishpro = dtfinishpro?.get(1).toString()
-                            val startShift1 = "06:00:00"
-                            val finishShift1 = "17:59:59"
-                            if (timeStartpro<finishShift1){
-                                if((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
-                                    val sku = detailstationdata[d].sku
-                                    val partname = detailstationdata[d].partName
-                                    val statusplan = detailstationdata[d].statusFlag
-                                    val sph = detailstationdata[d].cycleTime
-                                    val target = detailstationdata[d].target
-                                    val planid = detailstationdata[d].planId
+        if (id_station!=null){
+            val retro = ApiUtils().getUserService()
+            retro.getDetailStation(idStation!!).enqueue(object : Callback<DetailStationResponse> {
+                @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
+                override fun onResponse(call: Call<DetailStationResponse>, response: Response<DetailStationResponse>) {
+                    val detailstation = response.body()
+                    val detailstationdata = detailstation?.data
+                        if (detailstationdata!=null){
+                            for (d in detailstationdata.indices) {
+                                val startpro = detailstationdata[d].startTime
+                                val finishpro = detailstationdata[d].finishTime
+                                val dtstartpro = startpro?.split(" ".toRegex())?.toTypedArray()
+                                val dtfinishpro = finishpro?.split(" ".toRegex())?.toTypedArray()
+                                val timeStartpro = dtstartpro?.get(1).toString()
+                                val timeFinishpro = dtfinishpro?.get(1).toString()
+                                val startShift1 = "06:00:00"
+                                val finishShift1 = "17:59:59"
+                                if (timeStartpro<finishShift1){
+                                    if((timeStartpro in startShift1..finishShift1)||(timeFinishpro in startShift1..finishShift1)){
+                                        val sku = detailstationdata[d].sku
+                                        val partname = detailstationdata[d].partName
+                                        val statusplan = detailstationdata[d].statusFlag
+                                        val sph = detailstationdata[d].cycleTime
+                                        val target = detailstationdata[d].target
+                                        val planid = detailstationdata[d].planId
 
-                                    try {
-                                        shift1data.addAll(listOf(DetailStationData(startpro,statusplan,sph,target,sku,finishpro,planid,partname,"Shift 1")))
-                                        val detailstationadapter = DetailStationAdapter(context!!, shift1data)
-                                        rvshift1.apply {
-                                            layoutManager = LinearLayoutManager(context)
-                                            setHasFixedSize(true)
-                                            adapter = detailstationadapter
-                                            detailstationadapter.notifyDataSetChanged()
+                                        try {
+                                            shift1data.addAll(listOf(DetailStationData(startpro,statusplan,sph,target,sku,finishpro,planid,partname,"Shift 1")))
+                                            val detailstationadapter = DetailStationAdapter(context!!, shift1data)
+                                            rvshift1.apply {
+                                                layoutManager = LinearLayoutManager(context)
+                                                setHasFixedSize(true)
+                                                adapter = detailstationadapter
+                                                detailstationadapter.notifyDataSetChanged()
+                                            }
+                                        } catch (e: Exception) {
+                                            Log.e("shift1", "error", e)
                                         }
-                                    } catch (e: Exception) {
-                                        Log.e("shift1", "error", e)
                                     }
                                 }
                             }
                         }
-                    }
-            }
-            override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
-                Log.e("Error", t.message!!)
-            }
-        })
+                }
+                override fun onFailure(call: Call<DetailStationResponse>, t: Throwable) {
+                    Log.e("Error", t.message!!)
+                }
+            })
+        }else{
+            Toast.makeText(context, "Planning Shift 1 Tidak Ada", Toast.LENGTH_SHORT).show()
+        }
     }
 }

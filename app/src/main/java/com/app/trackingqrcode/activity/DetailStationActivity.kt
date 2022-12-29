@@ -61,7 +61,7 @@ class DetailStationActivity : AppCompatActivity() {
         }
 
         id_station = sharedPref.getIdStation()
-        id_plan = sharedPref.getIdPlan().toString()
+        id_plan = sharedPref.getIdPlan()
         Log.e("idplan", "onResponse: $id_plan")
         status = sharedPref.getStatus().toString()
         stationname = sharedPref.getStation().toString()
@@ -115,13 +115,14 @@ class DetailStationActivity : AppCompatActivity() {
         }.attach()
     }
     private fun showDetailStation(){
-        val retro = ApiUtils().getUserService()
-        retro.getDowntime(id_station, id_plan).enqueue(object : retrofit2.Callback<DowntimeResponse> {
-                override fun onResponse(call: retrofit2.Call<DowntimeResponse>,response: Response<DowntimeResponse>) {
+        if(id_station!=null&&id_plan!=null) {
+            val retro = ApiUtils().getUserService()
+            retro.getDowntime(id_station, id_plan).enqueue(object : retrofit2.Callback<DowntimeResponse> {
+                override fun onResponse(call: retrofit2.Call<DowntimeResponse>, response: Response<DowntimeResponse>) {
                     val downtime = response.body()
                     val downtimedata = downtime?.data
                     if (downtimedata != null) {
-                        for (d in downtimedata.indices){
+                        for (d in downtimedata.indices) {
                             val downtimeCt = downtimedata[d]?.downtimeCategory
                             val startt = downtimedata[d]?.startTime.toString()
                             val splitan = startt.split(" ").toTypedArray()
@@ -133,7 +134,7 @@ class DetailStationActivity : AppCompatActivity() {
                             sharedPref.setDowntimeCategory(dtcty)
                             Log.e("starttime", startTime)
                         }
-                    }else{
+                    } else {
                         Toast.makeText(this@DetailStationActivity, "DataDowntime Tidak Ada", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -142,6 +143,9 @@ class DetailStationActivity : AppCompatActivity() {
                     Log.e("Error", t.message!!)
                 }
             })
+        }else{
+            Toast.makeText(this@DetailStationActivity, "Planning Tidak Ada", Toast.LENGTH_SHORT).show()
+        }
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun counterTime() {

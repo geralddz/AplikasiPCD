@@ -1,4 +1,4 @@
 # AplikasiPCD
-\nAplikasi PCD 
-\nPT Autoplastik Indonesia
-\ncreated by GeraldDZ and Aqsaldpa
+Aplikasi PCD 
+PT Autoplastik Indonesia
+created by GeraldDZ and Aqsaldpa

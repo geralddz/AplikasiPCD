@@ -3,10 +3,10 @@ package com.app.trackingqrcode.socket
 import android.app.Application
 import android.content.Intent
 import android.media.MediaPlayer
-import android.os.Handler
 import android.util.Log
 import com.app.trackingqrcode.R
 import com.app.trackingqrcode.model.AndonNotifData
+import com.app.trackingqrcode.utils.ApiUtils.Companion.SOCKET_URL
 import com.app.trackingqrcode.utils.BroadcastReceiverNotif
 import com.app.trackingqrcode.utils.SharedPref
 import com.google.gson.Gson
@@ -23,7 +23,6 @@ class AndonSocket : Application() {
     private val CHANNEL_MESSAGES = "Andon"
     private lateinit var iduser: String
     private lateinit var sharedPref: SharedPref
-    private val SERVER_URL = "http://10.14.130.94:6001"
     var mp: MediaPlayer? = null
 
     override fun onCreate() {
@@ -36,7 +35,7 @@ class AndonSocket : Application() {
 
     private fun connectToSocket() {
         val options = EchoOptions()
-        options.host = SERVER_URL
+        options.host = SOCKET_URL
         options.eventNamespace = ""
         echo = Echo(options)
         echo?.connect({

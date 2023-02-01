@@ -7,8 +7,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiUtils {
-//    val API_URL = "http://10.14.132.173/  api/public/api/"
-    private val API_URL = "http://10.14.130.94/pcd/api/"
+
+    companion object {
+        const val SOCKET_URL = "http://10.113.145.76:6001"
+    }
+    private val API_URL = "http://10.113.145.76/api/public/api/"
 
     private fun getApiClientInstance() : Retrofit{
         val interceptor =  HttpLoggingInterceptor()

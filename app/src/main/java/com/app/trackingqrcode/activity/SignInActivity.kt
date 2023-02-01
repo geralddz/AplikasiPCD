@@ -73,8 +73,10 @@ class SignInActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(applicationContext, "Login gagal, Data tidak terdaftar", Toast.LENGTH_SHORT
-                    ).show()
+                    etUserSignIn.text.clear()
+                    etPassSignIn.text.clear()
+                    etPassSignIn.clearFocus()
+                    Toast.makeText(applicationContext, "Login gagal, Data tidak terdaftar", Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {

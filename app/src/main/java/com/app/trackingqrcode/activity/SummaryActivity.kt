@@ -71,10 +71,6 @@ class SummaryActivity : AppCompatActivity() {
         }
 
         val dataStation = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, Lstation_num)
-        val dataCustomer = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, Lcustomer)
-        val dataType = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, Ltype)
-        val dataPart = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, Lpart)
-
 
         filterStation.setAdapter(dataStation)
         filterStation.addTextChangedListener(object : TextWatcher {
@@ -93,75 +89,7 @@ class SummaryActivity : AppCompatActivity() {
         filterStation.setOnItemClickListener { parent, _, position, _ ->
             selectedStation = parent.getItemAtPosition(position).toString()
             filter(selectedStation, selectedCustomer, selectedType, selectedPart)
-            filterCostumer.visibility = View.VISIBLE
-            dropdown2.visibility = View.VISIBLE
-            filterCostumer.requestFocus()
-            dropdown2.requestFocus()
 
-        }
-
-        filterCostumer.setAdapter(dataCustomer)
-        filterCostumer.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                selectedCustomer = s.toString()
-                filter(selectedStation, selectedCustomer, selectedType, selectedPart)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
-        filterCostumer.setOnItemClickListener { parent, _, position, _ ->
-            selectedCustomer = parent.getItemAtPosition(position).toString()
-            filter(selectedStation, selectedCustomer, selectedType, selectedPart)
-            filterType.visibility = View.VISIBLE
-            dropdown3.visibility = View.VISIBLE
-            filterType.requestFocus()
-            dropdown3.requestFocus()
-        }
-
-        filterType.setAdapter(dataType)
-        filterType.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                selectedType = s.toString()
-                filter(selectedStation, selectedCustomer, selectedType, selectedPart)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-        })
-        filterType.setOnItemClickListener { parent, _, position, _ ->
-            selectedType = parent.getItemAtPosition(position).toString()
-            filter(selectedStation, selectedCustomer, selectedType, selectedPart)
-            filterPart.visibility = View.VISIBLE
-            dropdown4.visibility = View.VISIBLE
-            filterPart.requestFocus()
-            dropdown4.requestFocus()
-        }
-
-        filterPart.setAdapter(dataPart)
-        filterPart.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                selectedPart = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
-        filterPart.setOnItemClickListener { parent, _, position, _ ->
-            selectedPart = parent.getItemAtPosition(position).toString()
-            filter(selectedStation, selectedCustomer, selectedType, selectedPart)
         }
     }
 

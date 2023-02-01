@@ -21,6 +21,7 @@ import com.app.trackingqrcode.response.DetailPlanResponse
 import com.app.trackingqrcode.response.DowntimeResponse
 import com.app.trackingqrcode.response.RejectionPlanResponse
 import com.app.trackingqrcode.utils.ApiUtils
+import com.app.trackingqrcode.utils.ApiUtils.Companion.SOCKET_URL
 import com.app.trackingqrcode.utils.SharedPref
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_detail_part.*
@@ -66,7 +67,6 @@ class DetailPlanActivity : AppCompatActivity() {
         const val TARGET = "TARGET"
         const val KEY_PLAN = "id_plan"
         const val SHIFT = "shift"
-        const val SERVER_URL = "http://10.14.130.94:6001"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -213,6 +213,10 @@ class DetailPlanActivity : AppCompatActivity() {
                             val achievement = (actualFloat.div(targetFloat)).times(100)
                             val rejection = (rejectFloat.div((actualFloat.plus(rejectFloat))).times(100))
 
+                            PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                            PTarget.progress = targetpersen
+                            ptarget.text = target.toString()
+
                             if(!okratio.isNaN() && !achievement.isNaN() && !rejection.isNaN()){
                                 val number3digits = (rejection * 1000.0).roundToInt() / 1000.0
                                 val number2digits = (number3digits * 100.0).roundToInt() / 100.0
@@ -222,8 +226,6 @@ class DetailPlanActivity : AppCompatActivity() {
                                     val oee = (avail.times(perform).times(okratio)).div(10000).toInt()
                                     Voee.text ="$oee%"
                                 }
-                                PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                                PTarget.progress = targetpersen
 
                                 if (okratio.toInt() <70){
                                     POk.progressTintList = ColorStateList.valueOf(Color.RED)
@@ -239,7 +241,6 @@ class DetailPlanActivity : AppCompatActivity() {
                                 Vachievement.text = "${achievement.toInt()}%"
                                 Vrejection.text = "$rejectdec%"
                                 Pokratio.text = "${okratio.toInt()}%"
-                                ptarget.text = target.toString()
                                 pactual.text = actual.toString()
 
                                 if (actualpersen <70){
@@ -256,7 +257,6 @@ class DetailPlanActivity : AppCompatActivity() {
                                 Vachievement.text = "0%"
                                 Vrejection.text = "0"
                                 Pokratio.text = "0%"
-                                ptarget.text = "0"
                                 pactual.text = "0"
                             }
                         }else{
@@ -363,7 +363,7 @@ class DetailPlanActivity : AppCompatActivity() {
 
     private fun connectToSocket() {
         val options = EchoOptions()
-        options.host = SERVER_URL
+        options.host = SOCKET_URL
         options.eventNamespace = ""
         echo = Echo(options)
         echo?.connect({
@@ -442,6 +442,10 @@ class DetailPlanActivity : AppCompatActivity() {
                         val achievement = (actualFloat.div(targetFloat)).times(100)
                         val rejection = (rejectFloat.div((actualFloat.plus(rejectFloat))).times(100))
 
+                        PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                        PTarget.progress = targetpersen
+                        ptarget.text = target.toString()
+
                         if(!okratio.isNaN() && !achievement.isNaN() && !rejection.isNaN()){
                             val number3digits = (rejection * 1000.0).roundToInt() / 1000.0
                             val number2digits = (number3digits * 100.0).roundToInt() / 100.0
@@ -455,9 +459,6 @@ class DetailPlanActivity : AppCompatActivity() {
                                     Voee.text = "0%"
                                 }
                             }
-
-                            PTarget.progressTintList = ColorStateList.valueOf(Color.GREEN)
-                            PTarget.progress = targetpersen
 
                             if (okratio.toInt() <70){
                                 POk.progressTintList = ColorStateList.valueOf(Color.RED)
@@ -473,7 +474,6 @@ class DetailPlanActivity : AppCompatActivity() {
                             Vachievement.text = "${achievement.roundToInt()}%"
                             Vrejection.text = "$rejectdec%"
                             Pokratio.text = "${okratio.toInt()}%"
-                            ptarget.text = target.toString()
                             pactual.text = actual.toString()
 
                             if (actualpersen <70){
@@ -490,7 +490,6 @@ class DetailPlanActivity : AppCompatActivity() {
                             Vachievement.text = "0%"
                             Vrejection.text = "0"
                             Pokratio.text = "0%"
-                            ptarget.text = "0"
                             pactual.text = "0"
                         }
                     }else{

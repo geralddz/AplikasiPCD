@@ -29,8 +29,7 @@ import javax.security.auth.callback.Callback
 
 class DetailStationActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPref
-    private lateinit var startDowntime: String
-    private lateinit var status: String
+    private var status: String? = null
     private lateinit var stationname: String
     private var startTime: String = ""
     private lateinit var downtime : String
@@ -63,7 +62,7 @@ class DetailStationActivity : AppCompatActivity() {
         id_station = sharedPref.getIdStation()
         id_plan = sharedPref.getIdPlan()
         Log.e("idplan", "onResponse: $id_plan")
-        status = sharedPref.getStatus().toString()
+        status = sharedPref.getStatus()
         stationname = sharedPref.getStation().toString()
         partname = sharedPref.getPartname().toString()
         downtime = sharedPref.getIsDowntime().toString()
@@ -71,7 +70,7 @@ class DetailStationActivity : AppCompatActivity() {
 
         namaStation.text = stationname
 
-        if (status=="Start"){
+        if (status=="Start"&& id_plan!=null){
             if (downtime=="1"){
                 if (id_station != "null" && id_plan != "null") {
                     showDetailStation()
@@ -81,6 +80,7 @@ class DetailStationActivity : AppCompatActivity() {
                 stopped.visibility = View.GONE
                 downtimecty = sharedPref.getDowntimeCategory().toString()
                 startTime = sharedPref.getStartTime().toString()
+                statusStation.text = "Problem"
                 if (startTime!=""){
                     counterTime()
                     dtcty.text = downtimecty
@@ -92,7 +92,6 @@ class DetailStationActivity : AppCompatActivity() {
                     statusPenanganan.visibility = View.GONE
 
                 }
-                statusStation.text = "Problem"
             }else{
                 problem.visibility = View.GONE
                 onprogress.visibility = View.VISIBLE

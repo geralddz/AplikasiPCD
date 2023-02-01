@@ -23,9 +23,6 @@ interface ApiInterface {
     @GET("product/select")
     fun getSummary() : Call<SummaryResponse>
 
-    @GET("station")
-    fun getStation(): Call<StationResponse>?
-
     @GET("live-station")
     fun getLiveStation(): Call<LiveStationResponse>?
 
